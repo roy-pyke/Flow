@@ -7,7 +7,7 @@
 项目处于规划阶段，目前仓库包含方案文档，尚无应用代码、依赖清单或可运行的 demo。下文中的技术栈是计划选型，不代表已经安装或接入。
 
 - [第一版开发计划与一周排期](PLAN_1.md)：二维扩散场、步行路网与路线权衡实验。
-- 交通方向扩展：评估 Caltrans 等官方数据，探索真实交通回放、拥堵分析和单走廊交通流模型；数据权限、路段覆盖和质量仍需验证。
+- 交通方向扩展：使用 Caltrans 官方数据，探索真实交通回放、拥堵分析和单走廊交通流模型；PeMS 账户权限已取得，数据接入、路段覆盖和质量仍需验证。
 - 运行形式：浏览器访问本机服务。联网时获取数据，数据与资源准备完成后支持本地计算和离线回放。
 
 ## 核心技术栈
@@ -45,12 +45,10 @@ Python 版本为计划基线；其他库的具体版本将在初始化应用时�
 | --- | --- | --- |
 | **OpenStreetMap / OSMnx** | 道路几何、连接关系、方向和道路属性 | 计划作为路网基础；尚未下载项目数据 |
 | **Protomaps** | 可在本机使用的区域底图及配套资源 | 计划采用；尚未准备离线资源包 |
-| **Caltrans PeMS** | 高速检测器数据、速度、流量、占有率与历史分析 | 已完成官方资料调研；账户内权限、自动化获取方式和实际延迟待验证 |
+| **Caltrans PeMS** | 高速检测器数据、速度、流量、占有率与历史分析 | 账户权限已取得；尚未接入项目，自动化获取方式、实际延迟、路段覆盖和数据质量待验证 |
 | **Caltrans CWWP** | 封道、电子路牌、道路天气及部分路段旅行时间 | 调研时已读取部分公开文件；尚未接入项目，需逐个检查时间戳、坐标和单位 |
-| **湾区 511** | 事故、施工、封路和绕行事件 | 备选来源，需要 API token；尚未接入 |
-| **WSDOT** | 华盛顿州拥堵状态、指定路线旅行时间和道路警报 | 备选来源，需要 Access Code；尚未接入 |
 
-参考入口：[OSMnx](https://osmnx.readthedocs.io/en/stable/getting-started.html)、[Protomaps 下载](https://docs.protomaps.com/basemaps/downloads)、[PeMS](https://dot.ca.gov/programs/traffic-operations/mpr/pems-source)、[CWWP](https://cwwp2.dot.ca.gov/)、[511](https://511.org/open-data/traffic)、[WSDOT](https://www.wsdot.wa.gov/traffic/api/)。
+参考入口：[OSMnx](https://osmnx.readthedocs.io/en/stable/getting-started.html)、[Protomaps 下载](https://docs.protomaps.com/basemaps/downloads)、[PeMS](https://dot.ca.gov/programs/traffic-operations/mpr/pems-source)、[CWWP](https://cwwp2.dot.ca.gov/)。
 
 交通数据处理将记录观测时间、获取时间、来源和质量标记。能访问文件不代表数据仍在更新；未覆盖路段、过期记录和填补值需要明确区分。
 
