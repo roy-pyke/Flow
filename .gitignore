@@ -1,2 +1,23 @@
 # Commit the English README.md; keep the Chinese version on this machine.
 /README.zh-CN.md
+
+# Python environment and generated files
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Frontend dependencies and build output
+node_modules/
+dist/
+dist-ssr/
+
+# Downloaded and generated datasets; keep data/manifest.json in Git
+/data/raw/
+/data/processed/
+/data/maps/
+/cache/
+
+# Local operating-system files and logs
+.DS_Store
+*.log

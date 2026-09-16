@@ -1,0 +1,11 @@
+{
+    "region_id" : "SF_mission_v1",
+    "center_lon" : -122.4149,
+    "center_lat" : 37.7599,
+    "crs" : "EPSG:32610",
+    "width_m" : 4000,
+    "height_m" : 4000,
+    "download_buffer_m" : 500,
+    "network_type" : "walk",
+    "walk_speed_mps" : 1.4
+}
