@@ -1,0 +1,61 @@
+{
+  "source": "OpenStreetMap contributors",
+  "license": "ODbL-1.0",
+  "license_url": "https://opendatacommons.org/licenses/odbl/1-0/",
+  "attribution_url": "https://www.openstreetmap.org/copyright",
+  "overpass_url": "https://overpass-api.de/api",
+  "download_started_utc": "2026-09-17T17:57:28.806789+00:00",
+  "download_completed_utc": "2026-09-17T17:57:39.614259+00:00",
+  "osm_timestamps": [
+    "2026-09-17T17:56:05Z"
+  ],
+  "query_polygon": {
+    "type": "Polygon",
+    "coordinates": [
+      [
+        [
+          -122.3867051848315,
+          37.737223757744395
+        ],
+        [
+          -122.4434497765769,
+          37.7375053392351
+        ],
+        [
+          -122.44311203056435,
+          37.78256954861233
+        ],
+        [
+          -122.38633300802756,
+          37.78228751216469
+        ],
+        [
+          -122.3867051848315,
+          37.737223757744395
+        ]
+      ]
+    ]
+  },
+  "analysis_bounds_m": [
+    549537.4753338977,
+    4177337.113915941,
+    553537.4753338977,
+    4181337.113915941
+  ],
+  "query_note": "OSMnx adds its own 500 m topology buffer to the configured 500 m download buffer.",
+  "network_type": "walk",
+  "walking_direction_policy": "OSMnx walking graphs are bidirectional, including motor-vehicle one-way streets; this is not a vehicle routing graph.",
+  "osmnx_version": "2.1.1",
+  "raw_nodes": 15125,
+  "raw_directed_edges": 44614,
+  "snapshots": {
+    "osm_walk.graphml.gz": {
+      "sha256": "a29eb292db46676f57f0c02167df7d7a1b34310bbbfc0b62eef8a0def6f9bfae",
+      "size_bytes": 1852588
+    },
+    "osm_overpass_responses.json.gz": {
+      "sha256": "32a81c1908f58f6afee74609b5aa43e8bf5aff2e28cdd4ac845ca1acc1528646",
+      "size_bytes": 1317566
+    }
+  }
+}

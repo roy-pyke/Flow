@@ -1,125 +1,93 @@
 # Flow
 
-A local mapping and computational analysis project that brings data engineering, graph algorithms, data analysis, and numerical PDE methods into an interactive map. Built for learning, experimentation, and a technical portfolio.
+**An offline diffusion and walking-route laboratory for San Francisco's Mission District.** Run an idealized release, inspect a fixed-scale concentration field, and compare the shortest walk with a route that trades walking time for lower modeled exposure.
 
-## Project Status
+Built with React / TypeScript, MapLibre / PMTiles, ECharts, FastAPI, NumPy, OSMnx, GeoParquet and DuckDB Spatial. The scientific core implements its own conservative diffusion solver and Dijkstra / A* searches.
 
-Flow is in the planning stage. The repository currently contains design documents, with no application code, dependency manifests, or runnable demo. The technologies below are planned choices, not installed dependencies or completed integrations.
+## Run locally
 
-- [Initial development plan and one-week schedule](PLAN_1.md) (in Chinese): a two-dimensional diffusion field, a walking network, and route trade-off experiments.
-- Traffic extension: use official Caltrans data to explore traffic replay, congestion analysis, and a single-corridor traffic-flow model. PeMS account access has been granted; data integration, corridor coverage, and data quality still need validation.
-- Delivery model: a browser connects to a service running on the local machine. Data is retrieved while online; computation and replay work offline once the required data and assets are available locally.
+Requirements: **Python 3.12**, **Node.js 22.12+** and npm. The repository includes an attributed OSM snapshot and prepared offline map assets (about 22 MB); no API key or additional geographic-data download is needed for the demo.
 
-## Core Technology Stack
-
-The initial diffusion experiment and future traffic analysis share the following foundation.
-
-| Layer | Technology | Role in Flow |
-| --- | --- | --- |
-| Interface and interaction | **React + TypeScript** | Map views, parameter forms, layer controls, a timeline, and result panels |
-| Frontend build tooling | **Vite** | Development server, asset processing, and production builds |
-| Map rendering | **MapLibre GL JS** | Basemaps, roads, routes, events, and numerical result layers |
-| Offline basemap | **PMTiles + Protomaps assets** | Regional basemap storage with local styles, font glyphs, and sprites |
-| Analytical charts | **Apache ECharts** | Route trade-offs, time series, error convergence, and performance comparisons |
-| Backend language | **Python 3.12** | Data ingestion, cleaning, algorithms, numerical experiments, and API services |
-| Local API | **FastAPI + Uvicorn** | Connect the interface to computational modules, serve local assets, and export results |
-| Road-network acquisition | **OSMnx** | Retrieve OpenStreetMap data and construct, process, and save road networks |
-| Spatial data processing | **GeoPandas** | Node and road geometry tables, spatial data I/O, and processing |
-| Geometry operations | **Shapely** | Geometry checks, clipping, road-polyline sampling, and spatial relationships |
-| Coordinate transformations | **pyproj** | Convert between geographic coordinates and projected coordinates in meters |
-| Local analytical engine | **DuckDB + Spatial extension** | SQL queries over road and experiment data, spatial analysis, and quality summaries |
-| Spatial data storage | **GeoParquet** | Persist cleaned nodes, road edges, geometries, and coordinate reference metadata |
-| Array computation | **NumPy** | Grids and fields, vectorized discretizations, summary statistics, and error calculations |
-| Scientific computation | **SciPy** | Interpolation, numerical utilities, and sparse linear algebra for future implicit methods |
-| Graph algorithm reference | **NetworkX** | Graph data structures and reference algorithms for checking custom shortest-path costs |
-| Automated verification | **pytest** | Correctness checks for data processing, graph algorithms, numerical methods, and APIs |
-| Development tools | **Node.js + npm, Python virtual environments, Git + GitHub** | Frontend tooling, Python environment isolation, and version control for code and documentation |
-
-Python 3.12 is the planned baseline. Other library versions will be recorded in dependency manifests and lockfiles when the application is initialized. Browser workflow testing tools have not yet been selected.
-
-## Data Sources and Integration Status
-
-Map display assets, road-network topology, and traffic observations are prepared separately. PMTiles provides map rendering data; routing uses an independently constructed road graph.
-
-| Source | Intended use | Current status |
-| --- | --- | --- |
-| **OpenStreetMap / OSMnx** | Road geometry, connectivity, direction, and attributes | Planned road-network foundation; project data has not yet been downloaded |
-| **Protomaps** | Regional basemap and supporting assets for local use | Selected for the plan; the offline asset bundle has not yet been prepared |
-| **Caltrans PeMS** | Freeway detector data, speed, flow, occupancy, and historical analysis | Account access has been granted; not yet integrated. Automated retrieval, actual latency, corridor coverage, and data quality remain to be validated |
-| **Caltrans CWWP** | Lane closures, changeable message signs, roadside weather, and selected route travel times | Some public feeds were retrieved during research; not yet integrated. Timestamps, coordinates, and units require validation for each feed |
-
-Official resources: [OSMnx](https://osmnx.readthedocs.io/en/stable/getting-started.html), [Protomaps downloads](https://docs.protomaps.com/basemaps/downloads), [PeMS](https://dot.ca.gov/programs/traffic-operations/mpr/pems-source), and [CWWP](https://cwwp2.dot.ca.gov/).
-
-Traffic ingestion will record observation time, retrieval time, source, and quality flags. An accessible file may contain stale data; missing coverage, outdated records, and imputed values must remain distinguishable.
-
-## Graph Algorithms and Mathematical Methods
-
-### Initial Demo: Diffusion and Route Trade-offs
-
-| Component | Planned method | Verification focus |
-| --- | --- | --- |
-| Path search | Custom implementations of **Dijkstra and A\***, checked against NetworkX | Agreement on optimal cost, admissible heuristics, parallel edges, and unreachable destinations |
-| Continuous model | **Two-dimensional heat / diffusion equation** with a Gaussian initial field and zero-flux boundaries | Modeling assumptions, boundary interpretation, and mass conservation |
-| Spatial discretization | **Cell-centered grid with a conservative five-point discretization** | Discrete operators, boundary treatment, and spatial error |
-| Time integration | **Explicit Euler**, with the time step constrained by diffusion stability | Stability, nonnegativity, and temporal accuracy |
-| Field-to-network coupling | **Bilinear interpolation and trapezoidal integration along road arc length** | Sampling distance, integration units, and constant-field checks |
-| Routing objective | Weighted walking time and modeled exposure integral | A frozen field at the selected time, a fixed concentration scale, and nonnegative edge weights |
-| Numerical analysis | Analytical-solution comparisons, grid refinement, error norms, and convergence rates | Distinguish spatial accuracy, temporal accuracy, and convergence under coupled refinement |
-| Data analysis | Parameter sweeps, sensitivity analysis, and performance benchmarks | Fixed data and parameters with reproducible experiment outputs |
-
-See [PLAN_1.md](PLAN_1.md) for model definitions, default parameters, and acceptance criteria. The initial demo uses an idealized diffusion field frozen at a selected time; its results are not real pollution forecasts or predictions of exposure through a time-varying field.
-
-### Traffic Extension Pending Validation
-
-- **LWR traffic-flow conservation model**: study congestion formation, propagation, and dissipation along a single freeway corridor.
-- **Godunov finite-volume method**: a candidate traffic-flow PDE solver, with checks for conservation, the CFL condition, shocks, and analytical solutions.
-- **Observation comparisons and parameter estimation**: compare the model with historical observations after validating PeMS coverage and quality. Detector occupancy must not be treated directly as vehicle density.
-- **Event and route analysis**: match verified closures to the road graph and analyze connectivity, accessibility, and detour changes.
-
-Model reference: [Clawpack's LWR traffic-flow tutorial](https://www.clawpack.org/riemann_book/html/Traffic_flow.html). This extension has not yet replaced the initial diffusion plan and has not been implemented.
-
-## Data Flow and Module Relationships
-
-```mermaid
-flowchart TD
-    OSM["OSM road data"] --> ETL["Python / OSMnx / GeoPandas / Shapely / pyproj"]
-    OBS["Traffic observations and events: pending integration"] --> ETL
-    ETL --> STORE["GeoParquet / DuckDB Spatial"]
-    STORE --> GRAPH["Road graph and Dijkstra / A*"]
-    STORE --> ANALYSIS["SQL summaries and experiment analysis"]
-    PARAMS["Scenario and model parameters"] --> SOLVER["NumPy / SciPy numerical computation"]
-    SOLVER --> GRAPH
-    SOLVER --> ANALYSIS
-    GRAPH --> API["FastAPI / Uvicorn local service"]
-    ANALYSIS --> API
-    API --> UI["React / TypeScript / MapLibre / ECharts"]
-    TILES["Local PMTiles, styles, fonts, and sprites"] --> UI
+```bash
+git clone https://github.com/roy-pyke/Flow.git
+cd Flow
+./setup.sh       # one-time online dependency installation and frontend build
+./start.sh       # subsequent starts work offline
 ```
 
-## Local Execution and Result Storage
+Open **http://127.0.0.1:8000**. On macOS, `Start Flow.command` also starts the prepared application. Keep its terminal open. Stop with Ctrl+C. Set `FLOW_PORT=8001 ./start.sh` if port 8000 is occupied.
 
-- The service will listen on `127.0.0.1` and serve the frontend production build, map assets, and API locally.
-- Online preparation retrieves dependencies and data. Offline operation reads snapshots, replays history, computes routes, and runs numerical experiments; it does not retrieve new live observations.
-- Raw data is preserved in snapshots organized by source. Cleaned spatial data uses GeoParquet, experiment metrics use Parquet, and small geometry responses for the frontend use GeoJSON.
-- Each experiment records its data version, model parameters, grid, time step, code version, and execution time for repeatable comparisons.
-- Map styles, font glyphs, sprites, and frontend assets must be available locally. The DuckDB Spatial extension must also be installed before offline use.
-- Data-service credentials stay in local environment configuration, outside the frontend and version control. Maps retain source attribution.
+The service listens only on `127.0.0.1`. UI assets, vector tiles, simulations, routes and exports use the local service. Street labels render with fonts already installed on the computer; no font files, glyph server or sprite service are requested. No external basemap or cloud computation is required. Setup downloads dependencies and the DuckDB Spatial extension once; ordinary offline use then needs no network connection.
 
-Offline resources: [PMTiles with MapLibre](https://docs.protomaps.com/pmtiles/maplibre), [local fonts and sprites](https://docs.protomaps.com/basemaps/maplibre), and [DuckDB Spatial](https://duckdb.org/docs/current/core_extensions/spatial/overview).
+## Explore
 
-## Future Technology Options
+1. The app opens a default Mission District experiment.
+2. Select **Start A**, **Destination B** or **Release source**, then click the map.
+3. Set the diffusion coefficient and run a 30-minute simulation.
+4. Move the timeline to inspect the field at a fixed time.
+5. Adjust the route preference to compare distance, walking time and modeled exposure.
+6. Run the six-point preference sweep, inspect reports, and export CSV / JSON.
 
-These options are not required dependencies for the initial demo.
+The field uses a fixed concentration scale across frames. Routes use a **frozen field** at the selected time, including for walks longer than that simulated interval. Exposure is relative concentration integrated over walking time, measured in model seconds; it is not a pollutant dose or a health prediction.
 
-| Option | When to introduce it |
+## Implemented scope
+
+- Real OpenStreetMap walking network in a 4 × 4 km projected rectangle: directed parallel edges and complete road polylines, with preserved raw snapshots, timestamps and hashes.
+- Local PMTiles basemap, locally rendered street labels, OSM attribution and geographic overlays.
+- Double-precision cell-centered finite-volume diffusion with zero-flux walls, Gaussian release of width 250 m, 160 × 160 cells at 25 m, and conservative explicit Euler updates.
+- Automatic time steps at most `0.9 h² / (4 κ)`, with shortened steps to reach every 30-second output time through 1,800 seconds.
+- Bilinear concentration interpolation and trapezoidal exposure integration over every segment of a road, sampled at spacing no larger than half a grid cell.
+- Custom Dijkstra and A*, retaining parallel-edge identity. A* uses straight-line walking time as an admissible lower bound.
+- Parameter sweeps for λ = 0, 0.5, 1, 2, 5, 10; sensitivity at κ = 5, 20, 50 and frozen times 0, 10, 30 minutes; separate solver, integration and search timings.
+- Persisted experiments with parameters, data/source hashes and code version; JSON, CSV and Parquet outputs.
+
+The routing objective is `length / 1.4 + λ × exposure`, with `exposure = ∫ c ds / 1.4`. The constant walking speed is 1.4 m/s. Neither wind, terrain nor buildings influences the diffusion model. Reflecting walls are an experimental assumption. Sampled trade-offs do not claim a complete Pareto frontier.
+
+## Evidence and verification
+
+- [Data quality](reports/data_quality.md)
+- [Numerical validation](reports/validation.md)
+- [Reproducible analysis and measured timings](reports/analysis.md)
+- [Plan 1 delivery record and demonstration](artifacts/plan1-2026-09-17/PROGRESS.md)
+- [Original development plan](PLAN_1.md) (Chinese)
+
+```bash
+.venv/bin/python -m pytest -q
+npm --prefix frontend run build
+npm --prefix frontend run lint
+.venv/bin/python -m scripts.run_experiments
+```
+
+Checks cover constant-state preservation, mass drift below 1e-10, nonnegative diffusion, a cosine analytical solution with 32² / 64² / 128² refinement, NetworkX cost agreement, parallel/directed edges, unreachable destinations, equal endpoints, invalid clicks, constant-field road integrals, and API-to-export behavior. Euler remains first order in time; the approximately second-order convergence experiment jointly refines with `dt = 0.1 h²`.
+
+Performance numbers in reports are measurements on the recorded machine, not universal guarantees. The initial geometry sampling table has a one-time preparation cost; subsequent frame integrations reuse it.
+
+## Files and reproducibility
+
+| Path | Contents |
 | --- | --- |
-| **C++ computational modules** | After profiling identifies a specific bottleneck, for implementation comparisons, acceleration, and memory analysis. The Python binding approach will be chosen at that stage |
-| **Implicit time integration and SciPy sparse solvers** | When comparing the accuracy, stability, and computational cost of explicit and implicit methods |
-| **Advection-diffusion model** | After the basic diffusion solver and its verification are complete, to add a transport mechanism |
-| **Tauri desktop packaging** | Once the local web application is stable and an installable desktop application is needed |
+| `backend/app/` | Diffusion, interpolation, graph algorithms, validation and local API |
+| `frontend/` | Interactive map, controls, charts, timeline and reports |
+| `configs/region.json` | Region, metric CRS and walking speed |
+| `data/demo/` | Bundled OSM source snapshot, processed road tables, network and map assets |
+| `data/manifest.json` | Dataset provenance and file hashes |
+| `data/experiments/` | Locally generated scenario metadata and experiment JSON / Parquet (ignored by Git) |
+| `scripts/` | Repeatable data preparation and experiment generation |
+| `reports/` | Committed numerical, data-quality and analysis evidence |
+| `artifacts/plan1-2026-09-17/` | Delivery record, browser evidence, video and original-source backup |
 
-## Verification and Development Guide
+A simulation ID is derived from parameters, the dataset hash and numerical source hash. Evicted simulations are recomputed from saved metadata. Experiments remain on disk after a server restart. Refresh data deliberately; a new OSM snapshot can change routing and report results.
 
-Planned verification covers data quality, graph algorithm comparisons, numerical conservation and convergence, performance experiments, and offline end-to-end checks with an empty browser cache. These checks have not yet been implemented.
+Data preparation commands and attribution are documented in [the bundled data README](data/demo/README.md). The included OSM source timestamp is **2026-09-17 17:56:05 UTC**. The processed graph contains **9,611 nodes and 28,498 directed edges**; all 44 connected components are retained. Its walking policy permits both directions, including on streets that are one-way for cars. Edges whose full geometry leaves the analysis rectangle are excluded.
 
-See the [initial development plan](PLAN_1.md) for the development cycle and daily deliverables. Installation and startup commands will be added after the application dependencies and launch workflow have been implemented and verified.
+After setup, rerunning preparation from the bundled snapshot works offline. `fetch_osm.py` reuses that snapshot unless `--refresh` is explicitly supplied; a fresh download requires internet access. Generated GeoParquet tables are audited with DuckDB Spatial, and `data/manifest.json` records artifact sizes and SHA-256 hashes. The local PMTiles archive is generated directly from the road geometries; no OSM standard raster tiles are downloaded or cached.
+
+## API
+
+`GET /api/config`, `POST /api/simulations`, `GET /api/simulations/{id}/frames/{frame}`, `POST /api/routes`, `POST /api/experiments`, `GET /api/experiments`, `GET /api/experiments/{id}/export?format=json|csv`, and `GET /api/reports`. The machine-readable schema is at `/openapi.json`.
+
+## Data attribution and later work
+
+Map and road data © [OpenStreetMap contributors](https://www.openstreetmap.org/copyright). The bundled geographic database and derived map data are offered under the [Open Database License 1.0](https://opendatacommons.org/licenses/odbl/1-0/); original source snapshots, provenance and licensing details are included in [data/demo/](data/demo/README.md). The numerical field is synthetic and explicitly labeled.
+
+Caltrans PeMS / CWWP traffic ingestion, advection, implicit solvers, C++ optimization and observational calibration are later work. They are not part of this diffusion release. [PLAN_1.md](PLAN_1.md) preserves the original scope and rationale.

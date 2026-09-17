@@ -1,32 +1,19 @@
-# React + TypeScript + Vite
+# Flow browser laboratory
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+React 19, TypeScript, Vite, MapLibre GL JS, local PMTiles, and Apache ECharts.
 
-Currently, two official plugins are available:
+From the repository root, use the one-command launcher documented in the main README to serve the production build and Python API together. The production browser makes no external resource requests: map tiles, JavaScript, CSS, street text, data, and API responses all come from the local server. Street and neighborhood labels use system fonts. OpenStreetMap attribution remains visible.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+For frontend development:
 
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```sh
+cd frontend
+npm ci
+npm run dev
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+The development server proxies `/api` and `/data` to `http://127.0.0.1:8000`; run the Python service separately. `npm run build` performs TypeScript checking and creates `dist/`. `npm run lint` runs Oxlint.
+
+The laboratory supports point selection, a 5–50 m²/s diffusion coefficient, 61 frozen-field snapshots, a fixed absolute concentration scale, A*/Dijkstra route comparison, six-value preference sweeps, and JSON/CSV export. Reports display convergence, sensitivity, timings, search effort, road quality, and full reproducible data. The PDE and routing computations run exclusively in the local Python service.
+
+The display is an idealized experiment, not a real-world pollution or health prediction. See the repository model documentation for equations, units, assumptions, and validation.

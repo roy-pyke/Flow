@@ -1,0 +1,103 @@
+{
+  "version": 8,
+  "name": "Flow offline streets",
+  "metadata": {
+    "license": "ODbL-1.0",
+    "requires": "MapLibre GL JS >=5.11 for local font rendering",
+    "offline": true
+  },
+  "sources": {
+    "streets": {
+      "type": "vector",
+      "url": "pmtiles:///data/demo/roads.pmtiles",
+      "attribution": "\u00a9 OpenStreetMap contributors"
+    }
+  },
+  "layers": [
+    {
+      "id": "background",
+      "type": "background",
+      "paint": {
+        "background-color": "#e8eee9"
+      }
+    },
+    {
+      "id": "road-casing",
+      "source": "streets",
+      "source-layer": "roads",
+      "type": "line",
+      "paint": {
+        "line-color": "#bdc9c1",
+        "line-width": [
+          "interpolate",
+          [
+            "linear"
+          ],
+          [
+            "zoom"
+          ],
+          11,
+          0.6,
+          16,
+          5.0
+        ]
+      }
+    },
+    {
+      "id": "roads",
+      "source": "streets",
+      "source-layer": "roads",
+      "type": "line",
+      "paint": {
+        "line-color": "#fffef7",
+        "line-width": [
+          "interpolate",
+          [
+            "linear"
+          ],
+          [
+            "zoom"
+          ],
+          11,
+          0.25,
+          16,
+          3.2
+        ]
+      }
+    },
+    {
+      "id": "road-labels",
+      "source": "streets",
+      "source-layer": "roads",
+      "type": "symbol",
+      "minzoom": 14,
+      "filter": [
+        "!=",
+        [
+          "get",
+          "name"
+        ],
+        ""
+      ],
+      "layout": {
+        "symbol-placement": "line",
+        "text-field": [
+          "get",
+          "name"
+        ],
+        "text-font": [
+          "Arial",
+          "sans-serif"
+        ],
+        "text-size": 11,
+        "symbol-spacing": 350,
+        "text-max-angle": 30
+      },
+      "paint": {
+        "text-color": "#53685e",
+        "text-halo-color": "#fffef7",
+        "text-halo-width": 1.5
+      }
+    }
+  ]
+}

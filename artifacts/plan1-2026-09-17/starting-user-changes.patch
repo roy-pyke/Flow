@@ -1,0 +1,7 @@
+diff --git a/tests/test_prepare_region.py b/tests/test_prepare_region.py
+index e69de29..bb377e8 100644
+--- a/tests/test_prepare_region.py
++++ b/tests/test_prepare_region.py
+@@ -0,0 +1 @@
++import pytest
+\ No newline at end of file

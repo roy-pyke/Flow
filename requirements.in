@@ -1,0 +1,18 @@
+# Runtime, data preparation, scientific validation, and tests (Python 3.12).
+fastapi
+uvicorn
+numpy
+scipy
+networkx
+pyproj
+osmnx
+geopandas
+shapely
+pyarrow
+duckdb
+pmtiles
+mapbox-vector-tile
+pillow
+matplotlib
+httpx
+pytest

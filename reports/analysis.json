@@ -1,0 +1,331 @@
+{
+  "data_version": "5d684aea94e9b61840e812bba1e804ad43817895329c7c935a036efe0a4d3ce6",
+  "parameters": {
+    "simulation_id": "df9c725b45033ec2d3e2",
+    "frame": 20,
+    "start": [
+      -122.428,
+      37.7515
+    ],
+    "end": [
+      -122.403,
+      37.7675
+    ],
+    "lambda_weight": 5
+  },
+  "defaults": {
+    "source": [
+      -122.4149,
+      37.7599
+    ],
+    "start": [
+      -122.428,
+      37.7515
+    ],
+    "end": [
+      -122.403,
+      37.7675
+    ]
+  },
+  "machine": {
+    "system": "macOS-26.5.2-arm64-arm-64bit",
+    "machine": "arm64",
+    "python": "3.12.6",
+    "processor": "arm"
+  },
+  "tradeoffs": [
+    {
+      "lambda_weight": 0,
+      "distance_m": 3737.919573646269,
+      "time_s": 2669.942552604478,
+      "exposure": 453.00279313555933,
+      "cost": 2669.942552604478,
+      "elapsed_ms": 4.2952499352395535,
+      "visited": 2430
+    },
+    {
+      "lambda_weight": 0.5,
+      "distance_m": 3821.263966459506,
+      "time_s": 2729.47426175679,
+      "exposure": 54.69094214250881,
+      "cost": 2756.8197328280444,
+      "elapsed_ms": 5.502124899066985,
+      "visited": 2715
+    },
+    {
+      "lambda_weight": 1,
+      "distance_m": 3842.253008666081,
+      "time_s": 2744.4664347614867,
+      "exposure": 28.70128096797575,
+      "cost": 2773.1677157294625,
+      "elapsed_ms": 5.70312503259629,
+      "visited": 2843
+    },
+    {
+      "lambda_weight": 2,
+      "distance_m": 3874.662918308165,
+      "time_s": 2767.616370220118,
+      "exposure": 7.710988953996084,
+      "cost": 2783.03834812811,
+      "elapsed_ms": 5.718083004467189,
+      "visited": 2751
+    },
+    {
+      "lambda_weight": 5,
+      "distance_m": 3874.662918308165,
+      "time_s": 2767.616370220118,
+      "exposure": 7.710988953996084,
+      "cost": 2806.1713149900984,
+      "elapsed_ms": 4.949667025357485,
+      "visited": 2551
+    },
+    {
+      "lambda_weight": 10,
+      "distance_m": 3874.662918308165,
+      "time_s": 2767.616370220118,
+      "exposure": 7.710988953996084,
+      "cost": 2844.726259760079,
+      "elapsed_ms": 5.084916949272156,
+      "visited": 2491
+    }
+  ],
+  "sensitivity": [
+    {
+      "kappa": 5,
+      "time_s": 0.0,
+      "simulation_ms": 10.164250037632883,
+      "route_ms": 27.818000060506165,
+      "integration_ms": 11.8486670544371,
+      "search_ms": 12.682875036261976,
+      "shortest_distance_m": 3737.919573646269,
+      "shortest_exposure": 508.02654022368523,
+      "weighted_distance_m": 3874.662918308165,
+      "weighted_exposure": 1.8681479425834124
+    },
+    {
+      "kappa": 5,
+      "time_s": 600.0,
+      "simulation_ms": 10.164250037632883,
+      "route_ms": 18.29425001051277,
+      "integration_ms": 5.9330828953534365,
+      "search_ms": 10.638915933668613,
+      "shortest_distance_m": 3737.919573646269,
+      "shortest_exposure": 492.6658692148021,
+      "weighted_distance_m": 3874.662918308165,
+      "weighted_exposure": 2.9230349325828526
+    },
+    {
+      "kappa": 5,
+      "time_s": 1800.0,
+      "simulation_ms": 10.164250037632883,
+      "route_ms": 18.94400001037866,
+      "integration_ms": 7.199999992735684,
+      "search_ms": 9.951208950951695,
+      "shortest_distance_m": 3737.919573646269,
+      "shortest_exposure": 465.23857916438953,
+      "weighted_distance_m": 3874.662918308165,
+      "weighted_exposure": 5.856588054708645
+    },
+    {
+      "kappa": 20,
+      "time_s": 0.0,
+      "simulation_ms": 27.311124955303967,
+      "route_ms": 17.383917002007365,
+      "integration_ms": 5.632999935187399,
+      "search_ms": 10.189167922362685,
+      "shortest_distance_m": 3737.919573646269,
+      "shortest_exposure": 508.02654022368523,
+      "weighted_distance_m": 3874.662918308165,
+      "weighted_exposure": 1.8681479425834124
+    },
+    {
+      "kappa": 20,
+      "time_s": 600.0,
+      "simulation_ms": 27.311124955303967,
+      "route_ms": 18.331917002797127,
+      "integration_ms": 6.704209023155272,
+      "search_ms": 10.192541987635195,
+      "shortest_distance_m": 3737.919573646269,
+      "shortest_exposure": 453.00279313555933,
+      "weighted_distance_m": 3874.662918308165,
+      "weighted_exposure": 7.710988953996084
+    },
+    {
+      "kappa": 20,
+      "time_s": 1800.0,
+      "simulation_ms": 27.311124955303967,
+      "route_ms": 18.625125056132674,
+      "integration_ms": 6.581125082448125,
+      "search_ms": 10.215791990049183,
+      "shortest_distance_m": 3737.919573646269,
+      "shortest_exposure": 380.0465831229452,
+      "weighted_distance_m": 3877.0733239384476,
+      "weighted_exposure": 28.194398205058974
+    },
+    {
+      "kappa": 50,
+      "time_s": 0.0,
+      "simulation_ms": 51.607374916784465,
+      "route_ms": 19.49158392380923,
+      "integration_ms": 6.237791036255658,
+      "search_ms": 11.464998940937221,
+      "shortest_distance_m": 3737.919573646269,
+      "shortest_exposure": 508.02654022368523,
+      "weighted_distance_m": 3874.662918308165,
+      "weighted_exposure": 1.8681479425834124
+    },
+    {
+      "kappa": 50,
+      "time_s": 600.0,
+      "simulation_ms": 51.607374916784465,
+      "route_ms": 19.122457946650684,
+      "integration_ms": 6.761749973520637,
+      "search_ms": 10.866168071515858,
+      "shortest_distance_m": 3737.919573646269,
+      "shortest_exposure": 395.0338516430212,
+      "weighted_distance_m": 3874.662918308165,
+      "weighted_exposure": 22.73298936426429
+    },
+    {
+      "kappa": 50,
+      "time_s": 1800.0,
+      "simulation_ms": 51.607374916784465,
+      "route_ms": 20.37804201245308,
+      "integration_ms": 5.643957993015647,
+      "search_ms": 12.824875069782138,
+      "shortest_distance_m": 3737.919573646269,
+      "shortest_exposure": 292.4930508631349,
+      "weighted_distance_m": 3896.3793978058225,
+      "weighted_exposure": 70.81217607732587
+    }
+  ],
+  "benchmark": [
+    {
+      "lambda_weight": 0,
+      "algorithm": "dijkstra",
+      "cost": 2669.942552604478,
+      "search_ms": 13.46158399246633,
+      "visited": 7818
+    },
+    {
+      "lambda_weight": 0,
+      "algorithm": "astar",
+      "cost": 2669.942552604478,
+      "search_ms": 4.6765420120209455,
+      "visited": 2430
+    },
+    {
+      "lambda_weight": 0.5,
+      "algorithm": "dijkstra",
+      "cost": 2756.8197328280444,
+      "search_ms": 12.895833002403378,
+      "visited": 7927
+    },
+    {
+      "lambda_weight": 0.5,
+      "algorithm": "astar",
+      "cost": 2756.8197328280444,
+      "search_ms": 5.120667046867311,
+      "visited": 2715
+    },
+    {
+      "lambda_weight": 1,
+      "algorithm": "dijkstra",
+      "cost": 2773.1677157294625,
+      "search_ms": 12.455375050194561,
+      "visited": 7944
+    },
+    {
+      "lambda_weight": 1,
+      "algorithm": "astar",
+      "cost": 2773.1677157294625,
+      "search_ms": 5.908958031795919,
+      "visited": 2843
+    },
+    {
+      "lambda_weight": 2,
+      "algorithm": "dijkstra",
+      "cost": 2783.03834812811,
+      "search_ms": 12.40474998485297,
+      "visited": 7939
+    },
+    {
+      "lambda_weight": 2,
+      "algorithm": "astar",
+      "cost": 2783.03834812811,
+      "search_ms": 5.5469999788329005,
+      "visited": 2751
+    },
+    {
+      "lambda_weight": 5,
+      "algorithm": "dijkstra",
+      "cost": 2806.1713149900984,
+      "search_ms": 12.190083041787148,
+      "visited": 7937
+    },
+    {
+      "lambda_weight": 5,
+      "algorithm": "astar",
+      "cost": 2806.1713149900984,
+      "search_ms": 5.360624985769391,
+      "visited": 2551
+    },
+    {
+      "lambda_weight": 10,
+      "algorithm": "dijkstra",
+      "cost": 2844.726259760079,
+      "search_ms": 12.801124947145581,
+      "visited": 7872
+    },
+    {
+      "lambda_weight": 10,
+      "algorithm": "astar",
+      "cost": 2844.726259760079,
+      "search_ms": 5.0148749724030495,
+      "visited": 2491
+    }
+  ],
+  "networkx_checks": [
+    {
+      "lambda_weight": 0,
+      "networkx_cost": 2669.9425526044784,
+      "max_cost_error": 4.547473508864641e-13,
+      "passed": true
+    },
+    {
+      "lambda_weight": 0.5,
+      "networkx_cost": 2756.8197328280453,
+      "max_cost_error": 9.094947017729282e-13,
+      "passed": true
+    },
+    {
+      "lambda_weight": 1,
+      "networkx_cost": 2773.1677157294616,
+      "max_cost_error": 9.094947017729282e-13,
+      "passed": true
+    },
+    {
+      "lambda_weight": 2,
+      "networkx_cost": 2783.0383481281087,
+      "max_cost_error": 1.3642420526593924e-12,
+      "passed": true
+    },
+    {
+      "lambda_weight": 5,
+      "networkx_cost": 2806.1713149900975,
+      "max_cost_error": 9.094947017729282e-13,
+      "passed": true
+    },
+    {
+      "lambda_weight": 10,
+      "networkx_cost": 2844.726259760078,
+      "max_cost_error": 9.094947017729282e-13,
+      "passed": true
+    }
+  ],
+  "performance_targets": {
+    "simulation_under_5000_ms": true,
+    "route_under_500_ms": true
+  },
+  "interpretation": "Fixed OSM snapshot and endpoints; static fields. Sampled trade-offs, not a full Pareto frontier. Timings are measured on this machine; integration includes its first call."
+}

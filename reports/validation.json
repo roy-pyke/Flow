@@ -1,0 +1,65 @@
+{
+  "passed": true,
+  "checks": {
+    "constant_field": true,
+    "mass_conservation": true,
+    "nonnegative": true,
+    "second_order_joint_convergence": true
+  },
+  "constant_max_error": 0.0,
+  "conservation": {
+    "solve_ms": 46.490499982610345,
+    "internal_steps": 660,
+    "dt_max_s": 2.8125,
+    "cfl_limit_s": 3.125,
+    "initial_mass": 278043.02204861864,
+    "final_mass": 278043.02204861876,
+    "relative_mass_drift": 4.1869535501803896e-16,
+    "min_concentration": 8.592065090231096e-98,
+    "max_concentration": 0.9975031223974601,
+    "dtype": "float64",
+    "boundary": "zero_flux"
+  },
+  "convergence": [
+    {
+      "n": 32,
+      "h": 0.03125,
+      "dt": 9.765625e-05,
+      "l2_error": 1.062917292878813e-05,
+      "linf_error": 2.1207163484859848e-05,
+      "observed_order": null,
+      "solve_ms": 2.117500058375299,
+      "relative_mass_drift": 0.0
+    },
+    {
+      "n": 64,
+      "h": 0.015625,
+      "dt": 2.44140625e-05,
+      "l2_error": 2.66739965819915e-06,
+      "linf_error": 5.331586317103287e-06,
+      "observed_order": 1.9945234369443072,
+      "solve_ms": 14.826124999672174,
+      "relative_mass_drift": 0.0
+    },
+    {
+      "n": 128,
+      "h": 0.0078125,
+      "dt": 6.103515625e-06,
+      "l2_error": 6.674809375704087e-07,
+      "linf_error": 1.3347608427416446e-06,
+      "observed_order": 1.99863546009004,
+      "solve_ms": 160.79962498042732,
+      "relative_mass_drift": 0.0
+    }
+  ],
+  "analytic_solution": "1 + 0.5 exp(-2 pi\u00b2 t) cos(pi x) cos(pi y)",
+  "analytic_domain": [
+    0,
+    0,
+    1,
+    1
+  ],
+  "analytic_final_time": 0.02,
+  "convergence_note": "Euler is first order in time; dt=0.1 h\u00b2 makes the combined spatial/time refinement approximately second order.",
+  "total_ms": 243.0466249352321
+}

@@ -1,0 +1,136 @@
+{
+  "schema_version": 1,
+  "data_version": "a29eb292db46676f",
+  "region_id": "SF_mission_v1",
+  "generated_utc": "2026-09-17T18:02:59.564960+00:00",
+  "source": {
+    "source": "OpenStreetMap contributors",
+    "license": "ODbL-1.0",
+    "license_url": "https://opendatacommons.org/licenses/odbl/1-0/",
+    "attribution_url": "https://www.openstreetmap.org/copyright",
+    "overpass_url": "https://overpass-api.de/api",
+    "download_started_utc": "2026-09-17T17:57:28.806789+00:00",
+    "download_completed_utc": "2026-09-17T17:57:39.614259+00:00",
+    "osm_timestamps": [
+      "2026-09-17T17:56:05Z"
+    ],
+    "query_polygon": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [
+            -122.3867051848315,
+            37.737223757744395
+          ],
+          [
+            -122.4434497765769,
+            37.7375053392351
+          ],
+          [
+            -122.44311203056435,
+            37.78256954861233
+          ],
+          [
+            -122.38633300802756,
+            37.78228751216469
+          ],
+          [
+            -122.3867051848315,
+            37.737223757744395
+          ]
+        ]
+      ]
+    },
+    "analysis_bounds_m": [
+      549537.4753338977,
+      4177337.113915941,
+      553537.4753338977,
+      4181337.113915941
+    ],
+    "query_note": "OSMnx adds its own 500 m topology buffer to the configured 500 m download buffer.",
+    "network_type": "walk",
+    "walking_direction_policy": "OSMnx walking graphs are bidirectional, including motor-vehicle one-way streets; this is not a vehicle routing graph.",
+    "osmnx_version": "2.1.1",
+    "raw_nodes": 15125,
+    "raw_directed_edges": 44614,
+    "snapshots": {
+      "osm_walk.graphml.gz": {
+        "sha256": "a29eb292db46676f57f0c02167df7d7a1b34310bbbfc0b62eef8a0def6f9bfae",
+        "size_bytes": 1852588
+      },
+      "osm_overpass_responses.json.gz": {
+        "sha256": "32a81c1908f58f6afee74609b5aa43e8bf5aff2e28cdd4ac845ca1acc1528646",
+        "size_bytes": 1317566
+      }
+    }
+  },
+  "crs": "EPSG:32610",
+  "bounds": [
+    549537.4753338977,
+    4177337.113915941,
+    553537.4753338977,
+    4181337.113915941
+  ],
+  "artifacts": {
+    "data/demo/README.md": {
+      "sha256": "8dd243a7ac28e66b685f33a3bec9e1ed5f53dec234d333be7688bf6d40781945",
+      "size_bytes": 2729
+    },
+    "data/demo/boundary.geojson": {
+      "sha256": "e5083fee5f3649ce693d27d7947e94654013ec0da54fa2c364f152bb8f472b70",
+      "size_bytes": 302
+    },
+    "data/demo/edges.parquet": {
+      "sha256": "ee357033a903add61daa86fb05e95ca18882799a2654557826fe9a0b4e8d1c6f",
+      "size_bytes": 1429404
+    },
+    "data/demo/network.duckdb": {
+      "sha256": "5066adf30eac591b1b8cf3b930c1f2cf9a83c0251d8fde78b55e083f96009790",
+      "size_bytes": 4468736
+    },
+    "data/demo/network.json": {
+      "sha256": "5d684aea94e9b61840e812bba1e804ad43817895329c7c935a036efe0a4d3ce6",
+      "size_bytes": 8647675
+    },
+    "data/demo/nodes.parquet": {
+      "sha256": "fc329452022fe1ecfc27c4ca1c44b2866ddacafdd5c344dbb885e578efb00534",
+      "size_bytes": 620384
+    },
+    "data/demo/osm_overpass_responses.json.gz": {
+      "sha256": "32a81c1908f58f6afee74609b5aa43e8bf5aff2e28cdd4ac845ca1acc1528646",
+      "size_bytes": 1317566
+    },
+    "data/demo/osm_walk.graphml.gz": {
+      "sha256": "a29eb292db46676f57f0c02167df7d7a1b34310bbbfc0b62eef8a0def6f9bfae",
+      "size_bytes": 1852588
+    },
+    "data/demo/region.json": {
+      "sha256": "680fc0302afebb8d0ac550ed1c43bc66bc857f47af8c0816846175413f6281f5",
+      "size_bytes": 1511
+    },
+    "data/demo/roads.geojson": {
+      "sha256": "30a4f675592815c59d3e4e9231761c24620d7207772fcb057c191b95a08d333c",
+      "size_bytes": 3551534
+    },
+    "data/demo/roads.pmtiles": {
+      "sha256": "999561405d81c6bb1ecebb96fbb23a574ec3b0b7c60431cfe91bae71258e5faa",
+      "size_bytes": 870004
+    },
+    "data/demo/source.json": {
+      "sha256": "c58e557b5b19ff7d3a3f51397fd26bc8eb2ffaa64990653e13d58d730384d9eb",
+      "size_bytes": 1727
+    },
+    "data/demo/style.json": {
+      "sha256": "5b637d0a709cbc1418142eacdf02a99b8fbac496b76e8d7b6991d30b0130e659",
+      "size_bytes": 1943
+    }
+  },
+  "rebuild_commands": [
+    "python scripts/prepare_region.py",
+    "python scripts/fetch_osm.py",
+    "python scripts/prepare_network.py",
+    "python scripts/prepare_basemap.py",
+    "python scripts/report_data_quality.py --install-spatial"
+  ],
+  "attribution": "\u00a9 OpenStreetMap contributors, ODbL-1.0"
+}

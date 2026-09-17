@@ -21,3 +21,11 @@ dist-ssr/
 # Local operating-system files and logs
 .DS_Store
 *.log
+
+# Local experiments and browser inspection intermediates
+/data/experiments/
+/output/
+.playwright-cli/
+.env
+.env.*
+!.env.example
