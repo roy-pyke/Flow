@@ -29,3 +29,8 @@ dist-ssr/
 .env
 .env.*
 !.env.example
+
+# Personal plans, progress records, backups, and delivery evidence stay local.
+/PLAN_1.md
+/artifacts/
+/scripts/archive_progress.py
