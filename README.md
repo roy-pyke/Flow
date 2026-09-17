@@ -1,25 +1,26 @@
 # Flow
 
-**An offline laboratory for diffusion, walking routes, and the cost of avoiding a modeled field.**
+**An offline scientific-computing laboratory: diffusion, conservative transport, numerical methods, and walking-route decisions.**
 
-Flow asks: **how much extra walking time can reduce exposure to an idealized concentration field?** It connects a numerical PDE solver to a real street network, compares shortest and exposure-aware routes, and makes its assumptions and supporting evidence inspectable.
+Flow connects a PDE solver to a real street network and asks two questions: **how accurately and efficiently can we compute a concentration field, and when do numerical errors change the route selected from that field?** The application makes methods, assumptions, diagnostics, and reproducible experiments inspectable.
 
-The study area is a **4 × 4 km rectangle around San Francisco's Mission District**. Roads come from OpenStreetMap; the concentration field is synthetic. This is an interactive mathematical experiment, with no measured pollution or traffic observations.
+The bundled study area is a **4 × 4 km rectangle around San Francisco's Mission District**. Roads come from OpenStreetMap; concentration and wind are synthetic. This is a mathematical experiment, with no measured pollution or traffic observations.
 
-## What the application does
+## What is implemented
 
-- Displays a bundled offline street map with local labels, study-area boundaries, a concentration layer, and route overlays.
-- Simulates a Gaussian release over 30 minutes and shows 61 frames on a fixed concentration scale.
-- Lets you place endpoints and a release source, change the diffusion coefficient, and select Dijkstra or A*.
-- Compares distance, walking time, and frozen-field exposure; scans six exposure preferences to show sampled trade-offs.
-- Presents numerical checks, data quality, sensitivity analysis, and separate computation timings.
-- Saves experiments locally and exports JSON / CSV; stores experiment tables as Parquet for further analysis.
+- **Five time integrators:** Forward Euler (FE), Backward Euler (BE), Crank–Nicolson (CN), explicit upwind advection–diffusion, and first-order IMEX Euler.
+- **Two implementations of diffusion FE:** the original vectorized NumPy stencil and a project-written C++17 kernel whose complete time loop runs natively.
+- **Numerical evidence:** separate time/space convergence, matrix structure, mass and energy diagnostics, CN positivity counterexamples, Rannacher startup, transport and open-boundary balance.
+- **Performance experiments:** matched NumPy/C++ workloads with raw repetitions and process memory, plus method-level error–time comparisons and cold/warm factorization costs.
+- **Field-to-route experiments:** numerical field and edge-exposure errors, and selected routes re-evaluated under a common reference field.
+- **Interactive research controls:** method, backend, rectangular grid, step size, wind, boundary, and a saved reference for same-time signed field differences.
+- **The original offline app:** local street map, custom Dijkstra/A*, frozen-field route costs, six-preference sweeps, SQL data audits, and JSON/CSV/Parquet experiment records.
 
-The implementation combines geospatial data preparation, SQL audits, numerical analysis, graph algorithms, and an interactive frontend. The diffusion solver and both path-search algorithms are implemented in the project; NetworkX provides a reference for validation.
+A method and its implementation are separate choices: calling SciPy's compiled sparse solver is not presented as a new C++ implicit solver.
 
 ## Run locally
 
-Use **Python 3.12**, **Node.js 22.12+**, and npm on macOS or Linux. The bundled dataset includes source snapshots, the processed network, and map assets, so the example requires no geographic-data download or API key.
+Use **Python 3.12**, **Node.js 22.12+**, and npm on macOS or Linux. The bundled dataset includes source snapshots, the processed network, and map assets; no geographic-data download or API key is needed for the example.
 
 ```bash
 git clone https://github.com/roy-pyke/Flow.git
@@ -28,24 +29,94 @@ cd Flow
 ./start.sh
 ```
 
-Open **[http://127.0.0.1:8000](http://127.0.0.1:8000)**. On macOS, double-clicking `Start Flow.command` also starts the prepared app. Keep its terminal open and press Ctrl+C to stop. If port 8000 is occupied, use `FLOW_PORT=8001 ./start.sh`.
+Open **[http://127.0.0.1:8000](http://127.0.0.1:8000)**. On macOS, `Start Flow.command` also starts the prepared app. Keep its terminal open and press Ctrl+C to stop. If port 8000 is occupied, use `FLOW_PORT=8001 ./start.sh`.
 
-`setup.sh` needs internet access once: it creates `.venv`, installs pinned Python dependencies and the DuckDB Spatial extension, installs frontend dependencies from the lockfile, and builds the frontend. To select an interpreter, use `FLOW_PYTHON=/path/to/python3.12 ./setup.sh`.
+`setup.sh` needs internet access once to create `.venv`, install pinned Python dependencies and DuckDB Spatial, install frontend dependencies from the lockfile, and build the frontend. Select an interpreter with `FLOW_PYTHON=/path/to/python3.12 ./setup.sh`.
 
-After setup, normal use works offline. `start.sh` binds to `127.0.0.1`; the frontend, PMTiles archive, simulations, routing, and exports are served locally. Labels use system fonts, with no remote glyph or sprite service. The map is generated from road geometries and does not depend on an external tile provider.
+After setup, the map, simulation, routing, reports, and exports work offline through a local Python server. Labels use system fonts. **This is a computer-hosted local application; it does not install a standalone offline solver on a phone.**
 
-### Try an experiment
+### Optional native backend
 
-1. Open the app to load the default Mission District scenario.
-2. Choose **Starting point**, **Destination**, or **Release source**, then click inside the study area.
-3. Set the diffusion coefficient **κ** and select **Run simulation**.
-4. Move or play the timeline to inspect a chosen time.
-5. Adjust the exposure preference **λ** and compare the routes. Choose A* or Dijkstra to compare searches.
-6. Select **Find the trade-off** to scan λ = 0, 0.5, 1, 2, 5, 10 and inspect the report. Download CSV / JSON, or export the current comparison.
+The NumPy/SciPy application works without a compiler. To enable the native FE implementation, install a C++17 toolchain (Xcode Command Line Tools on macOS, or an appropriate compiler on Linux), then run:
 
-Route endpoints snap to the nearest graph node within 250 m. Routes between different connected components are unreachable. Changing the source or κ requires a new simulation; the UI marks previous results as stale until updated.
+```bash
+./setup-native.sh
+# Equivalent build entry:
+.venv/bin/python -m pip install ./cpp
+```
 
-## An example result
+The setup script builds the Release extension and runs native parity tests. Restart the server after installing or rebuilding it. The build uses pybind11, scikit-build-core and CMake with pinned Python build dependencies; binaries and build caches are not committed.
+
+`cpp` explicitly requires a usable extension built from the current source. A missing or stale binary produces a clear error. `auto` may choose NumPy when native execution is unavailable and records the actual backend. An error during a chosen computation is not silently hidden by falling back to another implementation.
+
+### Try a method comparison
+
+1. Open the default example: pure diffusion, NumPy FE, 160 × 160 cells, κ = 20 m²/s, zero-flux walls, 30 minutes with 61 output frames.
+2. Select **Save current run as reference**.
+3. Choose **Crank–Nicolson** or **Backward Euler**, retain the same grid and output times, then **Run simulation**.
+4. Choose **Current − reference**. The difference color scale is fixed at the selected ±0.01, ±0.1, or ±1; it is not normalized per frame. The displayed numerical extrema remain unmodified.
+5. Change the physical model to **Advection–diffusion**, inspect wind and boundary settings, then run again. Open boundaries track outward mass flux; periodic boundaries are for numerical study.
+6. Use **Experiments** to inspect scientific figures and raw data, or run the six-value route preference sweep.
+
+Any solver parameter or source change invalidates the displayed field and routes until rerun. Comparisons require the same grid and an output at the same physical time. Concentration uses a fixed 0–1 scale with a magenta marker for negative values; saturation only affects color. Negative fields remain available for diagnosis and are rejected by routing instead of silently clipped.
+
+Endpoints snap to the nearest graph node within 250 m; different connected components are unreachable. Route costs omit the connector from the clicked point to the snapped node.
+
+## Equations and discretization
+
+The relative concentration obeys
+
+```text
+∂c/∂t + ∇·(u c) = κ∇²c
+c(x,y,0) = exp(-((x-xs)² + (y-ys)²) / (2σ²)),  σ = 250 m
+```
+
+Pure diffusion sets the constant velocity `u = (ux, uy)` to zero. Concentration is dimensionless with an initial analytic peak of 1; κ is in m²/s and wind in m/s. The finite-volume grid is cell-centered and may be rectangular. Computation uses **EPSG:32610** in meters; map display and API point inputs use longitude/latitude.
+
+Each interior diffusive face flux is applied with opposite signs to its neighboring cells. The resulting sparse Laplacian is shared by implicit methods and checked against the direct face-flux operator. Let `L` include κ and let `A` be the conservative first-order upwind advection operator:
+
+| Method | Update | Time order | Backend |
+| --- | --- | --- | --- |
+| Forward Euler | `c_next = c + dt Lc` | 1 | `numpy`, `cpp`, `auto` |
+| Backward Euler | `(I - dt L)c_next = c` | 1 | `scipy` |
+| Crank–Nicolson | `(I - dt L/2)c_next = (I + dt L/2)c` | 2 for smooth solutions | `scipy` |
+| Explicit transport | `c_next = c + dt(Ac + Lc)` | 1 | `numpy` |
+| IMEX Euler | `(I - dt L)c_next = c + dt Ac` | 1 | `numpy_scipy` |
+
+BE/CN/IMEX solve sparse linear systems using SciPy `splu`; they do not form a matrix inverse. Factorizations are reused for equal grid, boundary, κ and actual step size. Steps are shortened to land exactly on output times, with separate factors when necessary. Rannacher startup replaces the first CN macro step with two BE half steps.
+
+For FE, the automatic diffusion step is `0.9 / [2κ(dx⁻² + dy⁻²)]`. The explicit transport bound is `dt[|ux|/dx + |uy|/dy + 2κ(dx⁻² + dy⁻²)] ≤ 0.9`; IMEX retains `dt[|ux|/dx + |uy|/dy] ≤ 0.9`. Requested unstable steps are rejected. Automatic implicit steps are a convenience, not an accuracy guarantee. CN can be linearly stable while producing oscillations and negative concentration at large steps; startup does not promise unconditional positivity.
+
+### Boundary conditions and diagnostics
+
+- **Zero flux:** closed pure-diffusion walls. Constants and total mass are conserved up to floating-point/solve error.
+- **Periodic:** opposite faces connect for analytic verification. This is not a realistic city boundary.
+- **Open transport:** zero concentration enters through inflow faces; outflow uses the interior upwind concentration with zero diffusive normal flux. Inflow prescribes the total face flux directly rather than adding a second independent diffusion condition.
+
+For open boundaries the check is `M(t) - M(0) + cumulative outward flux ≈ 0`, not constant mass. Diagnostics store both raw change and flux-balance residuals with the declared mass normalization. They also record energy, extrema, actual step counts/sizes, normalized linear residuals, matrix/factorization/advance timings, output memory and backend metadata. Mass, energy and extrema are sampled at the initial state and saved outputs; linear residuals are checked at implicit solves. Values are never clipped or mass-renormalized to make a check pass.
+
+### What the C++ implementation does
+
+The C++17 extension exposes a single-step stencil and complete double-precision FE evolution for zero-flux diffusion. It uses two independent work buffers and releases the GIL during the native loop. It is single-threaded, preserves its input, and avoids Python calls at each time step. It is not a C++ graph solver or a hand-written sparse LU.
+
+The public wrapper explicitly converts inputs to C-contiguous `float64` and records conversion cost; the binding validates shape, dtype and layout. Native provenance includes source/build information so a new source tree cannot silently identify an older binary as the same implementation. Benchmark output separates conversion, allocation, kernel, total call time and process RSS. Output-frame storage is distinguished from working memory.
+
+### From field to road cost
+
+At selected time `t*`, a directed edge `e` receives
+
+```text
+D_e(t*) = ∫_e c(x,y,t*) ds / v
+w_e     = ℓ_e / v + λ D_e(t*)
+```
+
+`ℓ_e` is the complete polyline length, `v = 1.4 m/s`, and λ ≥ 0 is a dimensionless exposure preference. `D_e` is relative concentration integrated over walking time, reported in **relative seconds**. λ = 0 recovers the shortest route.
+
+Bilinear interpolation and trapezoidal integration preserve polyline vertices and sample at no more than half a cell spacing. Custom heap-based Dijkstra and A* preserve directed parallel-edge identities. A* uses straight-line walking time as an admissible lower bound when exposure is nonnegative; NetworkX provides independent optimal-cost checks.
+
+Routes use a **frozen field**, not a PDE that advances with a moving traveler. The numerical sensitivity experiment re-evaluates each candidate path under a common refined field and compares its cost with that reference optimum. A changed path shape alone is not evidence of an incorrect decision.
+
+## The original route experiment
 
 For the bundled example endpoints, κ = 20 m²/s, and the field frozen at 10 minutes, the [committed preference sweep](reports/tradeoffs.csv) gives:
 
@@ -58,91 +129,41 @@ In this scenario, about **1.63 additional minutes** reduces the model integral b
 
 ![Sampled walking-time and exposure trade-offs](reports/tradeoffs.png)
 
-## Mathematical model
-
-### Diffusion
-
-Relative concentration `c(x, y, t)` satisfies the two-dimensional diffusion equation on a rectangular domain Ω:
-
-```text
-∂c/∂t = κ ∇²c
-∇c · n = 0                       on the boundary of Ω
-c(x, y, 0) = exp(-((x-xs)² + (y-ys)²) / (2σ²))
-```
-
-`(xs, ys)` is the release location, `n` is the outward boundary normal, `κ` is the diffusion coefficient in m²/s, and `σ = 250 m` is the initial Gaussian width. Concentration is dimensionless, with an initial analytic peak of 1. Computation uses **EPSG:32610** in meters; display and API inputs use longitude and latitude.
-
-| Setting | Current application |
-| --- | --- |
-| Domain | 4,000 × 4,000 m |
-| Grid | 160 × 160 cell centers; 25 m spacing |
-| Diffusion coefficient | 5–50 m²/s in the UI; default 20 |
-| Duration and output interval | 1,800 s; one frame every 30 s, including time zero |
-| Spatial discretization | Conservative finite-volume, five-point stencil |
-| Time integration | Explicit Euler with automatically bounded steps |
-| Boundary | Reflecting walls: zero normal flux |
-| Arithmetic | NumPy `float64` |
-
-Each interior face flux is added to one cell and subtracted from its neighbor, conserving mass in internal transfers. Exterior fluxes are zero. The solver uses
-
-```text
-Δt ≤ 0.9 / [2κ(1/Δx² + 1/Δy²)]
-```
-
-and shortens a step when needed to land exactly on an output time. For square cells this is `Δt ≤ 0.9 h² / (4κ)`. Values are neither clipped nor renormalized; the displayed scale stays fixed at 0–1 across frames.
-
-### Coupling the field to the road graph
-
-At a selected time `t*`, each directed road edge `e` receives an exposure integral and routing cost:
-
-```text
-D_e(t*) = ∫_e c(x, y, t*) ds / v
-w_e     = ℓ_e / v + λ D_e(t*)
-```
-
-`ℓ_e` is the full road-polyline length in meters, `v = 1.4 m/s` is the constant walking speed, and `λ ≥ 0` is a dimensionless preference weight. `D_e` integrates relative concentration over walking time, reported in **relative seconds**. A path minimizes the sum of `w_e`; λ = 0 recovers shortest distance because walking speed is constant.
-
-Concentration is bilinearly interpolated from cell centers. Trapezoidal integration follows every original polyline segment, preserving vertices and using sample spacing no larger than half a grid cell. Geometry sampling is cached for repeated integrations.
-
-Custom heap-based Dijkstra and A* retain directed parallel-edge identities. A* uses straight-line distance to the destination divided by walking speed. This is an admissible and consistent lower bound because polyline lengths cannot be shorter than straight lines and exposure penalties are nonnegative.
-
-## Architecture and project structure
+## Architecture and source layout
 
 ```mermaid
 flowchart LR
-    OSM["Bundled OSM source snapshots"] --> ETL["OSMnx / GeoPandas / Shapely / pyproj"]
-    ETL --> DATA["GeoParquet / network JSON / DuckDB"]
-    ETL --> MAP["Local street PMTiles"]
-    DATA --> ROUTE["Dijkstra / A* on directed road edges"]
-    PARAMS["Source / κ / selected time"] --> PDE["NumPy diffusion solver"]
-    PDE --> INTEGRAL["Interpolation / road exposure integrals"]
-    INTEGRAL --> ROUTE
-    DATA --> SQL["SQL data-quality audits"]
-    ROUTE --> API["FastAPI local service"]
-    PDE --> API
-    SQL --> REPORTS["Reproducible reports / experiments"]
-    ROUTE --> REPORTS
-    REPORTS --> API
-    API --> UI["React / TypeScript / MapLibre / ECharts"]
+    OSM[OSM source snapshots] --> ETL[Geospatial preparation and SQL audits]
+    ETL --> NET[GeoParquet / DuckDB / directed network]
+    ETL --> MAP[Offline street PMTiles]
+    INPUT[Model / method / grid / wind / step] --> PDE[NumPy / SciPy / project C++ kernel]
+    PDE --> DIAG[Convergence / balance / performance evidence]
+    PDE --> INTEGRAL[Interpolation and road exposure]
+    NET --> INTEGRAL
+    INTEGRAL --> ROUTE[Dijkstra / A*]
+    DIAG --> API[FastAPI]
+    ROUTE --> API
+    API --> UI[React / MapLibre / ECharts]
     MAP --> UI
 ```
 
 | Path | Purpose |
 | --- | --- |
-| `backend/app/diffusion.py` | Grid, conservative updates, simulation, and interpolation |
-| `backend/app/routing.py` | Road graph, complete-polyline integration, Dijkstra, and A* |
-| `backend/app/validation.py` | Numerical and routing validation helpers |
-| `backend/app/main.py` | FastAPI endpoints, caches, persistence, exports, and local assets |
-| `frontend/src/` | Interactive map, controls, timeline, route comparison, and charts |
-| `configs/region.json` | Geographic center, metric domain, CRS, and walking policy |
-| `data/demo/` | Attributed source snapshots, processed road tables, and offline map |
-| `data/manifest.json` | Dataset provenance, artifact sizes, and SHA-256 checksums |
-| `scripts/` | Repeatable data preparation, quality audits, and experiment generation |
-| `reports/` | Scientific evidence in Markdown, JSON, CSV, and PNG |
-| `tests/` | Numerical, routing, data-pipeline, region, and API tests |
-| `data/experiments/` | Generated local experiment files; excluded from Git |
+| `backend/app/diffusion.py` | Compatible V1 grid, explicit stencil, Gaussian field and interpolation |
+| `backend/app/numerics/` | Sparse operators, method dispatch, time stepping, diagnostics, native wrapper and numerical validation |
+| `cpp/` | C++17 stencil/full time loop, strict pybind11 bindings, CMake build and provenance |
+| `backend/app/routing.py` | Full-polyline exposure, directed multigraph, Dijkstra and A* |
+| `backend/app/main.py` | Validated API, bounded caches, persistence and local assets |
+| `frontend/src/` | Map laboratory, method/reference controls, diagnostics and evidence figures |
+| `configs/region.json` | Geographic center, metric domain, CRS and walking policy |
+| `data/demo/` | Attributed source snapshots, processed network tables and offline map |
+| `data/manifest.json` | Provenance, sizes and SHA-256 artifact hashes |
+| `scripts/` | Data preparation, SQL audits, experiments and native benchmarks |
+| `reports/numerics/` | Numerical methods, raw experiment tables, figures and findings |
+| `tests/` | Numerical, native-interface, routing, data and API regression tests |
+| `data/experiments/` | Generated local JSON/Parquet records, excluded from Git |
 
-The frontend uses React, TypeScript, Vite, MapLibre GL JS, PMTiles, and Apache ECharts. Python supplies FastAPI / Uvicorn, NumPy, OSMnx, GeoPandas, Shapely, pyproj, DuckDB Spatial, and PyArrow. Matplotlib generates report figures, NetworkX checks path costs, and pytest exercises correctness. Versions are recorded in `requirements.lock.txt` and `frontend/package-lock.json`.
+Python uses NumPy, SciPy, FastAPI/Uvicorn, OSMnx, GeoPandas, Shapely, pyproj, DuckDB Spatial and PyArrow. The frontend uses React, TypeScript, Vite, MapLibre, PMTiles and ECharts. Matplotlib produces scientific figures. Runtime versions are pinned in `requirements.lock.txt` and `frontend/package-lock.json`; native build dependencies are in `cpp/pyproject.toml`.
 
 ## Data and reproducibility
 
@@ -176,65 +197,83 @@ FROM edges;
 
 The directed-length total counts each travel direction separately. The map deduplicates physical polylines for display.
 
-Simulation IDs incorporate model parameters, the network-file hash, and a hash of the numerical source. Scenario metadata persists in `data/experiments/`; frames evicted from memory or lost after a restart can be recomputed when the same data and numerical code remain available. Experiments save parameters, data and numerical hashes, Git version, route metrics, and timestamps as JSON / Parquet. Experiment CSV downloads also include provenance fields. Raw field frames are recomputed rather than stored as a persistent frame archive.
+Simulation identity covers model, method, grid, κ, wind, boundary, step and startup policies, output times, requested/actual backend, dataset hash, numerical-source hash and native build where applicable. Scenario metadata persists in `data/experiments/`; compatible evicted frames can be recomputed. Incompatible old records require a rerun. Experiment JSON/Parquet and CSV exports retain numerical parameters, provenance and route metrics; raw frames are not a persistent archive.
 
-## Verification and scientific evidence
+Interactive requests are limited to 320 cells per axis, 121 output frames and 64 MiB of output fields per run, with a separate estimated-work limit. Simulation frames have a 256 MiB cache budget (also at most eight entries); edge-exposure vectors have a 32 MiB budget. Sparse factorizations have their own eight-entry / 256 MiB budget; an oversized factor may be used without being retained. These cache budgets do not cap total process memory or solver peak memory. Larger benchmark grids run through batch scripts.
 
-Run the checks after setup:
+## Reproduce the scientific evidence
 
 ```bash
+# Core and application regression checks; native cases skip if uninstalled
 .venv/bin/python -m pytest -q
 npm --prefix frontend run build
 npm --prefix frontend run lint
-```
 
-GitHub Actions runs the same test, build, and lint stages. To regenerate numerical reports, plots, route sweeps, sensitivity results, and algorithm benchmarks:
+# Require native code to be available and exercised after building it
+FLOW_REQUIRE_NATIVE=1 .venv/bin/python -m pytest -q
 
-```bash
+# Original geographic, route and diffusion experiments
 .venv/bin/python -m scripts.run_experiments
+
+# Matched NumPy/C++ FE benchmarks; requires the native extension
+.venv/bin/python -m scripts.benchmark_numerics
+
+# Numerical-method experiments and figures using the saved matching benchmark
+.venv/bin/python -m scripts.run_numerical_experiments
 ```
 
-This rewrites `reports/` and creates local experiments. Timings vary by machine and cache state.
+The CI workflow runs the Python-only tests, builds the C++ extension from source on Linux, requires native tests, and builds/lints the frontend. Local compiler and machine details are retained with benchmark results. Building the extension is distinct from merely importing SciPy's compiled libraries.
 
-| Evidence | What it establishes |
+| Evidence | Question and interpretation |
 | --- | --- |
-| [Data quality](reports/data_quality.md) | SQL geometry/length audits, graph components, provenance, and interpretation limits |
-| [Numerical validation](reports/validation.md) | Constant-state preservation, mass conservation, nonnegativity, and analytic-solution convergence |
-| [Analysis](reports/analysis.md) | Preference sweeps, sensitivity to κ and time, NetworkX agreement, and measured timings |
+| [Methods](reports/numerics/methods.md) | Operators, updates, boundary rules and verification references |
+| [Validation](reports/numerics/validation.json) | Machine-readable method and structure checks |
+| [Time convergence](reports/numerics/temporal_convergence.png) · [CSV](reports/numerics/temporal_convergence.csv) | Fixed spatial grid; are FE/BE first order and CN second order in the declared regime? |
+| [Space convergence](reports/numerics/spatial_convergence.png) · [CSV](reports/numerics/spatial_convergence.csv) | Separate spatial error from time integration; diffusion and upwind have different orders |
+| [Stability/positivity](reports/numerics/stability_positivity.png) | Large-step CN counterexamples and startup comparisons |
+| [Transport balance](reports/numerics/transport_balance.png) | Periodic conservation and open-boundary inflow/outflow accounting |
+| [Native benchmark](reports/numerics/benchmark.png) · [CSV](reports/numerics/benchmark.csv) | The same FE workload in NumPy and C++, with repeated samples and memory |
+| [Work–precision](reports/numerics/work_precision.png) · [CSV](reports/numerics/work_precision.csv) | Which method reaches a given error most efficiently, including setup and factorization? |
+| [Routing sensitivity](reports/numerics/routing_sensitivity.png) | How PDE approximation affects exposure and reference-evaluated path cost |
+| [Findings and limitations](reports/numerics/conclusions.md) | What the recorded experiments support, and what they do not |
+| [Data quality](reports/data_quality.md) · [Original analysis](reports/analysis.md) | SQL audits, route sweeps, graph-cost checks and the original experiment |
 
-The recorded numerical validation reports maximum relative mass drift of **4.187 × 10⁻¹⁶** and joint refinement orders of **1.9945** and **1.9986** on 32² / 64² / 128² grids. The reference is a decaying cosine solution with zero-flux boundaries. **Euler is first order in time**; the approximately second-order result comes from jointly refining space and time with `Δt = 0.1 h²`.
+Raw results are authoritative; method names and theoretical orders are not substitutes for measurements. Time convergence uses a fixed spatial operator and an independent reference; space studies control temporal error. CN negativity is an expected diagnostic case rather than a failed claim of linear stability. Route tests and field-error studies are reported separately.
 
-Both custom searches agree with NetworkX on all six preference settings in the committed analysis, with absolute objective-cost error below `1e-7`. Tests also cover parallel and directed edges, unreachable destinations, identical endpoints, invalid clicks, constant-field polyline integrals, API persistence and exports, and PMTiles byte-range delivery.
+The recorded V2 run passes **111 tests**, including the compiled native backend, and **69** numerical convergence/error-control checks. In the matched 160² / 61-frame benchmark, median NumPy and C++ calls take **21.49 ms** and **10.38 ms** respectively (**2.07×**); these exclude HTTP, browser rendering and shared-dispatch diagnostics. The zero-duration native call is slower because fixed overhead dominates. Full raw measurements, reference uncertainty and limitations are in [the findings](reports/numerics/conclusions.md).
 
-Performance reports separate diffusion, road integration, and path-search costs. The first integration includes geometry-sampling preparation; later integrations reuse it. Measurements exclude browser rendering and transport, and are evidence for the recorded environment rather than a performance guarantee.
+Native timing compares the original vectorized NumPy face-flux stencil with the native FE loop at identical κ, grids, step sequences, outputs and diagnostics. Benchmarks declare warmups, repetitions, thread settings, output policies and per-case wall-time/RSS budgets. Cases exceeding a budget are recorded as unmeasured/aborted, not fabricated successes. Method-level work–precision is a separate comparison: an implicit method taking fewer steps is not counted as C++ implementation speedup. Performance depends on hardware, resolution, output storage and cache state.
 
 ## Local API and development
 
-The API accepts geographic points as `[longitude, latitude]` and transforms them to metric coordinates internally.
+Geographic points are `[longitude, latitude]`; `/openapi.json` contains the full validated schema.
 
 | Endpoint | Purpose |
 | --- | --- |
-| `GET /api/health` | Service and bundled-data readiness |
-| `GET /api/config` | Study area, example points, and dataset version |
-| `POST /api/simulations` | Run or reuse a diffusion simulation |
-| `GET /api/simulations/{id}/frames/{frame}` | Fetch one concentration frame |
-| `POST /api/routes` | Compare shortest and exposure-aware routes |
-| `POST /api/experiments` | Run and persist the six-preference sweep |
-| `GET /api/experiments` | List persisted experiments |
-| `GET /api/experiments/{id}/export?format=json` | Download JSON; use `format=csv` for CSV |
-| `GET /api/reports` | Read data-quality, numerical, and analysis evidence |
+| `GET /api/health` | Local service and bundled-data readiness |
+| `GET /api/config` | Defaults, method/backend combinations, native availability and interactive grids |
+| `POST /api/simulations` | Run/reuse a complete numerical configuration; return actual parameters and diagnostics |
+| `GET /api/simulations/{id}/frames/{frame}` | Fetch the unmodified concentration field |
+| `GET /api/simulations/{id}/frames/{frame}?reference_id={other_id}` | Add signed differences at the same grid/domain/time, or reject incompatibility |
+| `POST /api/routes` | Shortest and exposure-aware paths in a nonnegative frozen field |
+| `POST /api/experiments` | Persist a six-preference route sweep |
+| `GET /api/experiments` | List persisted local experiments |
+| `GET /api/experiments/{id}/export?format=json` | JSON export; use `format=csv` for CSV |
+| `GET /api/reports` | Geographic, original analysis and numerical-study reports |
 
-The machine-readable schema is at `/openapi.json`. For frontend development, keep `./start.sh` running and start `npm --prefix frontend run dev` in a second terminal. Vite proxies `/api` and `/data` to port 8000. After frontend changes, use `npm --prefix frontend run build` to update the app served by `start.sh`.
+For development, start the backend with `./start.sh` and run `npm --prefix frontend run dev` in another terminal. Rebuild with `npm --prefix frontend run build` to update the production assets served locally. Rebuild/restart the native extension after editing C++ sources.
 
 ## Limits and next steps
 
-- **Idealized physics:** no wind, buildings, terrain, chemical reactions, or observational calibration. Reflecting rectangular walls conserve the modeled field but do not represent an open urban atmosphere.
-- **Static route exposure:** a walk samples one frozen field. Concentration does not evolve as a traveler moves, and the result is not a pollutant dose or health assessment.
-- **Simplified walking model:** constant speed, nearest-node endpoints, and an OSM walking graph. Accessibility and map completeness have not been independently surveyed; this is not a navigation service.
-- **Sampled optimization:** six λ values reveal some optimal trade-offs, not a complete Pareto frontier. A* need not outperform Dijkstra for every field or weight.
-- **Local scope:** the app targets one bundled study area and a local user. The environment and launcher target macOS / Linux; native Windows execution is not verified.
+- **Idealized physics:** constant κ and constant wind, a smooth synthetic Gaussian source, no buildings, terrain, reactions or observational calibration. Open and periodic edges are explicitly chosen mathematical models.
+- **First-order transport:** upwind introduces numerical diffusion; IMEX Euler is first order even though pure-diffusion CN is second order. Higher-order transport is not implemented.
+- **Restricted native scope:** the C++ backend implements zero-flux FE diffusion. Implicit methods use SciPy sparse LU; the native loop is single-threaded and does not implement graph search.
+- **Static exposure:** no time-dependent route optimization, real pollutant dose, health model or traffic flow. Some walks outlast the field timestamp because it is frozen.
+- **Simplified street model:** constant walking speed, nearest-node endpoints, no surveyed accessibility or guarantee of current closures. Six preferences sample trade-offs rather than a full Pareto frontier.
+- **Study and platform scope:** one bundled geographic region, one local user, macOS/Linux launchers. Native Windows execution, standalone phone/offline-PWA operation and outdoor navigation are not verified.
+- **Performance limits:** sparse LU fill-in and stored outputs can dominate memory at larger grids. Cache budgets do not replace per-experiment resource budgets.
 
-Further work could compare implicit solvers, add advection and time-dependent exposure, optimize measured bottlenecks, and investigate observation-based calibration. Caltrans PeMS / CWWP traffic ingestion, traffic-flow PDEs, and C++ acceleration are future directions and are not implemented in this release.
+Further scientific work can build on these results: variable/anisotropic diffusion, higher-order conservative transport, preconditioned iterative solvers, a second measured C++ kernel for exposure integration, or time-dependent paths. New physical claims would require suitable observational data and validation.
 
 ## Data attribution
 

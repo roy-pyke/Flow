@@ -10,3 +10,4 @@ if ! command -v "$PYTHON_BIN" >/dev/null; then PYTHON_BIN=python3; fi
 npm --prefix frontend ci
 npm --prefix frontend run build
 printf '\nReady. Run ./start.sh, then open http://127.0.0.1:8000\n'
+printf 'Optional C++ backend: run ./setup-native.sh (requires a C++17 compiler).\n'

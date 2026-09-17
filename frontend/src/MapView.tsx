@@ -15,22 +15,34 @@ const labels: [string, Point][] = [
   ['POTRERO HILL', [-122.4005, 37.758]], ['NOE VALLEY', [-122.429, 37.747]],
   ['SOMA', [-122.41, 37.776]], ['BERNAL HEIGHTS', [-122.416, 37.741]],
 ]
-function heatImage(frame: Frame): string {
-  const height = frame.values.length
-  const width = frame.values[0]?.length ?? 0
+function heatImage(frame: Frame, layer: 'current' | 'difference', differenceScale: number): string {
+  const values = layer === 'difference' ? frame.difference ?? frame.values : frame.values
+  const height = values.length
+  const width = values[0]?.length ?? 0
   const canvas = document.createElement('canvas')
   canvas.width = width; canvas.height = height
   const context = canvas.getContext('2d')!
   const pixels = context.createImageData(width, height)
-  // The API uses south-to-north rows. Image coordinates start in the northwest.
-  // All frames use the same absolute [0, 1] concentration color scale.
+  // API rows run south to north. Preserve negative fields with a visible magenta overlay.
+  // Concentration stays on [0, 1]; differences stay on the user's fixed signed scale.
   for (let y = 0; y < height; y++) for (let x = 0; x < width; x++) {
-    const c = Math.min(1, Math.max(0, frame.values[height - 1 - y][x]))
+    const value = values[height - 1 - y][x]
     const i = (y * width + x) * 4
-    pixels.data[i] = Math.round(252 - c * 19)
-    pixels.data[i + 1] = Math.round(208 - c * 107)
-    pixels.data[i + 2] = Math.round(81 - c * 13)
-    pixels.data[i + 3] = Math.round(Math.min(0.86, c * 2.5) * 255)
+    if (layer === 'difference') {
+      const amplitude = Math.min(1, Math.abs(value) / differenceScale)
+      const color = value < 0 ? [50, 107, 174] : [190, 59, 98]
+      pixels.data[i] = color[0]; pixels.data[i + 1] = color[1]; pixels.data[i + 2] = color[2]
+      pixels.data[i + 3] = Math.round(amplitude * .88 * 255)
+    } else if (value < 0) {
+      pixels.data[i] = 186; pixels.data[i + 1] = 22; pixels.data[i + 2] = 162
+      pixels.data[i + 3] = Math.round((.4 + .5 * Math.min(1, Math.abs(value))) * 255)
+    } else {
+      const c = Math.min(1, value)
+      pixels.data[i] = Math.round(252 - c * 19)
+      pixels.data[i + 1] = Math.round(208 - c * 107)
+      pixels.data[i + 2] = Math.round(81 - c * 13)
+      pixels.data[i + 3] = Math.round(Math.min(.86, c * 2.5) * 255)
+    }
   }
   context.putImageData(pixels, 0, 0)
   return canvas.toDataURL()
@@ -39,9 +51,9 @@ function heatImage(frame: Frame): string {
 type Props = {
   config: Config | null; points: Record<PointKind, Point>; mode: PointKind
   onPick: (point: Point) => void; simulation: Simulation | null; frame: Frame | null
-  routes: Routes | null; showHeat: boolean; visible: boolean
+  routes: Routes | null; showHeat: boolean; visible: boolean; layer: 'current' | 'difference'; differenceScale: number
 }
-export default function MapView({ config, points, mode, onPick, simulation, frame, routes, showHeat, visible }: Props) {
+export default function MapView({ config, points, mode, onPick, simulation, frame, routes, showHeat, visible, layer, differenceScale }: Props) {
   const container = useRef<HTMLDivElement>(null)
   const map = useRef<maplibregl.Map | null>(null)
   const markers = useRef<Partial<Record<PointKind, maplibregl.Marker>>>({})
@@ -108,8 +120,12 @@ export default function MapView({ config, points, mode, onPick, simulation, fram
     }
   }, [points, ready])
   useEffect(() => {
-    if (!map.current || !ready || !frame || !simulation) return
-    const url = heatImage(frame)
+    if (!map.current || !ready) return
+    if (!frame || !simulation) {
+      if (map.current.getLayer('diffusion')) map.current.setLayoutProperty('diffusion', 'visibility', 'none')
+      return
+    }
+    const url = heatImage(frame, layer, differenceScale)
     const coordinates = simulation.geographic_corners as [Point, Point, Point, Point]
     const source = map.current.getSource('diffusion') as maplibregl.ImageSource | undefined
     if (source) source.updateImage({ url, coordinates })
@@ -118,7 +134,7 @@ export default function MapView({ config, points, mode, onPick, simulation, fram
       map.current.addLayer({ id: 'diffusion', type: 'raster', source: 'diffusion', paint: { 'raster-opacity': 0.8, 'raster-fade-duration': 0, 'raster-resampling': 'linear' } }, 'road-labels')
     }
     map.current.setLayoutProperty('diffusion', 'visibility', showHeat ? 'visible' : 'none')
-  }, [frame, simulation, ready, showHeat])
+  }, [frame, simulation, ready, showHeat, layer, differenceScale])
   useEffect(() => {
     if (!map.current || !ready) return
     for (const kind of ['shortest', 'weighted'] as const) {

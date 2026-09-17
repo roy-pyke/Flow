@@ -1,0 +1,424 @@
+{
+  "schema_version": 2,
+  "quick": false,
+  "validation": {
+    "all_order_checks_pass": true,
+    "order_checks": 69,
+    "transport_max_relative_balance_error": 5.384581669432009e-15,
+    "transport_balance_pass": true,
+    "cn_negative_example_observed": true
+  },
+  "provenance": {
+    "created_utc": "2026-09-17T19:39:01.596541+00:00",
+    "git_base": "81a3678a07debcfff32c8726c9142d4c127e69f5",
+    "source_sha256": {
+      "backend/app/diffusion.py": "4c344175779f73340fee522728f9c06333e2e6551c490b6f6fe05feb340d5732",
+      "backend/app/numerics/__init__.py": "40904ef0278f5358ad01366413a39a8fc088b64334b1072bbb28414bdde16cd6",
+      "backend/app/numerics/native.py": "e1d66800549083ed39311553220277ecb6c2c505e161d9c387dea77ae9ecc6c8",
+      "backend/app/numerics/operators.py": "90ded50f71390c91b014d49f2eb0925f55e2d241c012c98b994f03251a9a5ab7",
+      "backend/app/numerics/solver.py": "6641bfb15f16692e52fb9deda4f4923d8f90a482dcd7ffda43cc830a6f741ded",
+      "backend/app/numerics/validation.py": "9ea116d24193e9b088651cb00015b191246ec9ec8873678eebb71cf835b784bb",
+      "backend/app/routing.py": "37a46635e1621238ac94b24e824ed16132a4c4b1d3da82f74c1e0e641e166768",
+      "cpp/CMakeLists.txt": "e5df4b5acd7fcce866fc2461e1d38193aacf2ebad2c329dd68696513f9a9cb2d",
+      "cpp/pyproject.toml": "098469f0aeb45422ae941a4aad5092c00dd66aee213f24af367732aa91901065",
+      "cpp/source_hash.py": "1988c31b5ec5f145ca1c446effad6834fc9226495bdd3ce2d0f152121c3e69f6",
+      "cpp/src/bindings.cpp": "22c3b5a93a0ffb639fb9743705b69628d84ae5a0914026d2d1738fc0e86cb1ef",
+      "cpp/src/build_info.h.in": "b20aaf4b0d30757a4cddb645f4272113cfc7f359ba443c4763a85a9553d8be0d",
+      "cpp/src/diffusion.cpp": "709662ac3a5a04cedf4fc260771216120cc18fff5a83a1e0c026d45f0af7dda0",
+      "cpp/src/diffusion.h": "3fa5682faff6b5431ad6723f03d8626653d17f825cc439d0947b8b797508bd50",
+      "requirements.lock.txt": "f7e79a623250e0012572eca0792eec29ada8af99e8dfc759537c7e067a9c92e5",
+      "scripts/numerical_studies.py": "ef82dcdad9894bb84b7ce48debdb0c3c046f6490d1d15a151b3501ad7f40ccb9",
+      "scripts/run_numerical_experiments.py": "f1487f9af782ec52faa5304ae153da16bfc89b26efee9b5572e42805c47c93ba"
+    },
+    "environment": {
+      "platform": "macOS-26.5.2-arm64-arm-64bit",
+      "python": "3.12.6",
+      "numpy": "2.5.3",
+      "scipy": "1.18.1"
+    }
+  },
+  "work_precision": {
+    "measured_cases": 50,
+    "raw_samples": 500,
+    "tolerance_attainment": [
+      {
+        "problem": "diffusion",
+        "cache": "cold",
+        "l2_tolerance": 0.001,
+        "method": "explicit_euler",
+        "attained": true,
+        "median_total_ms": 0.2851454773917794,
+        "dt_s": 0.015625,
+        "measured_l2": 0.0001767774698256218
+      },
+      {
+        "problem": "diffusion",
+        "cache": "cold",
+        "l2_tolerance": 0.001,
+        "method": "backward_euler",
+        "attained": true,
+        "median_total_ms": 0.6536245346069336,
+        "dt_s": 0.0625,
+        "measured_l2": 0.0006913867342492773
+      },
+      {
+        "problem": "diffusion",
+        "cache": "cold",
+        "l2_tolerance": 0.001,
+        "method": "crank_nicolson",
+        "attained": true,
+        "median_total_ms": 0.6792704807594419,
+        "dt_s": 0.125,
+        "measured_l2": 1.4039051417684023e-05
+      },
+      {
+        "problem": "diffusion",
+        "cache": "cold",
+        "l2_tolerance": 0.0001,
+        "method": "explicit_euler",
+        "attained": true,
+        "median_total_ms": 0.5372290033847094,
+        "dt_s": 0.0078125,
+        "measured_l2": 8.818758377023411e-05
+      },
+      {
+        "problem": "diffusion",
+        "cache": "cold",
+        "l2_tolerance": 0.0001,
+        "method": "backward_euler",
+        "attained": true,
+        "median_total_ms": 1.4682500041089952,
+        "dt_s": 0.0078125,
+        "measured_l2": 8.77884164027679e-05
+      },
+      {
+        "problem": "diffusion",
+        "cache": "cold",
+        "l2_tolerance": 0.0001,
+        "method": "crank_nicolson",
+        "attained": true,
+        "median_total_ms": 0.6792704807594419,
+        "dt_s": 0.125,
+        "measured_l2": 1.4039051417684023e-05
+      },
+      {
+        "problem": "diffusion",
+        "cache": "cold",
+        "l2_tolerance": 1e-05,
+        "method": "explicit_euler",
+        "attained": false,
+        "median_total_ms": null,
+        "dt_s": null,
+        "measured_l2": null
+      },
+      {
+        "problem": "diffusion",
+        "cache": "cold",
+        "l2_tolerance": 1e-05,
+        "method": "backward_euler",
+        "attained": false,
+        "median_total_ms": null,
+        "dt_s": null,
+        "measured_l2": null
+      },
+      {
+        "problem": "diffusion",
+        "cache": "cold",
+        "l2_tolerance": 1e-05,
+        "method": "crank_nicolson",
+        "attained": true,
+        "median_total_ms": 0.7961870287545025,
+        "dt_s": 0.0625,
+        "measured_l2": 3.50844416400541e-06
+      },
+      {
+        "problem": "diffusion",
+        "cache": "warm",
+        "l2_tolerance": 0.001,
+        "method": "explicit_euler",
+        "attained": true,
+        "median_total_ms": 0.2752499422058463,
+        "dt_s": 0.015625,
+        "measured_l2": 0.0001767774698256218
+      },
+      {
+        "problem": "diffusion",
+        "cache": "warm",
+        "l2_tolerance": 0.001,
+        "method": "backward_euler",
+        "attained": true,
+        "median_total_ms": 0.4532080492936075,
+        "dt_s": 0.0625,
+        "measured_l2": 0.0006913867342492773
+      },
+      {
+        "problem": "diffusion",
+        "cache": "warm",
+        "l2_tolerance": 0.001,
+        "method": "crank_nicolson",
+        "attained": true,
+        "median_total_ms": 0.4265829920768738,
+        "dt_s": 0.125,
+        "measured_l2": 1.4039051417684023e-05
+      },
+      {
+        "problem": "diffusion",
+        "cache": "warm",
+        "l2_tolerance": 0.0001,
+        "method": "explicit_euler",
+        "attained": true,
+        "median_total_ms": 0.5406455020420253,
+        "dt_s": 0.0078125,
+        "measured_l2": 8.818758377023411e-05
+      },
+      {
+        "problem": "diffusion",
+        "cache": "warm",
+        "l2_tolerance": 0.0001,
+        "method": "backward_euler",
+        "attained": true,
+        "median_total_ms": 1.2855625245720148,
+        "dt_s": 0.0078125,
+        "measured_l2": 8.77884164027679e-05
+      },
+      {
+        "problem": "diffusion",
+        "cache": "warm",
+        "l2_tolerance": 0.0001,
+        "method": "crank_nicolson",
+        "attained": true,
+        "median_total_ms": 0.4265829920768738,
+        "dt_s": 0.125,
+        "measured_l2": 1.4039051417684023e-05
+      },
+      {
+        "problem": "diffusion",
+        "cache": "warm",
+        "l2_tolerance": 1e-05,
+        "method": "explicit_euler",
+        "attained": false,
+        "median_total_ms": null,
+        "dt_s": null,
+        "measured_l2": null
+      },
+      {
+        "problem": "diffusion",
+        "cache": "warm",
+        "l2_tolerance": 1e-05,
+        "method": "backward_euler",
+        "attained": false,
+        "median_total_ms": null,
+        "dt_s": null,
+        "measured_l2": null
+      },
+      {
+        "problem": "diffusion",
+        "cache": "warm",
+        "l2_tolerance": 1e-05,
+        "method": "crank_nicolson",
+        "attained": true,
+        "median_total_ms": 0.4861879860982299,
+        "dt_s": 0.0625,
+        "measured_l2": 3.50844416400541e-06
+      },
+      {
+        "problem": "transport",
+        "cache": "cold",
+        "l2_tolerance": 0.001,
+        "method": "advection_explicit",
+        "attained": true,
+        "median_total_ms": 1.3608959852717817,
+        "dt_s": 0.0078125,
+        "measured_l2": 0.0006445444820947653
+      },
+      {
+        "problem": "transport",
+        "cache": "cold",
+        "l2_tolerance": 0.001,
+        "method": "imex_euler",
+        "attained": true,
+        "median_total_ms": 2.472103980835527,
+        "dt_s": 0.0078125,
+        "measured_l2": 0.0005163249716041089
+      },
+      {
+        "problem": "transport",
+        "cache": "cold",
+        "l2_tolerance": 0.0001,
+        "method": "advection_explicit",
+        "attained": false,
+        "median_total_ms": null,
+        "dt_s": null,
+        "measured_l2": null
+      },
+      {
+        "problem": "transport",
+        "cache": "cold",
+        "l2_tolerance": 0.0001,
+        "method": "imex_euler",
+        "attained": false,
+        "median_total_ms": null,
+        "dt_s": null,
+        "measured_l2": null
+      },
+      {
+        "problem": "transport",
+        "cache": "cold",
+        "l2_tolerance": 1e-05,
+        "method": "advection_explicit",
+        "attained": false,
+        "median_total_ms": null,
+        "dt_s": null,
+        "measured_l2": null
+      },
+      {
+        "problem": "transport",
+        "cache": "cold",
+        "l2_tolerance": 1e-05,
+        "method": "imex_euler",
+        "attained": false,
+        "median_total_ms": null,
+        "dt_s": null,
+        "measured_l2": null
+      },
+      {
+        "problem": "transport",
+        "cache": "warm",
+        "l2_tolerance": 0.001,
+        "method": "advection_explicit",
+        "attained": true,
+        "median_total_ms": 1.3468124670907855,
+        "dt_s": 0.0078125,
+        "measured_l2": 0.0006445444820947653
+      },
+      {
+        "problem": "transport",
+        "cache": "warm",
+        "l2_tolerance": 0.001,
+        "method": "imex_euler",
+        "attained": true,
+        "median_total_ms": 2.1385204745456576,
+        "dt_s": 0.0078125,
+        "measured_l2": 0.0005163249716041089
+      },
+      {
+        "problem": "transport",
+        "cache": "warm",
+        "l2_tolerance": 0.0001,
+        "method": "advection_explicit",
+        "attained": false,
+        "median_total_ms": null,
+        "dt_s": null,
+        "measured_l2": null
+      },
+      {
+        "problem": "transport",
+        "cache": "warm",
+        "l2_tolerance": 0.0001,
+        "method": "imex_euler",
+        "attained": false,
+        "median_total_ms": null,
+        "dt_s": null,
+        "measured_l2": null
+      },
+      {
+        "problem": "transport",
+        "cache": "warm",
+        "l2_tolerance": 1e-05,
+        "method": "advection_explicit",
+        "attained": false,
+        "median_total_ms": null,
+        "dt_s": null,
+        "measured_l2": null
+      },
+      {
+        "problem": "transport",
+        "cache": "warm",
+        "l2_tolerance": 1e-05,
+        "method": "imex_euler",
+        "attained": false,
+        "median_total_ms": null,
+        "dt_s": null,
+        "measured_l2": null
+      }
+    ]
+  },
+  "routing_sensitivity": {
+    "models": [
+      {
+        "model": "diffusion",
+        "reference_refinement": {
+          "coarse_n": 320,
+          "fine_n": 640,
+          "field_l2": 4.529801686063472e-06,
+          "edge_exposure_l2": 0.0007890727246251133,
+          "edge_exposure_max": 0.024567445784668962,
+          "optimal_cost_change_s": 0.025499705681795604,
+          "cost_relative_change": 9.087443602963719e-06,
+          "same_edge_path": true,
+          "interpretation": "remaining numerical-reference uncertainty; no extrapolation or truth claim"
+        },
+        "max_reference_regret_s": 0.0
+      },
+      {
+        "model": "advection_diffusion",
+        "reference_refinement": {
+          "coarse_n": 320,
+          "fine_n": 640,
+          "field_l2": 0.0006843429876218053,
+          "edge_exposure_l2": 0.02802322498344439,
+          "edge_exposure_max": 0.9044421116386303,
+          "optimal_cost_change_s": 1.770252244311905,
+          "cost_relative_change": 0.0006205188452753722,
+          "same_edge_path": true,
+          "interpretation": "remaining numerical-reference uncertainty; no extrapolation or truth claim"
+        },
+        "max_reference_regret_s": 0.0
+      }
+    ]
+  },
+  "benchmark_comparisons": [
+    {
+      "case": "final_80",
+      "numpy_median_total_ms": 1.4580624992959201,
+      "cpp_median_total_ms": 0.632458075415343,
+      "total_speedup_numpy_over_cpp": 2.3053899633400876
+    },
+    {
+      "case": "final_160",
+      "numpy_median_total_ms": 16.832812514621764,
+      "cpp_median_total_ms": 5.707041476853192,
+      "total_speedup_numpy_over_cpp": 2.9494813701447313
+    },
+    {
+      "case": "final_320",
+      "numpy_median_total_ms": 264.1471459646709,
+      "cpp_median_total_ms": 84.62164551019669,
+      "total_speedup_numpy_over_cpp": 3.121508029914662
+    },
+    {
+      "case": "final_640",
+      "numpy_median_total_ms": 5885.972124990076,
+      "cpp_median_total_ms": 1379.7108330763876,
+      "total_speedup_numpy_over_cpp": 4.266091114082163
+    },
+    {
+      "case": "default_160_61",
+      "numpy_median_total_ms": 21.49210451170802,
+      "cpp_median_total_ms": 10.377750091720372,
+      "total_speedup_numpy_over_cpp": 2.0709791931543
+    },
+    {
+      "case": "conversion_160_61",
+      "numpy_median_total_ms": 21.928416448645294,
+      "cpp_median_total_ms": 10.271562496200204,
+      "total_speedup_numpy_over_cpp": 2.1348666725979957
+    },
+    {
+      "case": "zero_duration_overhead",
+      "numpy_median_total_ms": 0.017666432540863752,
+      "cpp_median_total_ms": 0.3336460213176906,
+      "total_speedup_numpy_over_cpp": 0.052949627485718326
+    }
+  ]
+}
