@@ -24,10 +24,22 @@ def prepare_region(config_path: Path | str = ROOT / "configs/region.json") -> di
     x, y = to_meters.transform(config["center_lon"], config["center_lat"], errcheck=True)
     w, h = config["width_m"] / 2, config["height_m"] / 2
     polygon = box(x - w, y - h, x + w, y + h)
-    geographic = transform(to_geographic.transform, polygon)
-    buffered = transform(to_geographic.transform, polygon.buffer(config.get("download_buffer_m", 0), join_style="mitre"))
-    return {**config, "center_m": [x, y], "bounds": list(polygon.bounds),
-            "geographic_bounds": list(geographic.bounds), "geometry": mapping(geographic),
+    geographic = transform(
+        to_geographic.transform, 
+        polygon
+    )
+    buffered = transform(
+        to_geographic.transform, 
+        polygon.buffer(
+            config.get("download_buffer_m", 0), 
+            join_style="mitre"
+        )
+    )
+    return {**config, 
+            "center_m": [x, y], 
+            "bounds": list(polygon.bounds),
+            "geographic_bounds": list(geographic.bounds), 
+            "geometry": mapping(geographic),
             "download_geometry": mapping(buffered)}
 
 

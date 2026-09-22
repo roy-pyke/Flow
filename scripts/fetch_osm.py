@@ -22,12 +22,17 @@ def sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def fetch(config: Path = ROOT / "configs/region.json", refresh: bool = False) -> dict:
+def fetch(
+        config: Path = ROOT / "configs/region.json", 
+        refresh: bool = False
+        ) -> dict:
     raw, demo = ROOT / "data/raw", ROOT / "data/demo"
     raw.mkdir(parents=True, exist_ok=True)
     demo.mkdir(parents=True, exist_ok=True)
     region = prepare_region(config)
-    (demo / "region.json").write_text(json.dumps(region, indent=2) + "\n")
+    (demo / "region.json").write_text(
+        json.dumps(region, indent=2) + "\n"
+    )
     snapshot, provenance = demo / "osm_walk.graphml.gz", demo / "source.json"
     if snapshot.exists() and provenance.exists() and not refresh:
         saved = json.loads(provenance.read_text())
