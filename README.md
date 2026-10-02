@@ -8,6 +8,8 @@ The bundled study area is a **4 × 4 km rectangle around San Francisco's Mission
 
 This independent research checkout extends Flow V2. It adds versioned PDE configurations and replayable array archives, boundary-aware sparse road observations, atomic network publication, and analytical route-decision counterexamples. Time-aware research integrates complete journeys across nonuniform output frames, including waits and repeated edges, and provides a finite time-expanded graph reference with explicitly charged rounding waits. [Variable diffusion](docs/variable_diffusion.md) adds positive material fields, conservative harmonic face fluxes, coefficient-aware caching, and independent interface/spatial/temporal verification. See [the research guide](docs/research.md) for commands, assumptions and remaining work. The richer research configuration currently runs through Python and the CLI; the map interface keeps its frozen-field controls. Historical V2 results below retain their original scope.
 
+The complete Chinese [implementation milestone records](docs/milestones/README.md) document each delivered batch and its file-level design.
+
 ## What is implemented
 
 - **Five time integrators:** Forward Euler (FE), Backward Euler (BE), Crank–Nicolson (CN), explicit upwind advection–diffusion, and first-order IMEX Euler.
