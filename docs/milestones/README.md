@@ -6,4 +6,6 @@ These Chinese implementation records describe the work completed in each researc
 - [第二批：完整行程时空暴露与动态路径参考](PHASE2_COMPLETE.zh-CN.md)
 - [第三批：变系数扩散、界面通量与独立误差验证](PHASE3_COMPLETE.zh-CN.md)
 
+- [第四批：时空面风、体源、开放边界与完整质量账本](PHASE4_COMPLETE.zh-CN.md)
+
 Local planning and environment logs are identified in the records but are not part of this public archive. Reproducible experiment artifacts and their original source snapshots are in [reports/research](../../reports/research/).
