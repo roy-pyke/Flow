@@ -6,12 +6,13 @@ Flow connects a PDE solver to a real street network and asks two questions: **ho
 
 The bundled study area is a **4 × 4 km rectangle around San Francisco's Mission District**. Roads come from OpenStreetMap; concentration and wind are synthetic. This is a mathematical experiment, with no measured pollution or traffic observations.
 
-This independent research checkout extends Flow V2. It adds versioned PDE configurations and replayable array archives, boundary-aware sparse road observations, atomic network publication, and analytical route-decision counterexamples. Time-aware research now integrates complete journeys across nonuniform output frames, including waits and repeated edges, and provides a finite time-expanded graph reference with explicitly charged rounding waits. See [the research guide](docs/research.md) for commands, assumptions and remaining work. The richer research configuration currently runs through Python and the CLI; the map interface keeps its frozen-field controls. Historical V2 results below retain their original scope.
+This independent research checkout extends Flow V2. It adds versioned PDE configurations and replayable array archives, boundary-aware sparse road observations, atomic network publication, and analytical route-decision counterexamples. Time-aware research integrates complete journeys across nonuniform output frames, including waits and repeated edges, and provides a finite time-expanded graph reference with explicitly charged rounding waits. [Variable diffusion](docs/variable_diffusion.md) adds positive material fields, conservative harmonic face fluxes, coefficient-aware caching, and independent interface/spatial/temporal verification. See [the research guide](docs/research.md) for commands, assumptions and remaining work. The richer research configuration currently runs through Python and the CLI; the map interface keeps its frozen-field controls. Historical V2 results below retain their original scope.
 
 ## What is implemented
 
 - **Five time integrators:** Forward Euler (FE), Backward Euler (BE), Crank–Nicolson (CN), explicit upwind advection–diffusion, and first-order IMEX Euler.
 - **Two implementations of diffusion FE:** the original vectorized NumPy stencil and a project-written C++17 kernel whose complete time loop runs natively.
+- **Variable material diffusion:** positive cell fields, aligned layers and portable NPZ inputs; NumPy FE and SciPy BE/CN for closed or periodic domains, with harmonic interface fluxes and separate space/time references.
 - **Numerical evidence:** separate time/space convergence, matrix structure, mass and energy diagnostics, CN positivity counterexamples, Rannacher startup, transport and open-boundary balance.
 - **Performance experiments:** matched NumPy/C++ workloads with raw repetitions and process memory, plus method-level error–time comparisons and cold/warm factorization costs.
 - **Field-to-route experiments:** numerical field and edge-exposure errors, and selected routes re-evaluated under a common reference field.
@@ -268,15 +269,15 @@ For development, start the backend with `./start.sh` and run `npm --prefix front
 
 ## Limits and next steps
 
-- **Idealized physics:** constant κ and constant wind, a smooth synthetic Gaussian source, no buildings, terrain, reactions or observational calibration. Open and periodic edges are explicitly chosen mathematical models.
+- **Idealized physics:** the map uses constant κ and constant wind; the research interface additionally supports positive static isotropic diffusivity fields for pure diffusion. No buildings, terrain, reactions, variable wind, forcing sources or observational calibration are modeled. Open and periodic edges are explicitly chosen mathematical models.
 - **First-order transport:** upwind introduces numerical diffusion; IMEX Euler is first order even though pure-diffusion CN is second order. Higher-order transport is not implemented.
-- **Restricted native scope:** the C++ backend implements zero-flux FE diffusion. Implicit methods use SciPy sparse LU; the native loop is single-threaded and does not implement graph search.
-- **Static exposure:** no time-dependent route optimization, real pollutant dose, health model or traffic flow. Some walks outlast the field timestamp because it is frozen.
+- **Restricted native scope:** the C++ backend implements constant-coefficient zero-flux FE diffusion. Implicit methods use SciPy sparse LU; the native loop is single-threaded and does not implement graph search.
+- **Route scope:** map/API exposure freezes the field, so some walks outlast its timestamp. CLI research supports time-dependent journey evaluation and finite time-expanded search, with no general continuous-time optimum, real pollutant dose, health model or traffic flow claim.
 - **Simplified street model:** constant walking speed, nearest-node endpoints, no surveyed accessibility or guarantee of current closures. Six preferences sample trade-offs rather than a full Pareto frontier.
 - **Study and platform scope:** one bundled geographic region, one local user, macOS/Linux launchers. Native Windows execution, standalone phone/offline-PWA operation and outdoor navigation are not verified.
 - **Performance limits:** sparse LU fill-in and stored outputs can dominate memory at larger grids. Cache budgets do not replace per-experiment resource budgets.
 
-Further scientific work can build on these results: variable/anisotropic diffusion, higher-order conservative transport, preconditioned iterative solvers, a second measured C++ kernel for exposure integration, or time-dependent paths. New physical claims would require suitable observational data and validation.
+Further scientific work can build on these results: anisotropic diffusion, variable wind and forcing, higher-order conservative transport, preconditioned iterative solvers, a measured C++ kernel for exposure integration, or larger time-dependent route searches. New physical claims would require suitable observational data and validation.
 
 ## Data attribution
 

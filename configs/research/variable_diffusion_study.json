@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "spatial": {
+    "length_x_m": 1.0,
+    "length_y_m": 0.25,
+    "nx_values": [16, 32, 64, 128],
+    "ny": 4,
+    "base_diffusivity": 0.15,
+    "shape_b": 0.06,
+    "mean": 1.0,
+    "amplitude": 0.3,
+    "duration_s": 0.2,
+    "dt_s": 0.0005
+  },
+  "temporal": {
+    "length_x_m": 1.0,
+    "length_y_m": 0.7,
+    "nx": 10,
+    "ny": 6,
+    "base_diffusivity": 0.15,
+    "variation": 0.55,
+    "mean": 1.0,
+    "amplitude": 0.25,
+    "duration_cfl_multiple": 4.0,
+    "step_counts": [8, 16, 32, 64],
+    "boundaries": ["zero_flux", "periodic"]
+  },
+  "layered": {
+    "length_x_m": 1.0,
+    "length_y_m": 0.25,
+    "nx": 32,
+    "ny": 4,
+    "interface_fraction": 0.5,
+    "kappa_left": 1.0,
+    "kappa_right": 20.0,
+    "concentration_left": 1.0,
+    "concentration_right": 0.0
+  },
+  "budget": {
+    "max_array_bytes": 134217728,
+    "max_cell_updates": 100000000,
+    "max_reference_scaled_rate": 10000.0
+  }
+}

@@ -1,0 +1,3821 @@
+{
+  "schema_version": 1,
+  "config": {
+    "schema_version": 1,
+    "spatial": {
+      "length_x_m": 1.0,
+      "length_y_m": 0.25,
+      "nx_values": [
+        16,
+        32,
+        64,
+        128
+      ],
+      "ny": 4,
+      "base_diffusivity": 0.15,
+      "shape_b": 0.06,
+      "mean": 1.0,
+      "amplitude": 0.3,
+      "duration_s": 0.2,
+      "dt_s": 0.0005
+    },
+    "temporal": {
+      "length_x_m": 1.0,
+      "length_y_m": 0.7,
+      "nx": 10,
+      "ny": 6,
+      "base_diffusivity": 0.15,
+      "variation": 0.55,
+      "mean": 1.0,
+      "amplitude": 0.25,
+      "duration_cfl_multiple": 4.0,
+      "step_counts": [
+        8,
+        16,
+        32,
+        64
+      ],
+      "boundaries": [
+        "zero_flux",
+        "periodic"
+      ]
+    },
+    "layered": {
+      "length_x_m": 1.0,
+      "length_y_m": 0.25,
+      "nx": 32,
+      "ny": 4,
+      "interface_fraction": 0.5,
+      "kappa_left": 1.0,
+      "kappa_right": 20.0,
+      "concentration_left": 1.0,
+      "concentration_right": 0.0
+    },
+    "budget": {
+      "max_array_bytes": 134217728,
+      "max_cell_updates": 100000000,
+      "max_reference_scaled_rate": 10000.0
+    }
+  },
+  "configuration_id": "29bdd0d64085a35814c29e50c2174d1f5a04dedd98458fe26e3452cc159f1413",
+  "admission": {
+    "raw_array_bytes": 514368,
+    "raw_array_count": 66,
+    "estimated_cell_updates_upper": 432000,
+    "max_reference_scaled_rate": 10000.0,
+    "scope": "array/update admission plus spatial exponential T*maxOutgoing cap; excludes sparse factor fill, dense eigensolver workspace, peak RSS and wall time"
+  },
+  "spatial": {
+    "cases": [
+      {
+        "nx": 16,
+        "ny": 4,
+        "grid": {
+          "bounds": [
+            0.0,
+            0.0,
+            1.0,
+            0.25
+          ],
+          "nx": 16,
+          "ny": 4,
+          "dx_m": 0.0625,
+          "dy_m": 0.0625,
+          "location": "cell_centres",
+          "axis_order": "frame,y,x",
+          "y_direction": "south_to_north"
+        },
+        "h_x_m": 0.0625,
+        "dt_s": 0.0005,
+        "duration_s": 0.2,
+        "total_error": {
+          "linf": 0.0004899035980976407,
+          "rms": 0.00028921217953139985
+        },
+        "temporal_error": {
+          "linf": 3.0512945503602396e-09,
+          "rms": 2.0987164895925005e-09
+        },
+        "spatial_error": {
+          "linf": 0.0004899066493841975,
+          "rms": 0.0002892142426116453
+        },
+        "temporal_to_spatial_rms_ratio": 7.256615271228676e-06,
+        "time_error_below_ten_percent_of_spatial": true,
+        "kappa_min": 0.10363740428645182,
+        "kappa_max": 0.17790810336865945,
+        "reference_admission": {
+          "duration_times_max_outgoing": 36.17646460885414,
+          "limit": 10000.0,
+          "scope": "matrix-exponential stiffness/work proxy, not a wall-time guarantee"
+        },
+        "inputs_unmodified": true,
+        "diagnostics": {
+          "schema_version": 2,
+          "solve_ms": 4.44604100084689,
+          "internal_steps": 400,
+          "dt_max_s": 0.0005,
+          "requested_dt_s": 0.0005,
+          "actual_dt_min_s": 0.0005,
+          "actual_dt_max_s": 0.0005,
+          "actual_dt_histogram": {
+            "0.0005": 400
+          },
+          "cfl_limit_s": null,
+          "method": "crank_nicolson",
+          "backend": "scipy",
+          "requested_backend": "scipy",
+          "diffusivity": {
+            "type": "cell_centred_field",
+            "coefficient_sha256": "825862ee6e07ed750d754a01c6c8f432fb393eb39f4c2f3f59df666124f539cc",
+            "min": 0.10363740428645182,
+            "max": 0.17790810336865945,
+            "shape": [
+              4,
+              16
+            ],
+            "unit": "m2/s",
+            "interpretation": "cell_material",
+            "face_policy": "harmonic_two_point_transmissibility",
+            "boundary": "zero_flux",
+            "max_outgoing_rate": 180.8823230442707,
+            "resident_bytes": 1888,
+            "matrix_free_temporary_bytes": 992,
+            "memory_accounting": "resident: coefficient and face/outgoing arrays; matrix-free temporary: result plus largest face-flux buffer; excludes caller input conversion, validation, Python/NumPy overhead and allocator workspace; not process RSS"
+          },
+          "backend_selection": "standard_dispatch",
+          "boundary": "zero_flux",
+          "velocity": [
+            0.0,
+            0.0
+          ],
+          "startup": "none",
+          "timestep_policy": "requested_with_exact_output_alignment",
+          "linear_solver": "scipy.sparse.linalg.splu",
+          "linear_residual_max": 2.3668752832039035e-16,
+          "linear_residual_normalization": "norm(Ax-b)/max(norm(b),1)",
+          "initial_mass": 0.25,
+          "final_mass": 0.24999999999999975,
+          "mass_scale": 1.0,
+          "mass_scale_definition": "max(abs(M0), integral(abs(c0)), 1)",
+          "relative_mass_drift": 2.498001805406602e-16,
+          "mass_balance_error": -2.498001805406602e-16,
+          "max_mass_balance_error": 2.498001805406602e-16,
+          "relative_mass_balance_error": 2.498001805406602e-16,
+          "cumulative_outward_flux": 0.0,
+          "initial_energy": 0.011253245254530031,
+          "final_energy": 0.006246956250375331,
+          "energy_max_increase": 0.0,
+          "min_concentration": 0.6849469688833394,
+          "max_concentration": 1.3150530311166606,
+          "mass_history": [
+            0.24999999999999975
+          ],
+          "energy_history": [
+            0.006246956250375331
+          ],
+          "min_history": [
+            0.7651982639857634
+          ],
+          "max_history": [
+            1.2348017360142416
+          ],
+          "cumulative_outflow_history": [
+            0.0
+          ],
+          "mass_balance_history": [
+            -2.498001805406602e-16
+          ],
+          "diagnostic_scope": "initial_and_output_frames",
+          "output_times_s": [
+            0.2
+          ],
+          "factorization_count": 1,
+          "factorization_cache_hits": 399,
+          "factorization_cache_entries": 1,
+          "factorization_cache_bytes": 11364,
+          "factorization_cache": {
+            "entries": 1,
+            "bytes": 11364,
+            "max_entries": 8,
+            "max_bytes": 268435456,
+            "memory_accounting": "CSC system and SuperLU L/U arrays; excludes allocator/workspace overhead"
+          },
+          "output_bytes": 512,
+          "timings_ms": {
+            "matrix": 0.05425000017567072,
+            "factorization": 0.12612499995157123,
+            "advance": 4.024556003059843,
+            "conversion": 0.08125000022118911,
+            "output": 0.014874998669256456,
+            "total": 4.44604100084689
+          },
+          "dtype": "float64"
+        },
+        "observed_rms_order": null
+      },
+      {
+        "nx": 32,
+        "ny": 4,
+        "grid": {
+          "bounds": [
+            0.0,
+            0.0,
+            1.0,
+            0.25
+          ],
+          "nx": 32,
+          "ny": 4,
+          "dx_m": 0.03125,
+          "dy_m": 0.0625,
+          "location": "cell_centres",
+          "axis_order": "frame,y,x",
+          "y_direction": "south_to_north"
+        },
+        "h_x_m": 0.03125,
+        "dt_s": 0.0005,
+        "duration_s": 0.2,
+        "total_error": {
+          "linf": 0.00012441439895738426,
+          "rms": 7.263762796255534e-05
+        },
+        "temporal_error": {
+          "linf": 3.1596480987161613e-09,
+          "rms": 2.1270833195823408e-09
+        },
+        "spatial_error": {
+          "linf": 0.00012441755858394465,
+          "rms": 7.263972455941065e-05
+        },
+        "temporal_to_spatial_rms_ratio": 2.928264572152445e-05,
+        "time_error_below_ten_percent_of_spatial": true,
+        "kappa_min": 0.10334432180280631,
+        "kappa_max": 0.17892527434576233,
+        "reference_admission": {
+          "duration_times_max_outgoing": 91.33388099192905,
+          "limit": 10000.0,
+          "scope": "matrix-exponential stiffness/work proxy, not a wall-time guarantee"
+        },
+        "inputs_unmodified": true,
+        "diagnostics": {
+          "schema_version": 2,
+          "solve_ms": 4.757749999043881,
+          "internal_steps": 400,
+          "dt_max_s": 0.0005,
+          "requested_dt_s": 0.0005,
+          "actual_dt_min_s": 0.0005,
+          "actual_dt_max_s": 0.0005,
+          "actual_dt_histogram": {
+            "0.0005": 400
+          },
+          "cfl_limit_s": null,
+          "method": "crank_nicolson",
+          "backend": "scipy",
+          "requested_backend": "scipy",
+          "diffusivity": {
+            "type": "cell_centred_field",
+            "coefficient_sha256": "0f3170665173de0df325c88180cf95bd1387a5863cbd0472b9d5c83b7dba4908",
+            "min": 0.10334432180280631,
+            "max": 0.17892527434576233,
+            "shape": [
+              4,
+              32
+            ],
+            "unit": "m2/s",
+            "interpretation": "cell_material",
+            "face_policy": "harmonic_two_point_transmissibility",
+            "boundary": "zero_flux",
+            "max_outgoing_rate": 456.6694049596452,
+            "resident_bytes": 3808,
+            "matrix_free_temporary_bytes": 2016,
+            "memory_accounting": "resident: coefficient and face/outgoing arrays; matrix-free temporary: result plus largest face-flux buffer; excludes caller input conversion, validation, Python/NumPy overhead and allocator workspace; not process RSS"
+          },
+          "backend_selection": "standard_dispatch",
+          "boundary": "zero_flux",
+          "velocity": [
+            0.0,
+            0.0
+          ],
+          "startup": "none",
+          "timestep_policy": "requested_with_exact_output_alignment",
+          "linear_solver": "scipy.sparse.linalg.splu",
+          "linear_residual_max": 2.523514090103945e-16,
+          "linear_residual_normalization": "norm(Ax-b)/max(norm(b),1)",
+          "initial_mass": 0.25,
+          "final_mass": 0.25000000000000167,
+          "mass_scale": 1.0,
+          "mass_scale_definition": "max(abs(M0), integral(abs(c0)), 1)",
+          "relative_mass_drift": 1.6653345369377348e-15,
+          "mass_balance_error": 1.6653345369377348e-15,
+          "max_mass_balance_error": 1.6653345369377348e-15,
+          "relative_mass_balance_error": 1.6653345369377348e-15,
+          "cumulative_outward_flux": 0.0,
+          "initial_energy": 0.011281175092102622,
+          "final_energy": 0.0062455308831689225,
+          "energy_max_increase": 0.0,
+          "min_concentration": 0.6827407894343833,
+          "max_concentration": 1.3172592105656167,
+          "mass_history": [
+            0.25000000000000167
+          ],
+          "energy_history": [
+            0.0062455308831689225
+          ],
+          "min_history": [
+            0.7639229692588181
+          ],
+          "max_history": [
+            1.2360770307411963
+          ],
+          "cumulative_outflow_history": [
+            0.0
+          ],
+          "mass_balance_history": [
+            1.6653345369377348e-15
+          ],
+          "diagnostic_scope": "initial_and_output_frames",
+          "output_times_s": [
+            0.2
+          ],
+          "factorization_count": 1,
+          "factorization_cache_hits": 399,
+          "factorization_cache_entries": 2,
+          "factorization_cache_bytes": 34632,
+          "factorization_cache": {
+            "entries": 2,
+            "bytes": 34632,
+            "max_entries": 8,
+            "max_bytes": 268435456,
+            "memory_accounting": "CSC system and SuperLU L/U arrays; excludes allocator/workspace overhead"
+          },
+          "output_bytes": 1024,
+          "timings_ms": {
+            "matrix": 0.04841699956159573,
+            "factorization": 0.11187500058440492,
+            "advance": 4.3849939884239575,
+            "conversion": 0.07399999958579428,
+            "output": 0.008167000487446785,
+            "total": 4.757749999043881
+          },
+          "dtype": "float64"
+        },
+        "observed_rms_order": 1.9933079635982256
+      },
+      {
+        "nx": 64,
+        "ny": 4,
+        "grid": {
+          "bounds": [
+            0.0,
+            0.0,
+            1.0,
+            0.25
+          ],
+          "nx": 64,
+          "ny": 4,
+          "dx_m": 0.015625,
+          "dy_m": 0.0625,
+          "location": "cell_centres",
+          "axis_order": "frame,y,x",
+          "y_direction": "south_to_north"
+        },
+        "h_x_m": 0.015625,
+        "dt_s": 0.0005,
+        "duration_s": 0.2,
+        "total_error": {
+          "linf": 3.122374573727438e-05,
+          "rms": 1.8178906707159218e-05
+        },
+        "temporal_error": {
+          "linf": 3.187943464766363e-09,
+          "rms": 2.1343515096786987e-09
+        },
+        "spatial_error": {
+          "linf": 3.122693365509299e-05,
+          "rms": 1.8181011820086492e-05
+        },
+        "temporal_to_spatial_rms_ratio": 0.00011739453946785592,
+        "time_error_below_ten_percent_of_spatial": true,
+        "kappa_min": 0.10327113947851867,
+        "kappa_max": 0.17918235047188255,
+        "reference_admission": {
+          "duration_times_max_outgoing": 311.64032404706353,
+          "limit": 10000.0,
+          "scope": "matrix-exponential stiffness/work proxy, not a wall-time guarantee"
+        },
+        "inputs_unmodified": true,
+        "diagnostics": {
+          "schema_version": 2,
+          "solve_ms": 6.0298749995126855,
+          "internal_steps": 400,
+          "dt_max_s": 0.0005,
+          "requested_dt_s": 0.0005,
+          "actual_dt_min_s": 0.0005,
+          "actual_dt_max_s": 0.0005,
+          "actual_dt_histogram": {
+            "0.0005": 400
+          },
+          "cfl_limit_s": null,
+          "method": "crank_nicolson",
+          "backend": "scipy",
+          "requested_backend": "scipy",
+          "diffusivity": {
+            "type": "cell_centred_field",
+            "coefficient_sha256": "0da70ce8aed6b9328b31a46a409f53517a77158123fb33ef7d20c08bf1a08c4d",
+            "min": 0.10327113947851867,
+            "max": 0.17918235047188255,
+            "shape": [
+              4,
+              64
+            ],
+            "unit": "m2/s",
+            "interpretation": "cell_material",
+            "face_policy": "harmonic_two_point_transmissibility",
+            "boundary": "zero_flux",
+            "max_outgoing_rate": 1558.2016202353175,
+            "resident_bytes": 7648,
+            "matrix_free_temporary_bytes": 4064,
+            "memory_accounting": "resident: coefficient and face/outgoing arrays; matrix-free temporary: result plus largest face-flux buffer; excludes caller input conversion, validation, Python/NumPy overhead and allocator workspace; not process RSS"
+          },
+          "backend_selection": "standard_dispatch",
+          "boundary": "zero_flux",
+          "velocity": [
+            0.0,
+            0.0
+          ],
+          "startup": "none",
+          "timestep_policy": "requested_with_exact_output_alignment",
+          "linear_solver": "scipy.sparse.linalg.splu",
+          "linear_residual_max": 2.6442104486881536e-16,
+          "linear_residual_normalization": "norm(Ax-b)/max(norm(b),1)",
+          "initial_mass": 0.25,
+          "final_mass": 0.2499999999999998,
+          "mass_scale": 1.0,
+          "mass_scale_definition": "max(abs(M0), integral(abs(c0)), 1)",
+          "relative_mass_drift": 1.942890293094024e-16,
+          "mass_balance_error": -1.942890293094024e-16,
+          "max_mass_balance_error": 1.942890293094024e-16,
+          "relative_mass_balance_error": 1.942890293094024e-16,
+          "cumulative_outward_flux": 0.0,
+          "initial_energy": 0.011288168070411587,
+          "final_energy": 0.006245153912316798,
+          "energy_max_increase": 0.0,
+          "min_concentration": 0.6821854519756416,
+          "max_concentration": 1.3178145480243584,
+          "mass_history": [
+            0.2499999999999998
+          ],
+          "energy_history": [
+            0.006245153912316798
+          ],
+          "min_history": [
+            0.7636031432935012
+          ],
+          "max_history": [
+            1.2363968567064776
+          ],
+          "cumulative_outflow_history": [
+            0.0
+          ],
+          "mass_balance_history": [
+            -1.942890293094024e-16
+          ],
+          "diagnostic_scope": "initial_and_output_frames",
+          "output_times_s": [
+            0.2
+          ],
+          "factorization_count": 1,
+          "factorization_cache_hits": 399,
+          "factorization_cache_entries": 3,
+          "factorization_cache_bytes": 81708,
+          "factorization_cache": {
+            "entries": 3,
+            "bytes": 81708,
+            "max_entries": 8,
+            "max_bytes": 268435456,
+            "memory_accounting": "CSC system and SuperLU L/U arrays; excludes allocator/workspace overhead"
+          },
+          "output_bytes": 2048,
+          "timings_ms": {
+            "matrix": 0.04866699964622967,
+            "factorization": 0.12558300113596488,
+            "advance": 5.629085000691703,
+            "conversion": 0.0636669992672978,
+            "output": 0.020166000467725098,
+            "total": 6.0298749995126855
+          },
+          "dtype": "float64"
+        },
+        "observed_rms_order": 1.9983262406659783
+      },
+      {
+        "nx": 128,
+        "ny": 4,
+        "grid": {
+          "bounds": [
+            0.0,
+            0.0,
+            1.0,
+            0.25
+          ],
+          "nx": 128,
+          "ny": 4,
+          "dx_m": 0.0078125,
+          "dy_m": 0.0625,
+          "location": "cell_centres",
+          "axis_order": "frame,y,x",
+          "y_direction": "south_to_north"
+        },
+        "h_x_m": 0.0078125,
+        "dt_s": 0.0005,
+        "duration_s": 0.2,
+        "total_error": {
+          "linf": 7.811216736541837e-06,
+          "rms": 4.544464373345372e-06
+        },
+        "temporal_error": {
+          "linf": 3.1950704304506417e-09,
+          "rms": 2.1361695590076068e-09
+        },
+        "spatial_error": {
+          "linf": 7.814411797868459e-06,
+          "rms": 4.54657160435276e-06
+        },
+        "temporal_to_spatial_rms_ratio": 0.0004698418379603871,
+        "time_error_below_ten_percent_of_spatial": true,
+        "kappa_min": 0.10325284943518838,
+        "kappa_max": 0.17924679537286756,
+        "reference_admission": {
+          "duration_times_max_outgoing": 1192.7852275795178,
+          "limit": 10000.0,
+          "scope": "matrix-exponential stiffness/work proxy, not a wall-time guarantee"
+        },
+        "inputs_unmodified": true,
+        "diagnostics": {
+          "schema_version": 2,
+          "solve_ms": 8.356749998711166,
+          "internal_steps": 400,
+          "dt_max_s": 0.0005,
+          "requested_dt_s": 0.0005,
+          "actual_dt_min_s": 0.0005,
+          "actual_dt_max_s": 0.0005,
+          "actual_dt_histogram": {
+            "0.0005": 400
+          },
+          "cfl_limit_s": null,
+          "method": "crank_nicolson",
+          "backend": "scipy",
+          "requested_backend": "scipy",
+          "diffusivity": {
+            "type": "cell_centred_field",
+            "coefficient_sha256": "000bed122f1a545edbf78bb6c3bb9fd2b51ffc27e07adbe72e07e0baa569657e",
+            "min": 0.10325284943518838,
+            "max": 0.17924679537286756,
+            "shape": [
+              4,
+              128
+            ],
+            "unit": "m2/s",
+            "interpretation": "cell_material",
+            "face_policy": "harmonic_two_point_transmissibility",
+            "boundary": "zero_flux",
+            "max_outgoing_rate": 5963.92613789759,
+            "resident_bytes": 15328,
+            "matrix_free_temporary_bytes": 8160,
+            "memory_accounting": "resident: coefficient and face/outgoing arrays; matrix-free temporary: result plus largest face-flux buffer; excludes caller input conversion, validation, Python/NumPy overhead and allocator workspace; not process RSS"
+          },
+          "backend_selection": "standard_dispatch",
+          "boundary": "zero_flux",
+          "velocity": [
+            0.0,
+            0.0
+          ],
+          "startup": "none",
+          "timestep_policy": "requested_with_exact_output_alignment",
+          "linear_solver": "scipy.sparse.linalg.splu",
+          "linear_residual_max": 3.8011252419034636e-16,
+          "linear_residual_normalization": "norm(Ax-b)/max(norm(b),1)",
+          "initial_mass": 0.25,
+          "final_mass": 0.2500000000000018,
+          "mass_scale": 1.0,
+          "mass_scale_definition": "max(abs(M0), integral(abs(c0)), 1)",
+          "relative_mass_drift": 1.7763568394002505e-15,
+          "mass_balance_error": 1.7763568394002505e-15,
+          "max_mass_balance_error": 1.7763568394002505e-15,
+          "relative_mass_balance_error": 1.7763568394002505e-15,
+          "cumulative_outward_flux": 0.0,
+          "initial_energy": 0.011289916973669642,
+          "final_energy": 0.006245058374389762,
+          "energy_max_increase": 0.0,
+          "min_concentration": 0.6820463789336315,
+          "max_concentration": 1.3179536210663685,
+          "mass_history": [
+            0.2500000000000018
+          ],
+          "energy_history": [
+            0.006245058374389762
+          ],
+          "min_history": [
+            0.7635231241583303
+          ],
+          "max_history": [
+            1.2364768758416773
+          ],
+          "cumulative_outflow_history": [
+            0.0
+          ],
+          "mass_balance_history": [
+            1.7763568394002505e-15
+          ],
+          "diagnostic_scope": "initial_and_output_frames",
+          "output_times_s": [
+            0.2
+          ],
+          "factorization_count": 1,
+          "factorization_cache_hits": 399,
+          "factorization_cache_entries": 4,
+          "factorization_cache_bytes": 176400,
+          "factorization_cache": {
+            "entries": 4,
+            "bytes": 176400,
+            "max_entries": 8,
+            "max_bytes": 268435456,
+            "memory_accounting": "CSC system and SuperLU L/U arrays; excludes allocator/workspace overhead"
+          },
+          "output_bytes": 4096,
+          "timings_ms": {
+            "matrix": 0.0591669995628763,
+            "factorization": 0.1814580009522615,
+            "advance": 7.892102976256865,
+            "conversion": 0.06504199882328976,
+            "output": 0.011042000551242381,
+            "total": 8.356749998711166
+          },
+          "dtype": "float64"
+        },
+        "observed_rms_order": 1.9995815121922738
+      }
+    ],
+    "boundary": "zero_flux",
+    "method": "crank_nicolson",
+    "coefficient_sampling": "analytic positive scalar coefficient sampled at cell centres; harmonic face rule",
+    "initialization": "exact finite-volume cell averages, including cosine sinc factors",
+    "continuous_solution": "mean+A*exp(-D*pi^2*t/Lx^2)*(cos(theta)+b*cos(3*theta)), theta=pi*x/Lx",
+    "coefficient": "D*(1+(b/3)*(1+2*cos(2*theta)))/(1+3*b*(1+2*cos(2*theta))), 0<|b|<1/9",
+    "identity": "kappa*u_x=-A*exp(-D*pi^2*t/Lx^2)*(D*pi/Lx)*(sin(theta)+(b/3)*sin(3*theta))",
+    "reference_hierarchy": "independent continuous analytic cell averages; expm_multiply of fixed production spatial matrix isolates time error",
+    "reference_limitation": "matrix exponential is a floating-point high-accuracy reference, not interval-certified; spatial correctness is judged separately against the exact PDE",
+    "scope": "x refinement only, fixed ny; y-constant solution and coefficient; no general 2-D spatial-order claim"
+  },
+  "temporal": {
+    "boundaries": [
+      {
+        "boundary": "zero_flux",
+        "grid": {
+          "bounds": [
+            0.0,
+            0.0,
+            1.0,
+            0.7
+          ],
+          "nx": 10,
+          "ny": 6,
+          "dx_m": 0.1,
+          "dy_m": 0.11666666666666665,
+          "location": "cell_centres",
+          "axis_order": "frame,y,x",
+          "y_direction": "south_to_north"
+        },
+        "duration_s": 0.05533171651271898,
+        "independent_fe_positivity_limit_s": 0.013832929128179745,
+        "operator_max_absolute_difference": 1.4210854715202004e-14,
+        "independent_matrix_symmetry_residual": 0.0,
+        "independent_matrix_row_sum_residual": 1.0658141036401503e-14,
+        "largest_eigenvalue": 6.7465617790018135e-15,
+        "methods": {
+          "explicit_euler": [
+            {
+              "requested_steps": 8,
+              "dt_s": 0.006916464564089873,
+              "error": {
+                "linf": 0.0010574393515678793,
+                "rms": 0.00046435543006774504
+              },
+              "diagnostics": {
+                "schema_version": 2,
+                "solve_ms": 0.1647080007387558,
+                "internal_steps": 8,
+                "dt_max_s": 0.006916464564089873,
+                "requested_dt_s": 0.006916464564089873,
+                "actual_dt_min_s": 0.006916464564089869,
+                "actual_dt_max_s": 0.006916464564089873,
+                "actual_dt_histogram": {
+                  "0.006916464564089873": 7,
+                  "0.006916464564089869": 1
+                },
+                "cfl_limit_s": 0.013832929128179747,
+                "method": "explicit_euler",
+                "backend": "numpy",
+                "requested_backend": "numpy",
+                "diffusivity": {
+                  "type": "cell_centred_field",
+                  "coefficient_sha256": "e5a84dc8efa1d8805fdbc7ee013adbf3682043a8cb06d0e0cfb4da359607abd3",
+                  "min": 0.07855290418778377,
+                  "max": 0.22144709581221622,
+                  "shape": [
+                    6,
+                    10
+                  ],
+                  "unit": "m2/s",
+                  "interpretation": "cell_material",
+                  "face_policy": "harmonic_two_point_transmissibility",
+                  "boundary": "zero_flux",
+                  "max_outgoing_rate": 72.29126895205805,
+                  "resident_bytes": 1792,
+                  "matrix_free_temporary_bytes": 912,
+                  "memory_accounting": "resident: coefficient and face/outgoing arrays; matrix-free temporary: result plus largest face-flux buffer; excludes caller input conversion, validation, Python/NumPy overhead and allocator workspace; not process RSS"
+                },
+                "backend_selection": "standard_dispatch",
+                "boundary": "zero_flux",
+                "velocity": [
+                  0.0,
+                  0.0
+                ],
+                "startup": "none",
+                "timestep_policy": "requested_with_exact_output_alignment",
+                "linear_solver": "none",
+                "linear_residual_max": 0.0,
+                "linear_residual_normalization": "norm(Ax-b)/max(norm(b),1)",
+                "initial_mass": 0.7,
+                "final_mass": 0.7,
+                "mass_scale": 1.0,
+                "mass_scale_definition": "max(abs(M0), integral(abs(c0)), 1)",
+                "relative_mass_drift": 0.0,
+                "mass_balance_error": 0.0,
+                "max_mass_balance_error": 0.0,
+                "relative_mass_balance_error": 0.0,
+                "cumulative_outward_flux": 0.0,
+                "initial_energy": 0.010602258834865845,
+                "final_energy": 0.006577384984628059,
+                "energy_max_increase": 0.0,
+                "min_concentration": 0.7651752427324953,
+                "max_concentration": 1.2348247572675048,
+                "mass_history": [
+                  0.7
+                ],
+                "energy_history": [
+                  0.006577384984628059
+                ],
+                "min_history": [
+                  0.8110340058473194
+                ],
+                "max_history": [
+                  1.1889659941526804
+                ],
+                "cumulative_outflow_history": [
+                  0.0
+                ],
+                "mass_balance_history": [
+                  0.0
+                ],
+                "diagnostic_scope": "initial_and_output_frames",
+                "output_times_s": [
+                  0.05533171651271898
+                ],
+                "factorization_count": 0,
+                "factorization_cache_hits": 0,
+                "factorization_cache_entries": 4,
+                "factorization_cache_bytes": 176400,
+                "factorization_cache": {
+                  "entries": 4,
+                  "bytes": 176400,
+                  "max_entries": 8,
+                  "max_bytes": 268435456,
+                  "memory_accounting": "CSC system and SuperLU L/U arrays; excludes allocator/workspace overhead"
+                },
+                "output_bytes": 480,
+                "timings_ms": {
+                  "matrix": 0.0,
+                  "factorization": 0.0,
+                  "advance": 0.06633300108660478,
+                  "conversion": 0.07229099901451264,
+                  "output": 0.006416999895009212,
+                  "total": 0.1647080007387558
+                },
+                "dtype": "float64"
+              },
+              "observed_rms_order": null
+            },
+            {
+              "requested_steps": 16,
+              "dt_s": 0.0034582322820449363,
+              "error": {
+                "linf": 0.0005175828951973216,
+                "rms": 0.00022829065163856017
+              },
+              "diagnostics": {
+                "schema_version": 2,
+                "solve_ms": 0.18508399989514146,
+                "internal_steps": 16,
+                "dt_max_s": 0.0034582322820449363,
+                "requested_dt_s": 0.0034582322820449363,
+                "actual_dt_min_s": 0.0034582322820449346,
+                "actual_dt_max_s": 0.0034582322820449363,
+                "actual_dt_histogram": {
+                  "0.0034582322820449363": 15,
+                  "0.0034582322820449346": 1
+                },
+                "cfl_limit_s": 0.013832929128179747,
+                "method": "explicit_euler",
+                "backend": "numpy",
+                "requested_backend": "numpy",
+                "diffusivity": {
+                  "type": "cell_centred_field",
+                  "coefficient_sha256": "e5a84dc8efa1d8805fdbc7ee013adbf3682043a8cb06d0e0cfb4da359607abd3",
+                  "min": 0.07855290418778377,
+                  "max": 0.22144709581221622,
+                  "shape": [
+                    6,
+                    10
+                  ],
+                  "unit": "m2/s",
+                  "interpretation": "cell_material",
+                  "face_policy": "harmonic_two_point_transmissibility",
+                  "boundary": "zero_flux",
+                  "max_outgoing_rate": 72.29126895205805,
+                  "resident_bytes": 1792,
+                  "matrix_free_temporary_bytes": 912,
+                  "memory_accounting": "resident: coefficient and face/outgoing arrays; matrix-free temporary: result plus largest face-flux buffer; excludes caller input conversion, validation, Python/NumPy overhead and allocator workspace; not process RSS"
+                },
+                "backend_selection": "standard_dispatch",
+                "boundary": "zero_flux",
+                "velocity": [
+                  0.0,
+                  0.0
+                ],
+                "startup": "none",
+                "timestep_policy": "requested_with_exact_output_alignment",
+                "linear_solver": "none",
+                "linear_residual_max": 0.0,
+                "linear_residual_normalization": "norm(Ax-b)/max(norm(b),1)",
+                "initial_mass": 0.7,
+                "final_mass": 0.6999999999999998,
+                "mass_scale": 1.0,
+                "mass_scale_definition": "max(abs(M0), integral(abs(c0)), 1)",
+                "relative_mass_drift": 1.1102230246251565e-16,
+                "mass_balance_error": -1.1102230246251565e-16,
+                "max_mass_balance_error": 1.1102230246251565e-16,
+                "relative_mass_balance_error": 1.1102230246251565e-16,
+                "cumulative_outward_flux": 0.0,
+                "initial_energy": 0.010602258834865845,
+                "final_energy": 0.0066010127527778234,
+                "energy_max_increase": 0.0,
+                "min_concentration": 0.7651752427324953,
+                "max_concentration": 1.2348247572675048,
+                "mass_history": [
+                  0.6999999999999998
+                ],
+                "energy_history": [
+                  0.0066010127527778234
+                ],
+                "min_history": [
+                  0.8108310238404527
+                ],
+                "max_history": [
+                  1.1891689761595472
+                ],
+                "cumulative_outflow_history": [
+                  0.0
+                ],
+                "mass_balance_history": [
+                  -1.1102230246251565e-16
+                ],
+                "diagnostic_scope": "initial_and_output_frames",
+                "output_times_s": [
+                  0.05533171651271898
+                ],
+                "factorization_count": 0,
+                "factorization_cache_hits": 0,
+                "factorization_cache_entries": 4,
+                "factorization_cache_bytes": 176400,
+                "factorization_cache": {
+                  "entries": 4,
+                  "bytes": 176400,
+                  "max_entries": 8,
+                  "max_bytes": 268435456,
+                  "memory_accounting": "CSC system and SuperLU L/U arrays; excludes allocator/workspace overhead"
+                },
+                "output_bytes": 480,
+                "timings_ms": {
+                  "matrix": 0.0,
+                  "factorization": 0.0,
+                  "advance": 0.10916900282609276,
+                  "conversion": 0.05691699880117085,
+                  "output": 0.005167001290828921,
+                  "total": 0.18508399989514146
+                },
+                "dtype": "float64"
+              },
+              "observed_rms_order": 1.024357722267242
+            },
+            {
+              "requested_steps": 32,
+              "dt_s": 0.0017291161410224682,
+              "error": {
+                "linf": 0.00025617744980421797,
+                "rms": 0.00011320709904567496
+              },
+              "diagnostics": {
+                "schema_version": 2,
+                "solve_ms": 0.28625000049942173,
+                "internal_steps": 32,
+                "dt_max_s": 0.0017291161410224682,
+                "requested_dt_s": 0.0017291161410224682,
+                "actual_dt_min_s": 0.0017291161410224673,
+                "actual_dt_max_s": 0.0017291161410224682,
+                "actual_dt_histogram": {
+                  "0.0017291161410224682": 31,
+                  "0.0017291161410224673": 1
+                },
+                "cfl_limit_s": 0.013832929128179747,
+                "method": "explicit_euler",
+                "backend": "numpy",
+                "requested_backend": "numpy",
+                "diffusivity": {
+                  "type": "cell_centred_field",
+                  "coefficient_sha256": "e5a84dc8efa1d8805fdbc7ee013adbf3682043a8cb06d0e0cfb4da359607abd3",
+                  "min": 0.07855290418778377,
+                  "max": 0.22144709581221622,
+                  "shape": [
+                    6,
+                    10
+                  ],
+                  "unit": "m2/s",
+                  "interpretation": "cell_material",
+                  "face_policy": "harmonic_two_point_transmissibility",
+                  "boundary": "zero_flux",
+                  "max_outgoing_rate": 72.29126895205805,
+                  "resident_bytes": 1792,
+                  "matrix_free_temporary_bytes": 912,
+                  "memory_accounting": "resident: coefficient and face/outgoing arrays; matrix-free temporary: result plus largest face-flux buffer; excludes caller input conversion, validation, Python/NumPy overhead and allocator workspace; not process RSS"
+                },
+                "backend_selection": "standard_dispatch",
+                "boundary": "zero_flux",
+                "velocity": [
+                  0.0,
+                  0.0
+                ],
+                "startup": "none",
+                "timestep_policy": "requested_with_exact_output_alignment",
+                "linear_solver": "none",
+                "linear_residual_max": 0.0,
+                "linear_residual_normalization": "norm(Ax-b)/max(norm(b),1)",
+                "initial_mass": 0.7,
+                "final_mass": 0.7,
+                "mass_scale": 1.0,
+                "mass_scale_definition": "max(abs(M0), integral(abs(c0)), 1)",
+                "relative_mass_drift": 0.0,
+                "mass_balance_error": 0.0,
+                "max_mass_balance_error": 0.0,
+                "relative_mass_balance_error": 0.0,
+                "cumulative_outward_flux": 0.0,
+                "initial_energy": 0.010602258834865845,
+                "final_energy": 0.006612684300480543,
+                "energy_max_increase": 0.0,
+                "min_concentration": 0.7651752427324953,
+                "max_concentration": 1.2348247572675048,
+                "mass_history": [
+                  0.7
+                ],
+                "energy_history": [
+                  0.006612684300480543
+                ],
+                "min_history": [
+                  0.8107280616697804
+                ],
+                "max_history": [
+                  1.1892719383302197
+                ],
+                "cumulative_outflow_history": [
+                  0.0
+                ],
+                "mass_balance_history": [
+                  0.0
+                ],
+                "diagnostic_scope": "initial_and_output_frames",
+                "output_times_s": [
+                  0.05533171651271898
+                ],
+                "factorization_count": 0,
+                "factorization_cache_hits": 0,
+                "factorization_cache_entries": 4,
+                "factorization_cache_bytes": 176400,
+                "factorization_cache": {
+                  "entries": 4,
+                  "bytes": 176400,
+                  "max_entries": 8,
+                  "max_bytes": 268435456,
+                  "memory_accounting": "CSC system and SuperLU L/U arrays; excludes allocator/workspace overhead"
+                },
+                "output_bytes": 480,
+                "timings_ms": {
+                  "matrix": 0.0,
+                  "factorization": 0.0,
+                  "advance": 0.20862400015175808,
+                  "conversion": 0.05558299926633481,
+                  "output": 0.004751000233227387,
+                  "total": 0.28625000049942173
+                },
+                "dtype": "float64"
+              },
+              "observed_rms_order": 1.0119073530728229
+            },
+            {
+              "requested_steps": 64,
+              "dt_s": 0.0008645580705112341,
+              "error": {
+                "linf": 0.0001274544019145285,
+                "rms": 5.637305243194909e-05
+              },
+              "diagnostics": {
+                "schema_version": 2,
+                "solve_ms": 0.49125000077765435,
+                "internal_steps": 64,
+                "dt_max_s": 0.0008645580705112341,
+                "requested_dt_s": 0.0008645580705112341,
+                "actual_dt_min_s": 0.0008645580705112341,
+                "actual_dt_max_s": 0.0008645580705112341,
+                "actual_dt_histogram": {
+                  "0.0008645580705112341": 64
+                },
+                "cfl_limit_s": 0.013832929128179747,
+                "method": "explicit_euler",
+                "backend": "numpy",
+                "requested_backend": "numpy",
+                "diffusivity": {
+                  "type": "cell_centred_field",
+                  "coefficient_sha256": "e5a84dc8efa1d8805fdbc7ee013adbf3682043a8cb06d0e0cfb4da359607abd3",
+                  "min": 0.07855290418778377,
+                  "max": 0.22144709581221622,
+                  "shape": [
+                    6,
+                    10
+                  ],
+                  "unit": "m2/s",
+                  "interpretation": "cell_material",
+                  "face_policy": "harmonic_two_point_transmissibility",
+                  "boundary": "zero_flux",
+                  "max_outgoing_rate": 72.29126895205805,
+                  "resident_bytes": 1792,
+                  "matrix_free_temporary_bytes": 912,
+                  "memory_accounting": "resident: coefficient and face/outgoing arrays; matrix-free temporary: result plus largest face-flux buffer; excludes caller input conversion, validation, Python/NumPy overhead and allocator workspace; not process RSS"
+                },
+                "backend_selection": "standard_dispatch",
+                "boundary": "zero_flux",
+                "velocity": [
+                  0.0,
+                  0.0
+                ],
+                "startup": "none",
+                "timestep_policy": "requested_with_exact_output_alignment",
+                "linear_solver": "none",
+                "linear_residual_max": 0.0,
+                "linear_residual_normalization": "norm(Ax-b)/max(norm(b),1)",
+                "initial_mass": 0.7,
+                "final_mass": 0.7,
+                "mass_scale": 1.0,
+                "mass_scale_definition": "max(abs(M0), integral(abs(c0)), 1)",
+                "relative_mass_drift": 0.0,
+                "mass_balance_error": 0.0,
+                "max_mass_balance_error": 0.0,
+                "relative_mass_balance_error": 0.0,
+                "cumulative_outward_flux": 0.0,
+                "initial_energy": 0.010602258834865845,
+                "final_energy": 0.006618484993520787,
+                "energy_max_increase": 0.0,
+                "min_concentration": 0.7651752427324953,
+                "max_concentration": 1.2348247572675048,
+                "mass_history": [
+                  0.7
+                ],
+                "energy_history": [
+                  0.006618484993520787
+                ],
+                "min_history": [
+                  0.810676291320161
+                ],
+                "max_history": [
+                  1.189323708679839
+                ],
+                "cumulative_outflow_history": [
+                  0.0
+                ],
+                "mass_balance_history": [
+                  0.0
+                ],
+                "diagnostic_scope": "initial_and_output_frames",
+                "output_times_s": [
+                  0.05533171651271898
+                ],
+                "factorization_count": 0,
+                "factorization_cache_hits": 0,
+                "factorization_cache_entries": 4,
+                "factorization_cache_bytes": 176400,
+                "factorization_cache": {
+                  "entries": 4,
+                  "bytes": 176400,
+                  "max_entries": 8,
+                  "max_bytes": 268435456,
+                  "memory_accounting": "CSC system and SuperLU L/U arrays; excludes allocator/workspace overhead"
+                },
+                "output_bytes": 480,
+                "timings_ms": {
+                  "matrix": 0.0,
+                  "factorization": 0.0,
+                  "advance": 0.4105400003027171,
+                  "conversion": 0.05274999966786709,
+                  "output": 0.004458999683265574,
+                  "total": 0.49125000077765435
+                },
+                "dtype": "float64"
+              },
+              "observed_rms_order": 1.0058868379045947
+            }
+          ],
+          "backward_euler": [
+            {
+              "requested_steps": 8,
+              "dt_s": 0.006916464564089873,
+              "error": {
+                "linf": 0.0009778738963354128,
+                "rms": 0.0004353043600684415
+              },
+              "diagnostics": {
+                "schema_version": 2,
+                "solve_ms": 0.4307080016587861,
+                "internal_steps": 8,
+                "dt_max_s": 0.006916464564089873,
+                "requested_dt_s": 0.006916464564089873,
+                "actual_dt_min_s": 0.006916464564089869,
+                "actual_dt_max_s": 0.006916464564089873,
+                "actual_dt_histogram": {
+                  "0.006916464564089873": 7,
+                  "0.006916464564089869": 1
+                },
+                "cfl_limit_s": null,
+                "method": "backward_euler",
+                "backend": "scipy",
+                "requested_backend": "scipy",
+                "diffusivity": {
+                  "type": "cell_centred_field",
+                  "coefficient_sha256": "e5a84dc8efa1d8805fdbc7ee013adbf3682043a8cb06d0e0cfb4da359607abd3",
+                  "min": 0.07855290418778377,
+                  "max": 0.22144709581221622,
+                  "shape": [
+                    6,
+                    10
+                  ],
+                  "unit": "m2/s",
+                  "interpretation": "cell_material",
+                  "face_policy": "harmonic_two_point_transmissibility",
+                  "boundary": "zero_flux",
+                  "max_outgoing_rate": 72.29126895205805,
+                  "resident_bytes": 1792,
+                  "matrix_free_temporary_bytes": 912,
+                  "memory_accounting": "resident: coefficient and face/outgoing arrays; matrix-free temporary: result plus largest face-flux buffer; excludes caller input conversion, validation, Python/NumPy overhead and allocator workspace; not process RSS"
+                },
+                "backend_selection": "standard_dispatch",
+                "boundary": "zero_flux",
+                "velocity": [
+                  0.0,
+                  0.0
+                ],
+                "startup": "none",
+                "timestep_policy": "requested_with_exact_output_alignment",
+                "linear_solver": "scipy.sparse.linalg.splu",
+                "linear_residual_max": 2.631896902830118e-16,
+                "linear_residual_normalization": "norm(Ax-b)/max(norm(b),1)",
+                "initial_mass": 0.7,
+                "final_mass": 0.6999999999999997,
+                "mass_scale": 1.0,
+                "mass_scale_definition": "max(abs(M0), integral(abs(c0)), 1)",
+                "relative_mass_drift": 2.220446049250313e-16,
+                "mass_balance_error": -2.220446049250313e-16,
+                "max_mass_balance_error": 2.220446049250313e-16,
+                "relative_mass_balance_error": 2.220446049250313e-16,
+                "cumulative_outward_flux": 0.0,
+                "initial_energy": 0.010602258834865845,
+                "final_energy": 0.006669664362981071,
+                "energy_max_increase": 0.0,
+                "min_concentration": 0.7651752427324953,
+                "max_concentration": 1.2348247572675048,
+                "mass_history": [
+                  0.6999999999999997
+                ],
+                "energy_history": [
+                  0.006669664362981071
+                ],
+                "min_history": [
+                  0.8102046078543134
+                ],
+                "max_history": [
+                  1.1897953921456872
+                ],
+                "cumulative_outflow_history": [
+                  0.0
+                ],
+                "mass_balance_history": [
+                  -2.220446049250313e-16
+                ],
+                "diagnostic_scope": "initial_and_output_frames",
+                "output_times_s": [
+                  0.05533171651271898
+                ],
+                "factorization_count": 2,
+                "factorization_cache_hits": 6,
+                "factorization_cache_entries": 6,
+                "factorization_cache_bytes": 200952,
+                "factorization_cache": {
+                  "entries": 6,
+                  "bytes": 200952,
+                  "max_entries": 8,
+                  "max_bytes": 268435456,
+                  "memory_accounting": "CSC system and SuperLU L/U arrays; excludes allocator/workspace overhead"
+                },
+                "output_bytes": 480,
+                "timings_ms": {
+                  "matrix": 0.04741700104204938,
+                  "factorization": 0.18879100025515072,
+                  "advance": 0.12262599739187863,
+                  "conversion": 0.0535830004082527,
+                  "output": 0.006416999895009212,
+                  "total": 0.4307080016587861
+                },
+                "dtype": "float64"
+              },
+              "observed_rms_order": null
+            },
+            {
+              "requested_steps": 16,
+              "dt_s": 0.0034582322820449363,
+              "error": {
+                "linf": 0.0004978168938115646,
+                "rms": 0.00022103817618335974
+              },
+              "diagnostics": {
+                "schema_version": 2,
+                "solve_ms": 0.49295799908577465,
+                "internal_steps": 16,
+                "dt_max_s": 0.0034582322820449363,
+                "requested_dt_s": 0.0034582322820449363,
+                "actual_dt_min_s": 0.0034582322820449346,
+                "actual_dt_max_s": 0.0034582322820449363,
+                "actual_dt_histogram": {
+                  "0.0034582322820449363": 15,
+                  "0.0034582322820449346": 1
+                },
+                "cfl_limit_s": null,
+                "method": "backward_euler",
+                "backend": "scipy",
+                "requested_backend": "scipy",
+                "diffusivity": {
+                  "type": "cell_centred_field",
+                  "coefficient_sha256": "e5a84dc8efa1d8805fdbc7ee013adbf3682043a8cb06d0e0cfb4da359607abd3",
+                  "min": 0.07855290418778377,
+                  "max": 0.22144709581221622,
+                  "shape": [
+                    6,
+                    10
+                  ],
+                  "unit": "m2/s",
+                  "interpretation": "cell_material",
+                  "face_policy": "harmonic_two_point_transmissibility",
+                  "boundary": "zero_flux",
+                  "max_outgoing_rate": 72.29126895205805,
+                  "resident_bytes": 1792,
+                  "matrix_free_temporary_bytes": 912,
+                  "memory_accounting": "resident: coefficient and face/outgoing arrays; matrix-free temporary: result plus largest face-flux buffer; excludes caller input conversion, validation, Python/NumPy overhead and allocator workspace; not process RSS"
+                },
+                "backend_selection": "standard_dispatch",
+                "boundary": "zero_flux",
+                "velocity": [
+                  0.0,
+                  0.0
+                ],
+                "startup": "none",
+                "timestep_policy": "requested_with_exact_output_alignment",
+                "linear_solver": "scipy.sparse.linalg.splu",
+                "linear_residual_max": 2.4890068418530763e-16,
+                "linear_residual_normalization": "norm(Ax-b)/max(norm(b),1)",
+                "initial_mass": 0.7,
+                "final_mass": 0.6999999999999997,
+                "mass_scale": 1.0,
+                "mass_scale_definition": "max(abs(M0), integral(abs(c0)), 1)",
+                "relative_mass_drift": 2.220446049250313e-16,
+                "mass_balance_error": -2.220446049250313e-16,
+                "max_mass_balance_error": 2.220446049250313e-16,
+                "relative_mass_balance_error": 2.220446049250313e-16,
+                "cumulative_outward_flux": 0.0,
+                "initial_energy": 0.010602258834865845,
+                "final_energy": 0.006647143351128759,
+                "energy_max_increase": 0.0,
+                "min_concentration": 0.7651752427324953,
+                "max_concentration": 1.2348247572675048,
+                "mass_history": [
+                  0.6999999999999997
+                ],
+                "energy_history": [
+                  0.006647143351128759
+                ],
+                "min_history": [
+                  0.8104152444913669
+                ],
+                "max_history": [
+                  1.1895847555086339
+                ],
+                "cumulative_outflow_history": [
+                  0.0
+                ],
+                "mass_balance_history": [
+                  -2.220446049250313e-16
+                ],
+                "diagnostic_scope": "initial_and_output_frames",
+                "output_times_s": [
+                  0.05533171651271898
+                ],
+                "factorization_count": 2,
+                "factorization_cache_hits": 14,
+                "factorization_cache_entries": 8,
+                "factorization_cache_bytes": 225504,
+                "factorization_cache": {
+                  "entries": 8,
+                  "bytes": 225504,
+                  "max_entries": 8,
+                  "max_bytes": 268435456,
+                  "memory_accounting": "CSC system and SuperLU L/U arrays; excludes allocator/workspace overhead"
+                },
+                "output_bytes": 480,
+                "timings_ms": {
+                  "matrix": 0.04391599941300228,
+                  "factorization": 0.15466599870705977,
+                  "advance": 0.2166659996873932,
+                  "conversion": 0.05674999920302071,
+                  "output": 0.006207999831531197,
+                  "total": 0.49295799908577465
+                },
+                "dtype": "float64"
+              },
+              "observed_rms_order": 0.977728906995139
+            },
+            {
+              "requested_steps": 32,
+              "dt_s": 0.0017291161410224682,
+              "error": {
+                "linf": 0.00025124373127427546,
+                "rms": 0.00011139463239441793
+              },
+              "diagnostics": {
+                "schema_version": 2,
+                "solve_ms": 0.5576250005105976,
+                "internal_steps": 32,
+                "dt_max_s": 0.0017291161410224682,
+                "requested_dt_s": 0.0017291161410224682,
+                "actual_dt_min_s": 0.0017291161410224673,
+                "actual_dt_max_s": 0.0017291161410224682,
+                "actual_dt_histogram": {
+                  "0.0017291161410224682": 31,
+                  "0.0017291161410224673": 1
+                },
+                "cfl_limit_s": null,
+                "method": "backward_euler",
+                "backend": "scipy",
+                "requested_backend": "scipy",
+                "diffusivity": {
+                  "type": "cell_centred_field",
+                  "coefficient_sha256": "e5a84dc8efa1d8805fdbc7ee013adbf3682043a8cb06d0e0cfb4da359607abd3",
+                  "min": 0.07855290418778377,
+                  "max": 0.22144709581221622,
+                  "shape": [
+                    6,
+                    10
+                  ],
+                  "unit": "m2/s",
+                  "interpretation": "cell_material",
+                  "face_policy": "harmonic_two_point_transmissibility",
+                  "boundary": "zero_flux",
+                  "max_outgoing_rate": 72.29126895205805,
+                  "resident_bytes": 1792,
+                  "matrix_free_temporary_bytes": 912,
+                  "memory_accounting": "resident: coefficient and face/outgoing arrays; matrix-free temporary: result plus largest face-flux buffer; excludes caller input conversion, validation, Python/NumPy overhead and allocator workspace; not process RSS"
+                },
+                "backend_selection": "standard_dispatch",
+                "boundary": "zero_flux",
+                "velocity": [
+                  0.0,
+                  0.0
+                ],
+                "startup": "none",
+                "timestep_policy": "requested_with_exact_output_alignment",
+                "linear_solver": "scipy.sparse.linalg.splu",
+                "linear_residual_max": 2.612871126874282e-16,
+                "linear_residual_normalization": "norm(Ax-b)/max(norm(b),1)",
+                "initial_mass": 0.7,
+                "final_mass": 0.6999999999999997,
+                "mass_scale": 1.0,
+                "mass_scale_definition": "max(abs(M0), integral(abs(c0)), 1)",
+                "relative_mass_drift": 2.220446049250313e-16,
+                "mass_balance_error": -2.220446049250313e-16,
+                "max_mass_balance_error": 2.220446049250313e-16,
+                "relative_mass_balance_error": 2.220446049250313e-16,
+                "cumulative_outward_flux": 0.0,
+                "initial_energy": 0.010602258834865845,
+                "final_energy": 0.006635748462530425,
+                "energy_max_increase": 0.0,
+                "min_concentration": 0.7651752427324953,
+                "max_concentration": 1.2348247572675048,
+                "mass_history": [
+                  0.6999999999999997
+                ],
+                "energy_history": [
+                  0.006635748462530425
+                ],
+                "min_history": [
+                  0.810520040388856
+                ],
+                "max_history": [
+                  1.1894799596111474
+                ],
+                "cumulative_outflow_history": [
+                  0.0
+                ],
+                "mass_balance_history": [
+                  -2.220446049250313e-16
+                ],
+                "diagnostic_scope": "initial_and_output_frames",
+                "output_times_s": [
+                  0.05533171651271898
+                ],
+                "factorization_count": 2,
+                "factorization_cache_hits": 30,
+                "factorization_cache_entries": 8,
+                "factorization_cache_bytes": 215424,
+                "factorization_cache": {
+                  "entries": 8,
+                  "bytes": 215424,
+                  "max_entries": 8,
+                  "max_bytes": 268435456,
+                  "memory_accounting": "CSC system and SuperLU L/U arrays; excludes allocator/workspace overhead"
+                },
+                "output_bytes": 480,
+                "timings_ms": {
+                  "matrix": 0.04479200106288772,
+                  "factorization": 0.12854199849243741,
+                  "advance": 0.3021240027010208,
+                  "conversion": 0.05687500015483238,
+                  "output": 0.006206999387359247,
+                  "total": 0.5576250005105976
+                },
+                "dtype": "float64"
+              },
+              "observed_rms_order": 0.9886158460582966
+            },
+            {
+              "requested_steps": 64,
+              "dt_s": 0.0008645580705112341,
+              "error": {
+                "linf": 0.00012622145763663273,
+                "rms": 5.591997666688046e-05
+              },
+              "diagnostics": {
+                "schema_version": 2,
+                "solve_ms": 0.7320829990931088,
+                "internal_steps": 64,
+                "dt_max_s": 0.0008645580705112341,
+                "requested_dt_s": 0.0008645580705112341,
+                "actual_dt_min_s": 0.0008645580705112341,
+                "actual_dt_max_s": 0.0008645580705112341,
+                "actual_dt_histogram": {
+                  "0.0008645580705112341": 64
+                },
+                "cfl_limit_s": null,
+                "method": "backward_euler",
+                "backend": "scipy",
+                "requested_backend": "scipy",
+                "diffusivity": {
+                  "type": "cell_centred_field",
+                  "coefficient_sha256": "e5a84dc8efa1d8805fdbc7ee013adbf3682043a8cb06d0e0cfb4da359607abd3",
+                  "min": 0.07855290418778377,
+                  "max": 0.22144709581221622,
+                  "shape": [
+                    6,
+                    10
+                  ],
+                  "unit": "m2/s",
+                  "interpretation": "cell_material",
+                  "face_policy": "harmonic_two_point_transmissibility",
+                  "boundary": "zero_flux",
+                  "max_outgoing_rate": 72.29126895205805,
+                  "resident_bytes": 1792,
+                  "matrix_free_temporary_bytes": 912,
+                  "memory_accounting": "resident: coefficient and face/outgoing arrays; matrix-free temporary: result plus largest face-flux buffer; excludes caller input conversion, validation, Python/NumPy overhead and allocator workspace; not process RSS"
+                },
+                "backend_selection": "standard_dispatch",
+                "boundary": "zero_flux",
+                "velocity": [
+                  0.0,
+                  0.0
+                ],
+                "startup": "none",
+                "timestep_policy": "requested_with_exact_output_alignment",
+                "linear_solver": "scipy.sparse.linalg.splu",
+                "linear_residual_max": 2.6134046377326404e-16,
+                "linear_residual_normalization": "norm(Ax-b)/max(norm(b),1)",
+                "initial_mass": 0.7,
+                "final_mass": 0.6999999999999987,
+                "mass_scale": 1.0,
+                "mass_scale_definition": "max(abs(M0), integral(abs(c0)), 1)",
+                "relative_mass_drift": 1.2212453270876722e-15,
+                "mass_balance_error": -1.2212453270876722e-15,
+                "max_mass_balance_error": 1.2212453270876722e-15,
+                "relative_mass_balance_error": 1.2212453270876722e-15,
+                "cumulative_outward_flux": 0.0,
+                "initial_energy": 0.010602258834865845,
+                "final_energy": 0.006630016932380725,
+                "energy_max_increase": 0.0,
+                "min_concentration": 0.7651752427324953,
+                "max_concentration": 1.2348247572675048,
+                "mass_history": [
+                  0.6999999999999987
+                ],
+                "energy_history": [
+                  0.006630016932380725
+                ],
+                "min_history": [
+                  0.8105722643325034
+                ],
+                "max_history": [
+                  1.189427735667494
+                ],
+                "cumulative_outflow_history": [
+                  0.0
+                ],
+                "mass_balance_history": [
+                  -1.2212453270876722e-15
+                ],
+                "diagnostic_scope": "initial_and_output_frames",
+                "output_times_s": [
+                  0.05533171651271898
+                ],
+                "factorization_count": 1,
+                "factorization_cache_hits": 63,
+                "factorization_cache_entries": 8,
+                "factorization_cache_bytes": 180624,
+                "factorization_cache": {
+                  "entries": 8,
+                  "bytes": 180624,
+                  "max_entries": 8,
+                  "max_bytes": 268435456,
+                  "memory_accounting": "CSC system and SuperLU L/U arrays; excludes allocator/workspace overhead"
+                },
+                "output_bytes": 480,
+                "timings_ms": {
+                  "matrix": 0.04224999975122046,
+                  "factorization": 0.06045800000720192,
+                  "advance": 0.5315479975251947,
+                  "conversion": 0.0628749985480681,
+                  "output": 0.00650000038149301,
+                  "total": 0.7320829990931088
+                },
+                "dtype": "float64"
+              },
+              "observed_rms_order": 0.9942440535285653
+            }
+          ],
+          "crank_nicolson": [
+            {
+              "requested_steps": 8,
+              "dt_s": 0.006916464564089873,
+              "error": {
+                "linf": 1.6341286851684345e-05,
+                "rms": 8.597535698993077e-06
+              },
+              "diagnostics": {
+                "schema_version": 2,
+                "solve_ms": 0.6813749987486517,
+                "internal_steps": 8,
+                "dt_max_s": 0.006916464564089873,
+                "requested_dt_s": 0.006916464564089873,
+                "actual_dt_min_s": 0.006916464564089869,
+                "actual_dt_max_s": 0.006916464564089873,
+                "actual_dt_histogram": {
+                  "0.006916464564089873": 7,
+                  "0.006916464564089869": 1
+                },
+                "cfl_limit_s": null,
+                "method": "crank_nicolson",
+                "backend": "scipy",
+                "requested_backend": "scipy",
+                "diffusivity": {
+                  "type": "cell_centred_field",
+                  "coefficient_sha256": "e5a84dc8efa1d8805fdbc7ee013adbf3682043a8cb06d0e0cfb4da359607abd3",
+                  "min": 0.07855290418778377,
+                  "max": 0.22144709581221622,
+                  "shape": [
+                    6,
+                    10
+                  ],
+                  "unit": "m2/s",
+                  "interpretation": "cell_material",
+                  "face_policy": "harmonic_two_point_transmissibility",
+                  "boundary": "zero_flux",
+                  "max_outgoing_rate": 72.29126895205805,
+                  "resident_bytes": 1792,
+                  "matrix_free_temporary_bytes": 912,
+                  "memory_accounting": "resident: coefficient and face/outgoing arrays; matrix-free temporary: result plus largest face-flux buffer; excludes caller input conversion, validation, Python/NumPy overhead and allocator workspace; not process RSS"
+                },
+                "backend_selection": "standard_dispatch",
+                "boundary": "zero_flux",
+                "velocity": [
+                  0.0,
+                  0.0
+                ],
+                "startup": "none",
+                "timestep_policy": "requested_with_exact_output_alignment",
+                "linear_solver": "scipy.sparse.linalg.splu",
+                "linear_residual_max": 2.544339971576698e-16,
+                "linear_residual_normalization": "norm(Ax-b)/max(norm(b),1)",
+                "initial_mass": 0.7,
+                "final_mass": 0.6999999999999997,
+                "mass_scale": 1.0,
+                "mass_scale_definition": "max(abs(M0), integral(abs(c0)), 1)",
+                "relative_mass_drift": 2.220446049250313e-16,
+                "mass_balance_error": -2.220446049250313e-16,
+                "max_mass_balance_error": 2.220446049250313e-16,
+                "relative_mass_balance_error": 2.220446049250313e-16,
+                "cumulative_outward_flux": 0.0,
+                "initial_energy": 0.010602258834865845,
+                "final_energy": 0.006624007394160833,
+                "energy_max_increase": 0.0,
+                "min_concentration": 0.7651752427324953,
+                "max_concentration": 1.2348247572675048,
+                "mass_history": [
+                  0.6999999999999997
+                ],
+                "energy_history": [
+                  0.006624007394160833
+                ],
+                "min_history": [
+                  0.8106228797329974
+                ],
+                "max_history": [
+                  1.1893771202670032
+                ],
+                "cumulative_outflow_history": [
+                  0.0
+                ],
+                "mass_balance_history": [
+                  -2.220446049250313e-16
+                ],
+                "diagnostic_scope": "initial_and_output_frames",
+                "output_times_s": [
+                  0.05533171651271898
+                ],
+                "factorization_count": 2,
+                "factorization_cache_hits": 6,
+                "factorization_cache_entries": 8,
+                "factorization_cache_bytes": 98208,
+                "factorization_cache": {
+                  "entries": 8,
+                  "bytes": 98208,
+                  "max_entries": 8,
+                  "max_bytes": 268435456,
+                  "memory_accounting": "CSC system and SuperLU L/U arrays; excludes allocator/workspace overhead"
+                },
+                "output_bytes": 480,
+                "timings_ms": {
+                  "matrix": 0.04174999958195258,
+                  "factorization": 0.2597919992695097,
+                  "advance": 0.2985840037581511,
+                  "conversion": 0.05733399848395493,
+                  "output": 0.010125000699190423,
+                  "total": 0.6813749987486517
+                },
+                "dtype": "float64"
+              },
+              "observed_rms_order": null
+            },
+            {
+              "requested_steps": 16,
+              "dt_s": 0.0034582322820449363,
+              "error": {
+                "linf": 4.07908847721572e-06,
+                "rms": 2.144960638090782e-06
+              },
+              "diagnostics": {
+                "schema_version": 2,
+                "solve_ms": 0.5835830015712418,
+                "internal_steps": 16,
+                "dt_max_s": 0.0034582322820449363,
+                "requested_dt_s": 0.0034582322820449363,
+                "actual_dt_min_s": 0.0034582322820449346,
+                "actual_dt_max_s": 0.0034582322820449363,
+                "actual_dt_histogram": {
+                  "0.0034582322820449363": 15,
+                  "0.0034582322820449346": 1
+                },
+                "cfl_limit_s": null,
+                "method": "crank_nicolson",
+                "backend": "scipy",
+                "requested_backend": "scipy",
+                "diffusivity": {
+                  "type": "cell_centred_field",
+                  "coefficient_sha256": "e5a84dc8efa1d8805fdbc7ee013adbf3682043a8cb06d0e0cfb4da359607abd3",
+                  "min": 0.07855290418778377,
+                  "max": 0.22144709581221622,
+                  "shape": [
+                    6,
+                    10
+                  ],
+                  "unit": "m2/s",
+                  "interpretation": "cell_material",
+                  "face_policy": "harmonic_two_point_transmissibility",
+                  "boundary": "zero_flux",
+                  "max_outgoing_rate": 72.29126895205805,
+                  "resident_bytes": 1792,
+                  "matrix_free_temporary_bytes": 912,
+                  "memory_accounting": "resident: coefficient and face/outgoing arrays; matrix-free temporary: result plus largest face-flux buffer; excludes caller input conversion, validation, Python/NumPy overhead and allocator workspace; not process RSS"
+                },
+                "backend_selection": "standard_dispatch",
+                "boundary": "zero_flux",
+                "velocity": [
+                  0.0,
+                  0.0
+                ],
+                "startup": "none",
+                "timestep_policy": "requested_with_exact_output_alignment",
+                "linear_solver": "scipy.sparse.linalg.splu",
+                "linear_residual_max": 2.528107234568954e-16,
+                "linear_residual_normalization": "norm(Ax-b)/max(norm(b),1)",
+                "initial_mass": 0.7,
+                "final_mass": 0.6999999999999998,
+                "mass_scale": 1.0,
+                "mass_scale_definition": "max(abs(M0), integral(abs(c0)), 1)",
+                "relative_mass_drift": 1.1102230246251565e-16,
+                "mass_balance_error": -1.1102230246251565e-16,
+                "max_mass_balance_error": 1.1102230246251565e-16,
+                "relative_mass_balance_error": 1.1102230246251565e-16,
+                "cumulative_outward_flux": 0.0,
+                "initial_energy": 0.010602258834865845,
+                "final_energy": 0.006624198725797716,
+                "energy_max_increase": 0.0,
+                "min_concentration": 0.7651752427324953,
+                "max_concentration": 1.2348247572675048,
+                "mass_history": [
+                  0.6999999999999998
+                ],
+                "energy_history": [
+                  0.006624198725797716
+                ],
+                "min_history": [
+                  0.8106239855465023
+                ],
+                "max_history": [
+                  1.1893760144534995
+                ],
+                "cumulative_outflow_history": [
+                  0.0
+                ],
+                "mass_balance_history": [
+                  -1.1102230246251565e-16
+                ],
+                "diagnostic_scope": "initial_and_output_frames",
+                "output_times_s": [
+                  0.05533171651271898
+                ],
+                "factorization_count": 2,
+                "factorization_cache_hits": 14,
+                "factorization_cache_entries": 8,
+                "factorization_cache_bytes": 98208,
+                "factorization_cache": {
+                  "entries": 8,
+                  "bytes": 98208,
+                  "max_entries": 8,
+                  "max_bytes": 268435456,
+                  "memory_accounting": "CSC system and SuperLU L/U arrays; excludes allocator/workspace overhead"
+                },
+                "output_bytes": 480,
+                "timings_ms": {
+                  "matrix": 0.0697920004313346,
+                  "factorization": 0.16612599938525818,
+                  "advance": 0.22058200374885928,
+                  "conversion": 0.10120800106960814,
+                  "output": 0.007208998795249499,
+                  "total": 0.5835830015712418
+                },
+                "dtype": "float64"
+              },
+              "observed_rms_order": 2.0029720279258534
+            },
+            {
+              "requested_steps": 32,
+              "dt_s": 0.0017291161410224682,
+              "error": {
+                "linf": 1.0193801729396768e-06,
+                "rms": 5.359645826581779e-07
+              },
+              "diagnostics": {
+                "schema_version": 2,
+                "solve_ms": 0.6387920002453029,
+                "internal_steps": 32,
+                "dt_max_s": 0.0017291161410224682,
+                "requested_dt_s": 0.0017291161410224682,
+                "actual_dt_min_s": 0.0017291161410224673,
+                "actual_dt_max_s": 0.0017291161410224682,
+                "actual_dt_histogram": {
+                  "0.0017291161410224682": 31,
+                  "0.0017291161410224673": 1
+                },
+                "cfl_limit_s": null,
+                "method": "crank_nicolson",
+                "backend": "scipy",
+                "requested_backend": "scipy",
+                "diffusivity": {
+                  "type": "cell_centred_field",
+                  "coefficient_sha256": "e5a84dc8efa1d8805fdbc7ee013adbf3682043a8cb06d0e0cfb4da359607abd3",
+                  "min": 0.07855290418778377,
+                  "max": 0.22144709581221622,
+                  "shape": [
+                    6,
+                    10
+                  ],
+                  "unit": "m2/s",
+                  "interpretation": "cell_material",
+                  "face_policy": "harmonic_two_point_transmissibility",
+                  "boundary": "zero_flux",
+                  "max_outgoing_rate": 72.29126895205805,
+                  "resident_bytes": 1792,
+                  "matrix_free_temporary_bytes": 912,
+                  "memory_accounting": "resident: coefficient and face/outgoing arrays; matrix-free temporary: result plus largest face-flux buffer; excludes caller input conversion, validation, Python/NumPy overhead and allocator workspace; not process RSS"
+                },
+                "backend_selection": "standard_dispatch",
+                "boundary": "zero_flux",
+                "velocity": [
+                  0.0,
+                  0.0
+                ],
+                "startup": "none",
+                "timestep_policy": "requested_with_exact_output_alignment",
+                "linear_solver": "scipy.sparse.linalg.splu",
+                "linear_residual_max": 2.353431909356494e-16,
+                "linear_residual_normalization": "norm(Ax-b)/max(norm(b),1)",
+                "initial_mass": 0.7,
+                "final_mass": 0.6999999999999994,
+                "mass_scale": 1.0,
+                "mass_scale_definition": "max(abs(M0), integral(abs(c0)), 1)",
+                "relative_mass_drift": 5.551115123125783e-16,
+                "mass_balance_error": -5.551115123125783e-16,
+                "max_mass_balance_error": 5.551115123125783e-16,
+                "relative_mass_balance_error": 5.551115123125783e-16,
+                "cumulative_outward_flux": 0.0,
+                "initial_energy": 0.010602258834865845,
+                "final_energy": 0.006624246549570362,
+                "energy_max_increase": 0.0,
+                "min_concentration": 0.7651752427324953,
+                "max_concentration": 1.2348247572675048,
+                "mass_history": [
+                  0.6999999999999994
+                ],
+                "energy_history": [
+                  0.006624246549570362
+                ],
+                "min_history": [
+                  0.8106242613401317
+                ],
+                "max_history": [
+                  1.1893757386598671
+                ],
+                "cumulative_outflow_history": [
+                  0.0
+                ],
+                "mass_balance_history": [
+                  -5.551115123125783e-16
+                ],
+                "diagnostic_scope": "initial_and_output_frames",
+                "output_times_s": [
+                  0.05533171651271898
+                ],
+                "factorization_count": 2,
+                "factorization_cache_hits": 30,
+                "factorization_cache_entries": 8,
+                "factorization_cache_bytes": 98208,
+                "factorization_cache": {
+                  "entries": 8,
+                  "bytes": 98208,
+                  "max_entries": 8,
+                  "max_bytes": 268435456,
+                  "memory_accounting": "CSC system and SuperLU L/U arrays; excludes allocator/workspace overhead"
+                },
+                "output_bytes": 480,
+                "timings_ms": {
+                  "matrix": 0.04633300159184728,
+                  "factorization": 0.131665998196695,
+                  "advance": 0.3682080041471636,
+                  "conversion": 0.06591700002900325,
+                  "output": 0.006707998181809671,
+                  "total": 0.6387920002453029
+                },
+                "dtype": "float64"
+              },
+              "observed_rms_order": 2.000741599750378
+            },
+            {
+              "requested_steps": 64,
+              "dt_s": 0.0008645580705112341,
+              "error": {
+                "linf": 2.5482051291270125e-07,
+                "rms": 1.339739350778287e-07
+              },
+              "diagnostics": {
+                "schema_version": 2,
+                "solve_ms": 0.833500000226195,
+                "internal_steps": 64,
+                "dt_max_s": 0.0008645580705112341,
+                "requested_dt_s": 0.0008645580705112341,
+                "actual_dt_min_s": 0.0008645580705112341,
+                "actual_dt_max_s": 0.0008645580705112341,
+                "actual_dt_histogram": {
+                  "0.0008645580705112341": 64
+                },
+                "cfl_limit_s": null,
+                "method": "crank_nicolson",
+                "backend": "scipy",
+                "requested_backend": "scipy",
+                "diffusivity": {
+                  "type": "cell_centred_field",
+                  "coefficient_sha256": "e5a84dc8efa1d8805fdbc7ee013adbf3682043a8cb06d0e0cfb4da359607abd3",
+                  "min": 0.07855290418778377,
+                  "max": 0.22144709581221622,
+                  "shape": [
+                    6,
+                    10
+                  ],
+                  "unit": "m2/s",
+                  "interpretation": "cell_material",
+                  "face_policy": "harmonic_two_point_transmissibility",
+                  "boundary": "zero_flux",
+                  "max_outgoing_rate": 72.29126895205805,
+                  "resident_bytes": 1792,
+                  "matrix_free_temporary_bytes": 912,
+                  "memory_accounting": "resident: coefficient and face/outgoing arrays; matrix-free temporary: result plus largest face-flux buffer; excludes caller input conversion, validation, Python/NumPy overhead and allocator workspace; not process RSS"
+                },
+                "backend_selection": "standard_dispatch",
+                "boundary": "zero_flux",
+                "velocity": [
+                  0.0,
+                  0.0
+                ],
+                "startup": "none",
+                "timestep_policy": "requested_with_exact_output_alignment",
+                "linear_solver": "scipy.sparse.linalg.splu",
+                "linear_residual_max": 2.5630695179377856e-16,
+                "linear_residual_normalization": "norm(Ax-b)/max(norm(b),1)",
+                "initial_mass": 0.7,
+                "final_mass": 0.6999999999999994,
+                "mass_scale": 1.0,
+                "mass_scale_definition": "max(abs(M0), integral(abs(c0)), 1)",
+                "relative_mass_drift": 5.551115123125783e-16,
+                "mass_balance_error": -5.551115123125783e-16,
+                "max_mass_balance_error": 5.551115123125783e-16,
+                "relative_mass_balance_error": 5.551115123125783e-16,
+                "cumulative_outward_flux": 0.0,
+                "initial_energy": 0.010602258834865845,
+                "final_energy": 0.006624258504942112,
+                "energy_max_increase": 0.0,
+                "min_concentration": 0.7651752427324953,
+                "max_concentration": 1.2348247572675048,
+                "mass_history": [
+                  0.6999999999999994
+                ],
+                "energy_history": [
+                  0.006624258504942112
+                ],
+                "min_history": [
+                  0.8106243302468529
+                ],
+                "max_history": [
+                  1.1893756697531386
+                ],
+                "cumulative_outflow_history": [
+                  0.0
+                ],
+                "mass_balance_history": [
+                  -5.551115123125783e-16
+                ],
+                "diagnostic_scope": "initial_and_output_frames",
+                "output_times_s": [
+                  0.05533171651271898
+                ],
+                "factorization_count": 1,
+                "factorization_cache_hits": 63,
+                "factorization_cache_entries": 8,
+                "factorization_cache_bytes": 98208,
+                "factorization_cache": {
+                  "entries": 8,
+                  "bytes": 98208,
+                  "max_entries": 8,
+                  "max_bytes": 268435456,
+                  "memory_accounting": "CSC system and SuperLU L/U arrays; excludes allocator/workspace overhead"
+                },
+                "output_bytes": 480,
+                "timings_ms": {
+                  "matrix": 0.04333300057624001,
+                  "factorization": 0.061624999943887815,
+                  "advance": 0.6331340064207325,
+                  "conversion": 0.06029199903423432,
+                  "output": 0.006375999873853289,
+                  "total": 0.833500000226195
+                },
+                "dtype": "float64"
+              },
+              "observed_rms_order": 2.000185319878777
+            }
+          ]
+        }
+      },
+      {
+        "boundary": "periodic",
+        "grid": {
+          "bounds": [
+            0.0,
+            0.0,
+            1.0,
+            0.7
+          ],
+          "nx": 10,
+          "ny": 6,
+          "dx_m": 0.1,
+          "dy_m": 0.11666666666666665,
+          "location": "cell_centres",
+          "axis_order": "frame,y,x",
+          "y_direction": "south_to_north"
+        },
+        "duration_s": 0.05533171651271898,
+        "independent_fe_positivity_limit_s": 0.013832929128179745,
+        "operator_max_absolute_difference": 1.4210854715202004e-14,
+        "independent_matrix_symmetry_residual": 0.0,
+        "independent_matrix_row_sum_residual": 1.0658141036401503e-14,
+        "largest_eigenvalue": -8.020192638588509e-15,
+        "methods": {
+          "explicit_euler": [
+            {
+              "requested_steps": 8,
+              "dt_s": 0.006916464564089873,
+              "error": {
+                "linf": 0.0045495032865068286,
+                "rms": 0.0025427662501901517
+              },
+              "diagnostics": {
+                "schema_version": 2,
+                "solve_ms": 0.18408300093142316,
+                "internal_steps": 8,
+                "dt_max_s": 0.006916464564089873,
+                "requested_dt_s": 0.006916464564089873,
+                "actual_dt_min_s": 0.006916464564089869,
+                "actual_dt_max_s": 0.006916464564089873,
+                "actual_dt_histogram": {
+                  "0.006916464564089873": 7,
+                  "0.006916464564089869": 1
+                },
+                "cfl_limit_s": 0.013832929128179747,
+                "method": "explicit_euler",
+                "backend": "numpy",
+                "requested_backend": "numpy",
+                "diffusivity": {
+                  "type": "cell_centred_field",
+                  "coefficient_sha256": "e5a84dc8efa1d8805fdbc7ee013adbf3682043a8cb06d0e0cfb4da359607abd3",
+                  "min": 0.07855290418778377,
+                  "max": 0.22144709581221622,
+                  "shape": [
+                    6,
+                    10
+                  ],
+                  "unit": "m2/s",
+                  "interpretation": "cell_material",
+                  "face_policy": "harmonic_two_point_transmissibility",
+                  "boundary": "periodic",
+                  "max_outgoing_rate": 72.29126895205805,
+                  "resident_bytes": 1920,
+                  "matrix_free_temporary_bytes": 912,
+                  "memory_accounting": "resident: coefficient and face/outgoing arrays; matrix-free temporary: result plus largest face-flux buffer; excludes caller input conversion, validation, Python/NumPy overhead and allocator workspace; not process RSS"
+                },
+                "backend_selection": "standard_dispatch",
+                "boundary": "periodic",
+                "velocity": [
+                  0.0,
+                  0.0
+                ],
+                "startup": "none",
+                "timestep_policy": "requested_with_exact_output_alignment",
+                "linear_solver": "none",
+                "linear_residual_max": 0.0,
+                "linear_residual_normalization": "norm(Ax-b)/max(norm(b),1)",
+                "initial_mass": 0.7,
+                "final_mass": 0.7,
+                "mass_scale": 1.0,
+                "mass_scale_definition": "max(abs(M0), integral(abs(c0)), 1)",
+                "relative_mass_drift": 0.0,
+                "mass_balance_error": 0.0,
+                "max_mass_balance_error": 0.0,
+                "relative_mass_balance_error": 0.0,
+                "cumulative_outward_flux": 0.0,
+                "initial_energy": 0.009649966659504943,
+                "final_energy": 0.0014722005422480604,
+                "energy_max_increase": 0.0,
+                "min_concentration": 0.8065891474337072,
+                "max_concentration": 1.1934108525662928,
+                "mass_history": [
+                  0.7
+                ],
+                "energy_history": [
+                  0.0014722005422480604
+                ],
+                "min_history": [
+                  0.9198871379078054
+                ],
+                "max_history": [
+                  1.0801128620921947
+                ],
+                "cumulative_outflow_history": [
+                  0.0
+                ],
+                "mass_balance_history": [
+                  0.0
+                ],
+                "diagnostic_scope": "initial_and_output_frames",
+                "output_times_s": [
+                  0.05533171651271898
+                ],
+                "factorization_count": 0,
+                "factorization_cache_hits": 0,
+                "factorization_cache_entries": 8,
+                "factorization_cache_bytes": 98208,
+                "factorization_cache": {
+                  "entries": 8,
+                  "bytes": 98208,
+                  "max_entries": 8,
+                  "max_bytes": 268435456,
+                  "memory_accounting": "CSC system and SuperLU L/U arrays; excludes allocator/workspace overhead"
+                },
+                "output_bytes": 480,
+                "timings_ms": {
+                  "matrix": 0.0,
+                  "factorization": 0.0,
+                  "advance": 0.08120899838104378,
+                  "conversion": 0.082665999798337,
+                  "output": 0.005791998773929663,
+                  "total": 0.18408300093142316
+                },
+                "dtype": "float64"
+              },
+              "observed_rms_order": null
+            },
+            {
+              "requested_steps": 16,
+              "dt_s": 0.0034582322820449363,
+              "error": {
+                "linf": 0.002219909163599265,
+                "rms": 0.0012394496821098032
+              },
+              "diagnostics": {
+                "schema_version": 2,
+                "solve_ms": 0.23849999888625462,
+                "internal_steps": 16,
+                "dt_max_s": 0.0034582322820449363,
+                "requested_dt_s": 0.0034582322820449363,
+                "actual_dt_min_s": 0.0034582322820449346,
+                "actual_dt_max_s": 0.0034582322820449363,
+                "actual_dt_histogram": {
+                  "0.0034582322820449363": 15,
+                  "0.0034582322820449346": 1
+                },
+                "cfl_limit_s": 0.013832929128179747,
+                "method": "explicit_euler",
+                "backend": "numpy",
+                "requested_backend": "numpy",
+                "diffusivity": {
+                  "type": "cell_centred_field",
+                  "coefficient_sha256": "e5a84dc8efa1d8805fdbc7ee013adbf3682043a8cb06d0e0cfb4da359607abd3",
+                  "min": 0.07855290418778377,
+                  "max": 0.22144709581221622,
+                  "shape": [
+                    6,
+                    10
+                  ],
+                  "unit": "m2/s",
+                  "interpretation": "cell_material",
+                  "face_policy": "harmonic_two_point_transmissibility",
+                  "boundary": "periodic",
+                  "max_outgoing_rate": 72.29126895205805,
+                  "resident_bytes": 1920,
+                  "matrix_free_temporary_bytes": 912,
+                  "memory_accounting": "resident: coefficient and face/outgoing arrays; matrix-free temporary: result plus largest face-flux buffer; excludes caller input conversion, validation, Python/NumPy overhead and allocator workspace; not process RSS"
+                },
+                "backend_selection": "standard_dispatch",
+                "boundary": "periodic",
+                "velocity": [
+                  0.0,
+                  0.0
+                ],
+                "startup": "none",
+                "timestep_policy": "requested_with_exact_output_alignment",
+                "linear_solver": "none",
+                "linear_residual_max": 0.0,
+                "linear_residual_normalization": "norm(Ax-b)/max(norm(b),1)",
+                "initial_mass": 0.7,
+                "final_mass": 0.7,
+                "mass_scale": 1.0,
+                "mass_scale_definition": "max(abs(M0), integral(abs(c0)), 1)",
+                "relative_mass_drift": 0.0,
+                "mass_balance_error": 0.0,
+                "max_mass_balance_error": 0.0,
+                "relative_mass_balance_error": 0.0,
+                "cumulative_outward_flux": 0.0,
+                "initial_energy": 0.009649966659504943,
+                "final_energy": 0.0015537535925277135,
+                "energy_max_increase": 0.0,
+                "min_concentration": 0.8065891474337072,
+                "max_concentration": 1.1934108525662928,
+                "mass_history": [
+                  0.7
+                ],
+                "energy_history": [
+                  0.0015537535925277135
+                ],
+                "min_history": [
+                  0.9178377243977986
+                ],
+                "max_history": [
+                  1.0821622756022011
+                ],
+                "cumulative_outflow_history": [
+                  0.0
+                ],
+                "mass_balance_history": [
+                  0.0
+                ],
+                "diagnostic_scope": "initial_and_output_frames",
+                "output_times_s": [
+                  0.05533171651271898
+                ],
+                "factorization_count": 0,
+                "factorization_cache_hits": 0,
+                "factorization_cache_entries": 8,
+                "factorization_cache_bytes": 98208,
+                "factorization_cache": {
+                  "entries": 8,
+                  "bytes": 98208,
+                  "max_entries": 8,
+                  "max_bytes": 268435456,
+                  "memory_accounting": "CSC system and SuperLU L/U arrays; excludes allocator/workspace overhead"
+                },
+                "output_bytes": 480,
+                "timings_ms": {
+                  "matrix": 0.0,
+                  "factorization": 0.0,
+                  "advance": 0.14433199976338074,
+                  "conversion": 0.07587499931105413,
+                  "output": 0.005040998075855896,
+                  "total": 0.23849999888625462
+                },
+                "dtype": "float64"
+              },
+              "observed_rms_order": 1.036699141385576
+            },
+            {
+              "requested_steps": 32,
+              "dt_s": 0.0017291161410224682,
+              "error": {
+                "linf": 0.0010966524201453387,
+                "rms": 0.0006120803847214846
+              },
+              "diagnostics": {
+                "schema_version": 2,
+                "solve_ms": 0.37570800122921355,
+                "internal_steps": 32,
+                "dt_max_s": 0.0017291161410224682,
+                "requested_dt_s": 0.0017291161410224682,
+                "actual_dt_min_s": 0.0017291161410224673,
+                "actual_dt_max_s": 0.0017291161410224682,
+                "actual_dt_histogram": {
+                  "0.0017291161410224682": 31,
+                  "0.0017291161410224673": 1
+                },
+                "cfl_limit_s": 0.013832929128179747,
+                "method": "explicit_euler",
+                "backend": "numpy",
+                "requested_backend": "numpy",
+                "diffusivity": {
+                  "type": "cell_centred_field",
+                  "coefficient_sha256": "e5a84dc8efa1d8805fdbc7ee013adbf3682043a8cb06d0e0cfb4da359607abd3",
+                  "min": 0.07855290418778377,
+                  "max": 0.22144709581221622,
+                  "shape": [
+                    6,
+                    10
+                  ],
+                  "unit": "m2/s",
+                  "interpretation": "cell_material",
+                  "face_policy": "harmonic_two_point_transmissibility",
+                  "boundary": "periodic",
+                  "max_outgoing_rate": 72.29126895205805,
+                  "resident_bytes": 1920,
+                  "matrix_free_temporary_bytes": 912,
+                  "memory_accounting": "resident: coefficient and face/outgoing arrays; matrix-free temporary: result plus largest face-flux buffer; excludes caller input conversion, validation, Python/NumPy overhead and allocator workspace; not process RSS"
+                },
+                "backend_selection": "standard_dispatch",
+                "boundary": "periodic",
+                "velocity": [
+                  0.0,
+                  0.0
+                ],
+                "startup": "none",
+                "timestep_policy": "requested_with_exact_output_alignment",
+                "linear_solver": "none",
+                "linear_residual_max": 0.0,
+                "linear_residual_normalization": "norm(Ax-b)/max(norm(b),1)",
+                "initial_mass": 0.7,
+                "final_mass": 0.7,
+                "mass_scale": 1.0,
+                "mass_scale_definition": "max(abs(M0), integral(abs(c0)), 1)",
+                "relative_mass_drift": 0.0,
+                "mass_balance_error": 0.0,
+                "max_mass_balance_error": 0.0,
+                "relative_mass_balance_error": 0.0,
+                "cumulative_outward_flux": 0.0,
+                "initial_energy": 0.009649966659504943,
+                "final_energy": 0.0015938335779658373,
+                "energy_max_increase": 0.0,
+                "min_concentration": 0.8065891474337072,
+                "max_concentration": 1.1934108525662928,
+                "mass_history": [
+                  0.7
+                ],
+                "energy_history": [
+                  0.0015938335779658373
+                ],
+                "min_history": [
+                  0.9168569098494487
+                ],
+                "max_history": [
+                  1.0831430901505517
+                ],
+                "cumulative_outflow_history": [
+                  0.0
+                ],
+                "mass_balance_history": [
+                  0.0
+                ],
+                "diagnostic_scope": "initial_and_output_frames",
+                "output_times_s": [
+                  0.05533171651271898
+                ],
+                "factorization_count": 0,
+                "factorization_cache_hits": 0,
+                "factorization_cache_entries": 8,
+                "factorization_cache_bytes": 98208,
+                "factorization_cache": {
+                  "entries": 8,
+                  "bytes": 98208,
+                  "max_entries": 8,
+                  "max_bytes": 268435456,
+                  "memory_accounting": "CSC system and SuperLU L/U arrays; excludes allocator/workspace overhead"
+                },
+                "output_bytes": 480,
+                "timings_ms": {
+                  "matrix": 0.0,
+                  "factorization": 0.0,
+                  "advance": 0.280292999377707,
+                  "conversion": 0.07383299998764414,
+                  "output": 0.0048749989218777046,
+                  "total": 0.37570800122921355
+                },
+                "dtype": "float64"
+              },
+              "observed_rms_order": 1.0179066634843177
+            },
+            {
+              "requested_steps": 64,
+              "dt_s": 0.0008645580705112341,
+              "error": {
+                "linf": 0.0005450540668106019,
+                "rms": 0.0003041692366732982
+              },
+              "diagnostics": {
+                "schema_version": 2,
+                "solve_ms": 0.655166999422363,
+                "internal_steps": 64,
+                "dt_max_s": 0.0008645580705112341,
+                "requested_dt_s": 0.0008645580705112341,
+                "actual_dt_min_s": 0.0008645580705112341,
+                "actual_dt_max_s": 0.0008645580705112341,
+                "actual_dt_histogram": {
+                  "0.0008645580705112341": 64
+                },
+                "cfl_limit_s": 0.013832929128179747,
+                "method": "explicit_euler",
+                "backend": "numpy",
+                "requested_backend": "numpy",
+                "diffusivity": {
+                  "type": "cell_centred_field",
+                  "coefficient_sha256": "e5a84dc8efa1d8805fdbc7ee013adbf3682043a8cb06d0e0cfb4da359607abd3",
+                  "min": 0.07855290418778377,
+                  "max": 0.22144709581221622,
+                  "shape": [
+                    6,
+                    10
+                  ],
+                  "unit": "m2/s",
+                  "interpretation": "cell_material",
+                  "face_policy": "harmonic_two_point_transmissibility",
+                  "boundary": "periodic",
+                  "max_outgoing_rate": 72.29126895205805,
+                  "resident_bytes": 1920,
+                  "matrix_free_temporary_bytes": 912,
+                  "memory_accounting": "resident: coefficient and face/outgoing arrays; matrix-free temporary: result plus largest face-flux buffer; excludes caller input conversion, validation, Python/NumPy overhead and allocator workspace; not process RSS"
+                },
+                "backend_selection": "standard_dispatch",
+                "boundary": "periodic",
+                "velocity": [
+                  0.0,
+                  0.0
+                ],
+                "startup": "none",
+                "timestep_policy": "requested_with_exact_output_alignment",
+                "linear_solver": "none",
+                "linear_residual_max": 0.0,
+                "linear_residual_normalization": "norm(Ax-b)/max(norm(b),1)",
+                "initial_mass": 0.7,
+                "final_mass": 0.6999999999999998,
+                "mass_scale": 1.0,
+                "mass_scale_definition": "max(abs(M0), integral(abs(c0)), 1)",
+                "relative_mass_drift": 1.1102230246251565e-16,
+                "mass_balance_error": -1.1102230246251565e-16,
+                "max_mass_balance_error": 1.1102230246251565e-16,
+                "relative_mass_balance_error": 1.1102230246251565e-16,
+                "cumulative_outward_flux": 0.0,
+                "initial_energy": 0.009649966659504943,
+                "final_energy": 0.0016137013987470381,
+                "energy_max_increase": 0.0,
+                "min_concentration": 0.8065891474337072,
+                "max_concentration": 1.1934108525662928,
+                "mass_history": [
+                  0.6999999999999998
+                ],
+                "energy_history": [
+                  0.0016137013987470381
+                ],
+                "min_history": [
+                  0.9163766796885007
+                ],
+                "max_history": [
+                  1.0836233203114987
+                ],
+                "cumulative_outflow_history": [
+                  0.0
+                ],
+                "mass_balance_history": [
+                  -1.1102230246251565e-16
+                ],
+                "diagnostic_scope": "initial_and_output_frames",
+                "output_times_s": [
+                  0.05533171651271898
+                ],
+                "factorization_count": 0,
+                "factorization_cache_hits": 0,
+                "factorization_cache_entries": 8,
+                "factorization_cache_bytes": 98208,
+                "factorization_cache": {
+                  "entries": 8,
+                  "bytes": 98208,
+                  "max_entries": 8,
+                  "max_bytes": 268435456,
+                  "memory_accounting": "CSC system and SuperLU L/U arrays; excludes allocator/workspace overhead"
+                },
+                "output_bytes": 480,
+                "timings_ms": {
+                  "matrix": 0.0,
+                  "factorization": 0.0,
+                  "advance": 0.5540859965549316,
+                  "conversion": 0.07195899888756685,
+                  "output": 0.004667001121561043,
+                  "total": 0.655166999422363
+                },
+                "dtype": "float64"
+              },
+              "observed_rms_order": 1.0088468870586782
+            }
+          ],
+          "backward_euler": [
+            {
+              "requested_steps": 8,
+              "dt_s": 0.006916464564089873,
+              "error": {
+                "linf": 0.004137763498807345,
+                "rms": 0.002307488164590805
+              },
+              "diagnostics": {
+                "schema_version": 2,
+                "solve_ms": 0.44016699939675163,
+                "internal_steps": 8,
+                "dt_max_s": 0.006916464564089873,
+                "requested_dt_s": 0.006916464564089873,
+                "actual_dt_min_s": 0.006916464564089869,
+                "actual_dt_max_s": 0.006916464564089873,
+                "actual_dt_histogram": {
+                  "0.006916464564089873": 7,
+                  "0.006916464564089869": 1
+                },
+                "cfl_limit_s": null,
+                "method": "backward_euler",
+                "backend": "scipy",
+                "requested_backend": "scipy",
+                "diffusivity": {
+                  "type": "cell_centred_field",
+                  "coefficient_sha256": "e5a84dc8efa1d8805fdbc7ee013adbf3682043a8cb06d0e0cfb4da359607abd3",
+                  "min": 0.07855290418778377,
+                  "max": 0.22144709581221622,
+                  "shape": [
+                    6,
+                    10
+                  ],
+                  "unit": "m2/s",
+                  "interpretation": "cell_material",
+                  "face_policy": "harmonic_two_point_transmissibility",
+                  "boundary": "periodic",
+                  "max_outgoing_rate": 72.29126895205805,
+                  "resident_bytes": 1920,
+                  "matrix_free_temporary_bytes": 912,
+                  "memory_accounting": "resident: coefficient and face/outgoing arrays; matrix-free temporary: result plus largest face-flux buffer; excludes caller input conversion, validation, Python/NumPy overhead and allocator workspace; not process RSS"
+                },
+                "backend_selection": "standard_dispatch",
+                "boundary": "periodic",
+                "velocity": [
+                  0.0,
+                  0.0
+                ],
+                "startup": "none",
+                "timestep_policy": "requested_with_exact_output_alignment",
+                "linear_solver": "scipy.sparse.linalg.splu",
+                "linear_residual_max": 3.060442327472502e-16,
+                "linear_residual_normalization": "norm(Ax-b)/max(norm(b),1)",
+                "initial_mass": 0.7,
+                "final_mass": 0.7000000000000001,
+                "mass_scale": 1.0,
+                "mass_scale_definition": "max(abs(M0), integral(abs(c0)), 1)",
+                "relative_mass_drift": 1.1102230246251565e-16,
+                "mass_balance_error": 1.1102230246251565e-16,
+                "max_mass_balance_error": 1.1102230246251565e-16,
+                "relative_mass_balance_error": 1.1102230246251565e-16,
+                "cumulative_outward_flux": 0.0,
+                "initial_energy": 0.009649966659504943,
+                "final_energy": 0.0017874602291815427,
+                "energy_max_increase": 0.0,
+                "min_concentration": 0.8065891474337072,
+                "max_concentration": 1.1934108525662928,
+                "mass_history": [
+                  0.7000000000000001
+                ],
+                "energy_history": [
+                  0.0017874602291815427
+                ],
+                "min_history": [
+                  0.9123272240039446
+                ],
+                "max_history": [
+                  1.0876727759960547
+                ],
+                "cumulative_outflow_history": [
+                  0.0
+                ],
+                "mass_balance_history": [
+                  1.1102230246251565e-16
+                ],
+                "diagnostic_scope": "initial_and_output_frames",
+                "output_times_s": [
+                  0.05533171651271898
+                ],
+                "factorization_count": 2,
+                "factorization_cache_hits": 6,
+                "factorization_cache_entries": 8,
+                "factorization_cache_bytes": 111936,
+                "factorization_cache": {
+                  "entries": 8,
+                  "bytes": 111936,
+                  "max_entries": 8,
+                  "max_bytes": 268435456,
+                  "memory_accounting": "CSC system and SuperLU L/U arrays; excludes allocator/workspace overhead"
+                },
+                "output_bytes": 480,
+                "timings_ms": {
+                  "matrix": 0.045124999815016054,
+                  "factorization": 0.18166700101573952,
+                  "advance": 0.12299799891479779,
+                  "conversion": 0.07241699859150685,
+                  "output": 0.006207999831531197,
+                  "total": 0.44016699939675163
+                },
+                "dtype": "float64"
+              },
+              "observed_rms_order": null
+            },
+            {
+              "requested_steps": 16,
+              "dt_s": 0.0034582322820449363,
+              "error": {
+                "linf": 0.00211693636078647,
+                "rms": 0.0011807732102859436
+              },
+              "diagnostics": {
+                "schema_version": 2,
+                "solve_ms": 0.47141600043687504,
+                "internal_steps": 16,
+                "dt_max_s": 0.0034582322820449363,
+                "requested_dt_s": 0.0034582322820449363,
+                "actual_dt_min_s": 0.0034582322820449346,
+                "actual_dt_max_s": 0.0034582322820449363,
+                "actual_dt_histogram": {
+                  "0.0034582322820449363": 15,
+                  "0.0034582322820449346": 1
+                },
+                "cfl_limit_s": null,
+                "method": "backward_euler",
+                "backend": "scipy",
+                "requested_backend": "scipy",
+                "diffusivity": {
+                  "type": "cell_centred_field",
+                  "coefficient_sha256": "e5a84dc8efa1d8805fdbc7ee013adbf3682043a8cb06d0e0cfb4da359607abd3",
+                  "min": 0.07855290418778377,
+                  "max": 0.22144709581221622,
+                  "shape": [
+                    6,
+                    10
+                  ],
+                  "unit": "m2/s",
+                  "interpretation": "cell_material",
+                  "face_policy": "harmonic_two_point_transmissibility",
+                  "boundary": "periodic",
+                  "max_outgoing_rate": 72.29126895205805,
+                  "resident_bytes": 1920,
+                  "matrix_free_temporary_bytes": 912,
+                  "memory_accounting": "resident: coefficient and face/outgoing arrays; matrix-free temporary: result plus largest face-flux buffer; excludes caller input conversion, validation, Python/NumPy overhead and allocator workspace; not process RSS"
+                },
+                "backend_selection": "standard_dispatch",
+                "boundary": "periodic",
+                "velocity": [
+                  0.0,
+                  0.0
+                ],
+                "startup": "none",
+                "timestep_policy": "requested_with_exact_output_alignment",
+                "linear_solver": "scipy.sparse.linalg.splu",
+                "linear_residual_max": 2.945195633288012e-16,
+                "linear_residual_normalization": "norm(Ax-b)/max(norm(b),1)",
+                "initial_mass": 0.7,
+                "final_mass": 0.6999999999999997,
+                "mass_scale": 1.0,
+                "mass_scale_definition": "max(abs(M0), integral(abs(c0)), 1)",
+                "relative_mass_drift": 2.220446049250313e-16,
+                "mass_balance_error": -2.220446049250313e-16,
+                "max_mass_balance_error": 2.220446049250313e-16,
+                "relative_mass_balance_error": 2.220446049250313e-16,
+                "cumulative_outward_flux": 0.0,
+                "initial_energy": 0.009649966659504943,
+                "final_energy": 0.0017113434699101099,
+                "energy_max_increase": 0.0,
+                "min_concentration": 0.8065891474337072,
+                "max_concentration": 1.1934108525662928,
+                "mass_history": [
+                  0.6999999999999997
+                ],
+                "energy_history": [
+                  0.0017113434699101099
+                ],
+                "min_history": [
+                  0.9140696657685423
+                ],
+                "max_history": [
+                  1.0859303342314581
+                ],
+                "cumulative_outflow_history": [
+                  0.0
+                ],
+                "mass_balance_history": [
+                  -2.220446049250313e-16
+                ],
+                "diagnostic_scope": "initial_and_output_frames",
+                "output_times_s": [
+                  0.05533171651271898
+                ],
+                "factorization_count": 2,
+                "factorization_cache_hits": 14,
+                "factorization_cache_entries": 8,
+                "factorization_cache_bytes": 125664,
+                "factorization_cache": {
+                  "entries": 8,
+                  "bytes": 125664,
+                  "max_entries": 8,
+                  "max_bytes": 268435456,
+                  "memory_accounting": "CSC system and SuperLU L/U arrays; excludes allocator/workspace overhead"
+                },
+                "output_bytes": 480,
+                "timings_ms": {
+                  "matrix": 0.04570800047076773,
+                  "factorization": 0.14879199989081826,
+                  "advance": 0.17729400133248419,
+                  "conversion": 0.07883400030550547,
+                  "output": 0.006207999831531197,
+                  "total": 0.47141600043687504
+                },
+                "dtype": "float64"
+              },
+              "observed_rms_order": 0.9665913535059093
+            },
+            {
+              "requested_steps": 32,
+              "dt_s": 0.0017291161410224682,
+              "error": {
+                "linf": 0.001070907860742043,
+                "rms": 0.0005974201519587286
+              },
+              "diagnostics": {
+                "schema_version": 2,
+                "solve_ms": 0.6140839996078284,
+                "internal_steps": 32,
+                "dt_max_s": 0.0017291161410224682,
+                "requested_dt_s": 0.0017291161410224682,
+                "actual_dt_min_s": 0.0017291161410224673,
+                "actual_dt_max_s": 0.0017291161410224682,
+                "actual_dt_histogram": {
+                  "0.0017291161410224682": 31,
+                  "0.0017291161410224673": 1
+                },
+                "cfl_limit_s": null,
+                "method": "backward_euler",
+                "backend": "scipy",
+                "requested_backend": "scipy",
+                "diffusivity": {
+                  "type": "cell_centred_field",
+                  "coefficient_sha256": "e5a84dc8efa1d8805fdbc7ee013adbf3682043a8cb06d0e0cfb4da359607abd3",
+                  "min": 0.07855290418778377,
+                  "max": 0.22144709581221622,
+                  "shape": [
+                    6,
+                    10
+                  ],
+                  "unit": "m2/s",
+                  "interpretation": "cell_material",
+                  "face_policy": "harmonic_two_point_transmissibility",
+                  "boundary": "periodic",
+                  "max_outgoing_rate": 72.29126895205805,
+                  "resident_bytes": 1920,
+                  "matrix_free_temporary_bytes": 912,
+                  "memory_accounting": "resident: coefficient and face/outgoing arrays; matrix-free temporary: result plus largest face-flux buffer; excludes caller input conversion, validation, Python/NumPy overhead and allocator workspace; not process RSS"
+                },
+                "backend_selection": "standard_dispatch",
+                "boundary": "periodic",
+                "velocity": [
+                  0.0,
+                  0.0
+                ],
+                "startup": "none",
+                "timestep_policy": "requested_with_exact_output_alignment",
+                "linear_solver": "scipy.sparse.linalg.splu",
+                "linear_residual_max": 3.2153218651073117e-16,
+                "linear_residual_normalization": "norm(Ax-b)/max(norm(b),1)",
+                "initial_mass": 0.7,
+                "final_mass": 0.6999999999999994,
+                "mass_scale": 1.0,
+                "mass_scale_definition": "max(abs(M0), integral(abs(c0)), 1)",
+                "relative_mass_drift": 5.551115123125783e-16,
+                "mass_balance_error": -5.551115123125783e-16,
+                "max_mass_balance_error": 5.551115123125783e-16,
+                "relative_mass_balance_error": 5.551115123125783e-16,
+                "cumulative_outward_flux": 0.0,
+                "initial_energy": 0.009649966659504943,
+                "final_energy": 0.0016726234862061119,
+                "energy_max_increase": 0.0,
+                "min_concentration": 0.8065891474337072,
+                "max_concentration": 1.1934108525662928,
+                "mass_history": [
+                  0.6999999999999994
+                ],
+                "energy_history": [
+                  0.0016726234862061119
+                ],
+                "min_history": [
+                  0.9149743466893353
+                ],
+                "max_history": [
+                  1.0850256533106635
+                ],
+                "cumulative_outflow_history": [
+                  0.0
+                ],
+                "mass_balance_history": [
+                  -5.551115123125783e-16
+                ],
+                "diagnostic_scope": "initial_and_output_frames",
+                "output_times_s": [
+                  0.05533171651271898
+                ],
+                "factorization_count": 2,
+                "factorization_cache_hits": 30,
+                "factorization_cache_entries": 8,
+                "factorization_cache_bytes": 139392,
+                "factorization_cache": {
+                  "entries": 8,
+                  "bytes": 139392,
+                  "max_entries": 8,
+                  "max_bytes": 268435456,
+                  "memory_accounting": "CSC system and SuperLU L/U arrays; excludes allocator/workspace overhead"
+                },
+                "output_bytes": 480,
+                "timings_ms": {
+                  "matrix": 0.042875000872300006,
+                  "factorization": 0.13770900113740936,
+                  "advance": 0.32945599559752736,
+                  "conversion": 0.07829199967090972,
+                  "output": 0.006290998499025591,
+                  "total": 0.6140839996078284
+                },
+                "dtype": "float64"
+              },
+              "observed_rms_order": 0.982914086566991
+            },
+            {
+              "requested_steps": 64,
+              "dt_s": 0.0008645580705112341,
+              "error": {
+                "linf": 0.0005386178568594913,
+                "rms": 0.0003005047329976095
+              },
+              "diagnostics": {
+                "schema_version": 2,
+                "solve_ms": 0.8475409995298833,
+                "internal_steps": 64,
+                "dt_max_s": 0.0008645580705112341,
+                "requested_dt_s": 0.0008645580705112341,
+                "actual_dt_min_s": 0.0008645580705112341,
+                "actual_dt_max_s": 0.0008645580705112341,
+                "actual_dt_histogram": {
+                  "0.0008645580705112341": 64
+                },
+                "cfl_limit_s": null,
+                "method": "backward_euler",
+                "backend": "scipy",
+                "requested_backend": "scipy",
+                "diffusivity": {
+                  "type": "cell_centred_field",
+                  "coefficient_sha256": "e5a84dc8efa1d8805fdbc7ee013adbf3682043a8cb06d0e0cfb4da359607abd3",
+                  "min": 0.07855290418778377,
+                  "max": 0.22144709581221622,
+                  "shape": [
+                    6,
+                    10
+                  ],
+                  "unit": "m2/s",
+                  "interpretation": "cell_material",
+                  "face_policy": "harmonic_two_point_transmissibility",
+                  "boundary": "periodic",
+                  "max_outgoing_rate": 72.29126895205805,
+                  "resident_bytes": 1920,
+                  "matrix_free_temporary_bytes": 912,
+                  "memory_accounting": "resident: coefficient and face/outgoing arrays; matrix-free temporary: result plus largest face-flux buffer; excludes caller input conversion, validation, Python/NumPy overhead and allocator workspace; not process RSS"
+                },
+                "backend_selection": "standard_dispatch",
+                "boundary": "periodic",
+                "velocity": [
+                  0.0,
+                  0.0
+                ],
+                "startup": "none",
+                "timestep_policy": "requested_with_exact_output_alignment",
+                "linear_solver": "scipy.sparse.linalg.splu",
+                "linear_residual_max": 3.0328811943494893e-16,
+                "linear_residual_normalization": "norm(Ax-b)/max(norm(b),1)",
+                "initial_mass": 0.7,
+                "final_mass": 0.6999999999999997,
+                "mass_scale": 1.0,
+                "mass_scale_definition": "max(abs(M0), integral(abs(c0)), 1)",
+                "relative_mass_drift": 2.220446049250313e-16,
+                "mass_balance_error": -2.220446049250313e-16,
+                "max_mass_balance_error": 2.220446049250313e-16,
+                "relative_mass_balance_error": 2.220446049250313e-16,
+                "cumulative_outward_flux": 0.0,
+                "initial_energy": 0.009649966659504943,
+                "final_energy": 0.0016530957229975393,
+                "energy_max_increase": 0.0,
+                "min_concentration": 0.8065891474337072,
+                "max_concentration": 1.1934108525662928,
+                "mass_history": [
+                  0.6999999999999997
+                ],
+                "energy_history": [
+                  0.0016530957229975393
+                ],
+                "min_history": [
+                  0.915435580731543
+                ],
+                "max_history": [
+                  1.0845644192684571
+                ],
+                "cumulative_outflow_history": [
+                  0.0
+                ],
+                "mass_balance_history": [
+                  -2.220446049250313e-16
+                ],
+                "diagnostic_scope": "initial_and_output_frames",
+                "output_times_s": [
+                  0.05533171651271898
+                ],
+                "factorization_count": 1,
+                "factorization_cache_hits": 63,
+                "factorization_cache_entries": 8,
+                "factorization_cache_bytes": 146256,
+                "factorization_cache": {
+                  "entries": 8,
+                  "bytes": 146256,
+                  "max_entries": 8,
+                  "max_bytes": 268435456,
+                  "memory_accounting": "CSC system and SuperLU L/U arrays; excludes allocator/workspace overhead"
+                },
+                "output_bytes": 480,
+                "timings_ms": {
+                  "matrix": 0.04241599890519865,
+                  "factorization": 0.07487499897251837,
+                  "advance": 0.6171260010887636,
+                  "conversion": 0.07579199882457033,
+                  "output": 0.006958000085433014,
+                  "total": 0.8475409995298833
+                },
+                "dtype": "float64"
+              },
+              "observed_rms_order": 0.9913581891395032
+            }
+          ],
+          "crank_nicolson": [
+            {
+              "requested_steps": 8,
+              "dt_s": 0.006916464564089873,
+              "error": {
+                "linf": 0.0001003820339866568,
+                "rms": 5.1249072645773196e-05
+              },
+              "diagnostics": {
+                "schema_version": 2,
+                "solve_ms": 0.532541000211495,
+                "internal_steps": 8,
+                "dt_max_s": 0.006916464564089873,
+                "requested_dt_s": 0.006916464564089873,
+                "actual_dt_min_s": 0.006916464564089869,
+                "actual_dt_max_s": 0.006916464564089873,
+                "actual_dt_histogram": {
+                  "0.006916464564089873": 7,
+                  "0.006916464564089869": 1
+                },
+                "cfl_limit_s": null,
+                "method": "crank_nicolson",
+                "backend": "scipy",
+                "requested_backend": "scipy",
+                "diffusivity": {
+                  "type": "cell_centred_field",
+                  "coefficient_sha256": "e5a84dc8efa1d8805fdbc7ee013adbf3682043a8cb06d0e0cfb4da359607abd3",
+                  "min": 0.07855290418778377,
+                  "max": 0.22144709581221622,
+                  "shape": [
+                    6,
+                    10
+                  ],
+                  "unit": "m2/s",
+                  "interpretation": "cell_material",
+                  "face_policy": "harmonic_two_point_transmissibility",
+                  "boundary": "periodic",
+                  "max_outgoing_rate": 72.29126895205805,
+                  "resident_bytes": 1920,
+                  "matrix_free_temporary_bytes": 912,
+                  "memory_accounting": "resident: coefficient and face/outgoing arrays; matrix-free temporary: result plus largest face-flux buffer; excludes caller input conversion, validation, Python/NumPy overhead and allocator workspace; not process RSS"
+                },
+                "backend_selection": "standard_dispatch",
+                "boundary": "periodic",
+                "velocity": [
+                  0.0,
+                  0.0
+                ],
+                "startup": "none",
+                "timestep_policy": "requested_with_exact_output_alignment",
+                "linear_solver": "scipy.sparse.linalg.splu",
+                "linear_residual_max": 3.0276425420449066e-16,
+                "linear_residual_normalization": "norm(Ax-b)/max(norm(b),1)",
+                "initial_mass": 0.7,
+                "final_mass": 0.6999999999999997,
+                "mass_scale": 1.0,
+                "mass_scale_definition": "max(abs(M0), integral(abs(c0)), 1)",
+                "relative_mass_drift": 2.220446049250313e-16,
+                "mass_balance_error": -2.220446049250313e-16,
+                "max_mass_balance_error": 2.220446049250313e-16,
+                "relative_mass_balance_error": 2.220446049250313e-16,
+                "cumulative_outward_flux": 0.0,
+                "initial_energy": 0.009649966659504943,
+                "final_energy": 0.0016304984761896875,
+                "energy_max_increase": 0.0,
+                "min_concentration": 0.8065891474337072,
+                "max_concentration": 1.1934108525662928,
+                "mass_history": [
+                  0.6999999999999997
+                ],
+                "energy_history": [
+                  0.0016304984761896875
+                ],
+                "min_history": [
+                  0.9159638452453384
+                ],
+                "max_history": [
+                  1.0840361547546613
+                ],
+                "cumulative_outflow_history": [
+                  0.0
+                ],
+                "mass_balance_history": [
+                  -2.220446049250313e-16
+                ],
+                "diagnostic_scope": "initial_and_output_frames",
+                "output_times_s": [
+                  0.05533171651271898
+                ],
+                "factorization_count": 2,
+                "factorization_cache_hits": 6,
+                "factorization_cache_entries": 8,
+                "factorization_cache_bytes": 153120,
+                "factorization_cache": {
+                  "entries": 8,
+                  "bytes": 153120,
+                  "max_entries": 8,
+                  "max_bytes": 268435456,
+                  "memory_accounting": "CSC system and SuperLU L/U arrays; excludes allocator/workspace overhead"
+                },
+                "output_bytes": 480,
+                "timings_ms": {
+                  "matrix": 0.058708999858936295,
+                  "factorization": 0.19691699890245218,
+                  "advance": 0.15528999756497797,
+                  "conversion": 0.09999999929277692,
+                  "output": 0.007083001037244685,
+                  "total": 0.532541000211495
+                },
+                "dtype": "float64"
+              },
+              "observed_rms_order": null
+            },
+            {
+              "requested_steps": 16,
+              "dt_s": 0.0034582322820449363,
+              "error": {
+                "linf": 2.505191778978677e-05,
+                "rms": 1.2793788362188227e-05
+              },
+              "diagnostics": {
+                "schema_version": 2,
+                "solve_ms": 0.6624170000577578,
+                "internal_steps": 16,
+                "dt_max_s": 0.0034582322820449363,
+                "requested_dt_s": 0.0034582322820449363,
+                "actual_dt_min_s": 0.0034582322820449346,
+                "actual_dt_max_s": 0.0034582322820449363,
+                "actual_dt_histogram": {
+                  "0.0034582322820449363": 15,
+                  "0.0034582322820449346": 1
+                },
+                "cfl_limit_s": null,
+                "method": "crank_nicolson",
+                "backend": "scipy",
+                "requested_backend": "scipy",
+                "diffusivity": {
+                  "type": "cell_centred_field",
+                  "coefficient_sha256": "e5a84dc8efa1d8805fdbc7ee013adbf3682043a8cb06d0e0cfb4da359607abd3",
+                  "min": 0.07855290418778377,
+                  "max": 0.22144709581221622,
+                  "shape": [
+                    6,
+                    10
+                  ],
+                  "unit": "m2/s",
+                  "interpretation": "cell_material",
+                  "face_policy": "harmonic_two_point_transmissibility",
+                  "boundary": "periodic",
+                  "max_outgoing_rate": 72.29126895205805,
+                  "resident_bytes": 1920,
+                  "matrix_free_temporary_bytes": 912,
+                  "memory_accounting": "resident: coefficient and face/outgoing arrays; matrix-free temporary: result plus largest face-flux buffer; excludes caller input conversion, validation, Python/NumPy overhead and allocator workspace; not process RSS"
+                },
+                "backend_selection": "standard_dispatch",
+                "boundary": "periodic",
+                "velocity": [
+                  0.0,
+                  0.0
+                ],
+                "startup": "none",
+                "timestep_policy": "requested_with_exact_output_alignment",
+                "linear_solver": "scipy.sparse.linalg.splu",
+                "linear_residual_max": 2.6662688518321834e-16,
+                "linear_residual_normalization": "norm(Ax-b)/max(norm(b),1)",
+                "initial_mass": 0.7,
+                "final_mass": 0.6999999999999997,
+                "mass_scale": 1.0,
+                "mass_scale_definition": "max(abs(M0), integral(abs(c0)), 1)",
+                "relative_mass_drift": 2.220446049250313e-16,
+                "mass_balance_error": -2.220446049250313e-16,
+                "max_mass_balance_error": 2.220446049250313e-16,
+                "relative_mass_balance_error": 2.220446049250313e-16,
+                "cumulative_outward_flux": 0.0,
+                "initial_energy": 0.009649966659504943,
+                "final_energy": 0.0016327165239022957,
+                "energy_max_increase": 0.0,
+                "min_concentration": 0.8065891474337072,
+                "max_concentration": 1.1934108525662928,
+                "mass_history": [
+                  0.6999999999999997
+                ],
+                "energy_history": [
+                  0.0016327165239022957
+                ],
+                "min_history": [
+                  0.9159181723354058
+                ],
+                "max_history": [
+                  1.084081827664593
+                ],
+                "cumulative_outflow_history": [
+                  0.0
+                ],
+                "mass_balance_history": [
+                  -2.220446049250313e-16
+                ],
+                "diagnostic_scope": "initial_and_output_frames",
+                "output_times_s": [
+                  0.05533171651271898
+                ],
+                "factorization_count": 2,
+                "factorization_cache_hits": 14,
+                "factorization_cache_entries": 8,
+                "factorization_cache_bytes": 153120,
+                "factorization_cache": {
+                  "entries": 8,
+                  "bytes": 153120,
+                  "max_entries": 8,
+                  "max_bytes": 268435456,
+                  "memory_accounting": "CSC system and SuperLU L/U arrays; excludes allocator/workspace overhead"
+                },
+                "output_bytes": 480,
+                "timings_ms": {
+                  "matrix": 0.05958299880148843,
+                  "factorization": 0.15608399917255156,
+                  "advance": 0.22158299907459877,
+                  "conversion": 0.1990000000660075,
+                  "output": 0.006792000931454822,
+                  "total": 0.6624170000577578
+                },
+                "dtype": "float64"
+              },
+              "observed_rms_order": 2.002082376046153
+            },
+            {
+              "requested_steps": 32,
+              "dt_s": 0.0017291161410224682,
+              "error": {
+                "linf": 6.26026877859065e-06,
+                "rms": 3.1972933344841967e-06
+              },
+              "diagnostics": {
+                "schema_version": 2,
+                "solve_ms": 0.7842909999453695,
+                "internal_steps": 32,
+                "dt_max_s": 0.0017291161410224682,
+                "requested_dt_s": 0.0017291161410224682,
+                "actual_dt_min_s": 0.0017291161410224673,
+                "actual_dt_max_s": 0.0017291161410224682,
+                "actual_dt_histogram": {
+                  "0.0017291161410224682": 31,
+                  "0.0017291161410224673": 1
+                },
+                "cfl_limit_s": null,
+                "method": "crank_nicolson",
+                "backend": "scipy",
+                "requested_backend": "scipy",
+                "diffusivity": {
+                  "type": "cell_centred_field",
+                  "coefficient_sha256": "e5a84dc8efa1d8805fdbc7ee013adbf3682043a8cb06d0e0cfb4da359607abd3",
+                  "min": 0.07855290418778377,
+                  "max": 0.22144709581221622,
+                  "shape": [
+                    6,
+                    10
+                  ],
+                  "unit": "m2/s",
+                  "interpretation": "cell_material",
+                  "face_policy": "harmonic_two_point_transmissibility",
+                  "boundary": "periodic",
+                  "max_outgoing_rate": 72.29126895205805,
+                  "resident_bytes": 1920,
+                  "matrix_free_temporary_bytes": 912,
+                  "memory_accounting": "resident: coefficient and face/outgoing arrays; matrix-free temporary: result plus largest face-flux buffer; excludes caller input conversion, validation, Python/NumPy overhead and allocator workspace; not process RSS"
+                },
+                "backend_selection": "standard_dispatch",
+                "boundary": "periodic",
+                "velocity": [
+                  0.0,
+                  0.0
+                ],
+                "startup": "none",
+                "timestep_policy": "requested_with_exact_output_alignment",
+                "linear_solver": "scipy.sparse.linalg.splu",
+                "linear_residual_max": 3.145779588610345e-16,
+                "linear_residual_normalization": "norm(Ax-b)/max(norm(b),1)",
+                "initial_mass": 0.7,
+                "final_mass": 0.7,
+                "mass_scale": 1.0,
+                "mass_scale_definition": "max(abs(M0), integral(abs(c0)), 1)",
+                "relative_mass_drift": 0.0,
+                "mass_balance_error": 0.0,
+                "max_mass_balance_error": 0.0,
+                "relative_mass_balance_error": 0.0,
+                "cumulative_outward_flux": 0.0,
+                "initial_energy": 0.009649966659504943,
+                "final_energy": 0.0016332705903992584,
+                "energy_max_increase": 0.0,
+                "min_concentration": 0.8065891474337072,
+                "max_concentration": 1.1934108525662928,
+                "mass_history": [
+                  0.7
+                ],
+                "energy_history": [
+                  0.0016332705903992584
+                ],
+                "min_history": [
+                  0.9159067666330704
+                ],
+                "max_history": [
+                  1.0840932333669293
+                ],
+                "cumulative_outflow_history": [
+                  0.0
+                ],
+                "mass_balance_history": [
+                  0.0
+                ],
+                "diagnostic_scope": "initial_and_output_frames",
+                "output_times_s": [
+                  0.05533171651271898
+                ],
+                "factorization_count": 2,
+                "factorization_cache_hits": 30,
+                "factorization_cache_entries": 8,
+                "factorization_cache_bytes": 153120,
+                "factorization_cache": {
+                  "entries": 8,
+                  "bytes": 153120,
+                  "max_entries": 8,
+                  "max_bytes": 268435456,
+                  "memory_accounting": "CSC system and SuperLU L/U arrays; excludes allocator/workspace overhead"
+                },
+                "output_bytes": 480,
+                "timings_ms": {
+                  "matrix": 0.043957999878330156,
+                  "factorization": 0.15070799963723402,
+                  "advance": 0.48029700337792747,
+                  "conversion": 0.08179199903679546,
+                  "output": 0.006833000952610746,
+                  "total": 0.7842909999453695
+                },
+                "dtype": "float64"
+              },
+              "observed_rms_order": 2.0005205083564133
+            },
+            {
+              "requested_steps": 64,
+              "dt_s": 0.0008645580705112341,
+              "error": {
+                "linf": 1.5648979956317532e-06,
+                "rms": 7.992512448616478e-07
+              },
+              "diagnostics": {
+                "schema_version": 2,
+                "solve_ms": 0.9237499998562271,
+                "internal_steps": 64,
+                "dt_max_s": 0.0008645580705112341,
+                "requested_dt_s": 0.0008645580705112341,
+                "actual_dt_min_s": 0.0008645580705112341,
+                "actual_dt_max_s": 0.0008645580705112341,
+                "actual_dt_histogram": {
+                  "0.0008645580705112341": 64
+                },
+                "cfl_limit_s": null,
+                "method": "crank_nicolson",
+                "backend": "scipy",
+                "requested_backend": "scipy",
+                "diffusivity": {
+                  "type": "cell_centred_field",
+                  "coefficient_sha256": "e5a84dc8efa1d8805fdbc7ee013adbf3682043a8cb06d0e0cfb4da359607abd3",
+                  "min": 0.07855290418778377,
+                  "max": 0.22144709581221622,
+                  "shape": [
+                    6,
+                    10
+                  ],
+                  "unit": "m2/s",
+                  "interpretation": "cell_material",
+                  "face_policy": "harmonic_two_point_transmissibility",
+                  "boundary": "periodic",
+                  "max_outgoing_rate": 72.29126895205805,
+                  "resident_bytes": 1920,
+                  "matrix_free_temporary_bytes": 912,
+                  "memory_accounting": "resident: coefficient and face/outgoing arrays; matrix-free temporary: result plus largest face-flux buffer; excludes caller input conversion, validation, Python/NumPy overhead and allocator workspace; not process RSS"
+                },
+                "backend_selection": "standard_dispatch",
+                "boundary": "periodic",
+                "velocity": [
+                  0.0,
+                  0.0
+                ],
+                "startup": "none",
+                "timestep_policy": "requested_with_exact_output_alignment",
+                "linear_solver": "scipy.sparse.linalg.splu",
+                "linear_residual_max": 3.0014371869465007e-16,
+                "linear_residual_normalization": "norm(Ax-b)/max(norm(b),1)",
+                "initial_mass": 0.7,
+                "final_mass": 0.6999999999999987,
+                "mass_scale": 1.0,
+                "mass_scale_definition": "max(abs(M0), integral(abs(c0)), 1)",
+                "relative_mass_drift": 1.2212453270876722e-15,
+                "mass_balance_error": -1.2212453270876722e-15,
+                "max_mass_balance_error": 1.2212453270876722e-15,
+                "relative_mass_balance_error": 1.2212453270876722e-15,
+                "cumulative_outward_flux": 0.0,
+                "initial_energy": 0.009649966659504943,
+                "final_energy": 0.0016334090792022185,
+                "energy_max_increase": 0.0,
+                "min_concentration": 0.8065891474337072,
+                "max_concentration": 1.1934108525662928,
+                "mass_history": [
+                  0.6999999999999987
+                ],
+                "energy_history": [
+                  0.0016334090792022185
+                ],
+                "min_history": [
+                  0.91590391598546
+                ],
+                "max_history": [
+                  1.0840960840145302
+                ],
+                "cumulative_outflow_history": [
+                  0.0
+                ],
+                "mass_balance_history": [
+                  -1.2212453270876722e-15
+                ],
+                "diagnostic_scope": "initial_and_output_frames",
+                "output_times_s": [
+                  0.05533171651271898
+                ],
+                "factorization_count": 1,
+                "factorization_cache_hits": 63,
+                "factorization_cache_entries": 8,
+                "factorization_cache_bytes": 153120,
+                "factorization_cache": {
+                  "entries": 8,
+                  "bytes": 153120,
+                  "max_entries": 8,
+                  "max_bytes": 268435456,
+                  "memory_accounting": "CSC system and SuperLU L/U arrays; excludes allocator/workspace overhead"
+                },
+                "output_bytes": 480,
+                "timings_ms": {
+                  "matrix": 0.044082999011152424,
+                  "factorization": 0.07383299998764414,
+                  "advance": 0.6922100074007176,
+                  "conversion": 0.07899999945948366,
+                  "output": 0.006457998097175732,
+                  "total": 0.9237499998562271
+                },
+                "dtype": "float64"
+              },
+              "observed_rms_order": 2.0001301185408082
+            }
+          ]
+        }
+      }
+    ],
+    "reference": "independent dense face-loop assembly + symmetric eigh exponential; not production matrix assembly",
+    "scope": "fixed grid and initial cell averages; temporal error only, no continuous PDE accuracy claim",
+    "coefficient": "D*(1+variation*sin(2*pi*x/Lx)*cos(2*pi*y/Ly)) sampled at cell centres",
+    "periodic_two_cell_rule": "each periodic face is added separately, including two distinct faces for a two-cell axis"
+  },
+  "layered": {
+    "grid": {
+      "bounds": [
+        0.0,
+        0.0,
+        1.0,
+        0.25
+      ],
+      "nx": 32,
+      "ny": 4,
+      "dx_m": 0.03125,
+      "dy_m": 0.0625,
+      "location": "cell_centres",
+      "axis_order": "frame,y,x",
+      "y_direction": "south_to_north"
+    },
+    "interface_x_m": 0.5,
+    "series_resistance": 0.525,
+    "analytic_constant_flux": 1.9047619047619047,
+    "results": {
+      "harmonic": {
+        "error": {
+          "linf": 5.551115123125783e-16,
+          "rms": 2.4389378119098405e-16
+        },
+        "flux_x_max_error": 1.3322676295501878e-14,
+        "flux_x_spread": 2.0872192862952943e-14,
+        "flux_x_mean": 1.904761904761901,
+        "flux_y_max_absolute": 6.661338147750939e-15,
+        "linear_residual_linf": 5.684341886080801e-13,
+        "relative_linear_residual": 4.1330947225106774e-16
+      },
+      "arithmetic": {
+        "error": {
+          "linf": 0.024221182182421475,
+          "rms": 0.010214991856752228
+        },
+        "flux_x_max_error": 0.05000502127984641,
+        "flux_x_spread": 3.019806626980426e-14,
+        "flux_x_mean": 1.9547669260417413,
+        "flux_y_max_absolute": 6.661338147750939e-15,
+        "linear_residual_linf": 9.094947017729282e-13,
+        "relative_linear_residual": 4.769866594830691e-16
+      }
+    },
+    "reference": "piecewise linear analytic steady solution with serial resistances; centre values equal exact cell averages on aligned layers",
+    "boundary_scope": "validation-only left/right Dirichlet half-cell terms added to a COPY of the production closed operator; top/bottom zero flux; production boundary API unchanged",
+    "counterexample_scope": "arithmetic face means solve a different discrete resistance model; retained as an explicit contrast, never production output"
+  },
+  "raw_array_shapes": {
+    "spatial_n16__kappa": [
+      4,
+      16
+    ],
+    "spatial_n16__initial": [
+      4,
+      16
+    ],
+    "spatial_n16__numerical": [
+      4,
+      16
+    ],
+    "spatial_n16__exact_cell_average": [
+      4,
+      16
+    ],
+    "spatial_n16__semidiscrete": [
+      4,
+      16
+    ],
+    "spatial_n32__kappa": [
+      4,
+      32
+    ],
+    "spatial_n32__initial": [
+      4,
+      32
+    ],
+    "spatial_n32__numerical": [
+      4,
+      32
+    ],
+    "spatial_n32__exact_cell_average": [
+      4,
+      32
+    ],
+    "spatial_n32__semidiscrete": [
+      4,
+      32
+    ],
+    "spatial_n64__kappa": [
+      4,
+      64
+    ],
+    "spatial_n64__initial": [
+      4,
+      64
+    ],
+    "spatial_n64__numerical": [
+      4,
+      64
+    ],
+    "spatial_n64__exact_cell_average": [
+      4,
+      64
+    ],
+    "spatial_n64__semidiscrete": [
+      4,
+      64
+    ],
+    "spatial_n128__kappa": [
+      4,
+      128
+    ],
+    "spatial_n128__initial": [
+      4,
+      128
+    ],
+    "spatial_n128__numerical": [
+      4,
+      128
+    ],
+    "spatial_n128__exact_cell_average": [
+      4,
+      128
+    ],
+    "spatial_n128__semidiscrete": [
+      4,
+      128
+    ],
+    "temporal_zero_flux__kappa": [
+      6,
+      10
+    ],
+    "temporal_zero_flux__initial": [
+      6,
+      10
+    ],
+    "temporal_zero_flux__semidiscrete": [
+      6,
+      10
+    ],
+    "temporal_zero_flux__independent_operator": [
+      60,
+      60
+    ],
+    "temporal_zero_flux__eigenvalues": [
+      60
+    ],
+    "temporal_zero_flux__explicit_euler_steps8": [
+      6,
+      10
+    ],
+    "temporal_zero_flux__explicit_euler_steps16": [
+      6,
+      10
+    ],
+    "temporal_zero_flux__explicit_euler_steps32": [
+      6,
+      10
+    ],
+    "temporal_zero_flux__explicit_euler_steps64": [
+      6,
+      10
+    ],
+    "temporal_zero_flux__backward_euler_steps8": [
+      6,
+      10
+    ],
+    "temporal_zero_flux__backward_euler_steps16": [
+      6,
+      10
+    ],
+    "temporal_zero_flux__backward_euler_steps32": [
+      6,
+      10
+    ],
+    "temporal_zero_flux__backward_euler_steps64": [
+      6,
+      10
+    ],
+    "temporal_zero_flux__crank_nicolson_steps8": [
+      6,
+      10
+    ],
+    "temporal_zero_flux__crank_nicolson_steps16": [
+      6,
+      10
+    ],
+    "temporal_zero_flux__crank_nicolson_steps32": [
+      6,
+      10
+    ],
+    "temporal_zero_flux__crank_nicolson_steps64": [
+      6,
+      10
+    ],
+    "temporal_periodic__kappa": [
+      6,
+      10
+    ],
+    "temporal_periodic__initial": [
+      6,
+      10
+    ],
+    "temporal_periodic__semidiscrete": [
+      6,
+      10
+    ],
+    "temporal_periodic__independent_operator": [
+      60,
+      60
+    ],
+    "temporal_periodic__eigenvalues": [
+      60
+    ],
+    "temporal_periodic__explicit_euler_steps8": [
+      6,
+      10
+    ],
+    "temporal_periodic__explicit_euler_steps16": [
+      6,
+      10
+    ],
+    "temporal_periodic__explicit_euler_steps32": [
+      6,
+      10
+    ],
+    "temporal_periodic__explicit_euler_steps64": [
+      6,
+      10
+    ],
+    "temporal_periodic__backward_euler_steps8": [
+      6,
+      10
+    ],
+    "temporal_periodic__backward_euler_steps16": [
+      6,
+      10
+    ],
+    "temporal_periodic__backward_euler_steps32": [
+      6,
+      10
+    ],
+    "temporal_periodic__backward_euler_steps64": [
+      6,
+      10
+    ],
+    "temporal_periodic__crank_nicolson_steps8": [
+      6,
+      10
+    ],
+    "temporal_periodic__crank_nicolson_steps16": [
+      6,
+      10
+    ],
+    "temporal_periodic__crank_nicolson_steps32": [
+      6,
+      10
+    ],
+    "temporal_periodic__crank_nicolson_steps64": [
+      6,
+      10
+    ],
+    "layered__kappa": [
+      4,
+      32
+    ],
+    "layered__exact_cell_average": [
+      4,
+      32
+    ],
+    "layered__harmonic": [
+      4,
+      32
+    ],
+    "layered__arithmetic": [
+      4,
+      32
+    ],
+    "layered__rhs": [
+      4,
+      32
+    ],
+    "layered__production_closed_operator": [
+      128,
+      128
+    ],
+    "layered__harmonic_dirichlet_operator": [
+      128,
+      128
+    ],
+    "layered__arithmetic_dirichlet_operator": [
+      128,
+      128
+    ],
+    "layered__harmonic_flux_x": [
+      4,
+      33
+    ],
+    "layered__harmonic_flux_y": [
+      5,
+      32
+    ],
+    "layered__arithmetic_flux_x": [
+      4,
+      33
+    ],
+    "layered__arithmetic_flux_y": [
+      5,
+      32
+    ]
+  },
+  "raw_array_dtype": "float64",
+  "units": {
+    "distance": "metres",
+    "time": "seconds",
+    "diffusivity": "m^2/s",
+    "concentration": "synthetic relative concentration",
+    "face_flux": "relative concentration * m/s"
+  },
+  "limitations": [
+    "Spatial study refines x for a y-independent mode; it does not certify arbitrary 2-D spatial convergence.",
+    "Temporal order is measured relative to the fixed discrete matrix exponential, independently assembled on a small grid.",
+    "Manufactured analytic references and floating-point matrix exponentials are not outward-rounded mathematical certificates.",
+    "Half-cell Dirichlet conditions are used only by the validation system; production variable diffusion remains closed/periodic.",
+    "Positive scalar cell-centred coefficients only; no tensor anisotropy, reactions, source, variable transport or observational calibration.",
+    "No performance improvement claim. Solver timings are diagnostics; array/update budgets do not bound peak factor/eigensolver memory or wall time."
+  ],
+  "provenance": {
+    "created_utc": "2026-10-02T06:52:04.690958+00:00",
+    "git_commit": "001a4b85118a641934b67d19eac096d4c08942e8",
+    "git_dirty": true,
+    "source_sha256": {
+      "backend/app/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "backend/app/diffusion.py": "b21ce19795d77cd8fbc20814f89bca4762980637f330f7512d856e4564a80e34",
+      "backend/app/main.py": "7a43f78cc636eb0697f74f40542a2c3ce8836c34a9db13cf2f6695146c5ad4c3",
+      "backend/app/numerics/__init__.py": "1980e833e743c86c13a2464cf5b237fed9037c0aa1f0fb02210ac4bd2fba1875",
+      "backend/app/numerics/coefficients.py": "4ef02bdd39e7304665f4d49ce6755dafa85e8b5d86072212c00f0578b7cb917d",
+      "backend/app/numerics/native.py": "e1d66800549083ed39311553220277ecb6c2c505e161d9c387dea77ae9ecc6c8",
+      "backend/app/numerics/operators.py": "b745d7fa7442e89d65bc854604d49de8bff2c8eb0a5ce1edffecc24d33cb98ba",
+      "backend/app/numerics/solver.py": "6d5d48f5c6c22306a11391d3ea303c1f5969d3276889a1e3e5a03eac05eb1225",
+      "backend/app/numerics/validation.py": "9ea116d24193e9b088651cb00015b191246ec9ec8873678eebb71cf835b784bb",
+      "backend/app/observations.py": "a5527b156a34b7d2404ac7cab1388b7875c5692f9c860397e60c8d3b71f0189e",
+      "backend/app/research/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "backend/app/research/decision.py": "319fda2af0117a5d9dc33a027eb5236e8bed173e10ff62c42454dae6dfacad7e",
+      "backend/app/research/dynamic_routing.py": "1cc9e7966163a36437e2efd6b7853db18c94657db9e9e45bfae5d27b3a7f72a8",
+      "backend/app/research/experiments.py": "51e2392c604c4d8793953ef7fd0b21f44b025d2ee34f19e33179a6300630d1e9",
+      "backend/app/research/problems.py": "8941ca3119214edd030d6b5361a00fe1a3ad059a6b43d5a464d9536bf03685bd",
+      "backend/app/research/travel.py": "5bacae6ad7e33224b66845615cec082c583a9cfac082c319ed961aebef4e1436",
+      "backend/app/routing.py": "89e08103651629bf71e6b140b85f1295c1980dfdafeda6e968336f7f653c667d",
+      "backend/app/temporal_observations.py": "8fd9ea9b0009065558714fe3b31bce15da44de396286a6347bb130527af4c153",
+      "backend/app/validation.py": "57fa231241bbbe707964f96fa684cdd9ad337cad1c4c6a444acb201cabc1f228",
+      "cpp/src/bindings.cpp": "22c3b5a93a0ffb639fb9743705b69628d84ae5a0914026d2d1738fc0e86cb1ef",
+      "cpp/src/build_info.h.in": "b20aaf4b0d30757a4cddb645f4272113cfc7f359ba443c4763a85a9553d8be0d",
+      "cpp/src/diffusion.cpp": "709662ac3a5a04cedf4fc260771216120cc18fff5a83a1e0c026d45f0af7dda0",
+      "cpp/src/diffusion.h": "3fa5682faff6b5431ad6723f03d8626653d17f825cc439d0947b8b797508bd50",
+      "cpp/CMakeLists.txt": "e5df4b5acd7fcce866fc2461e1d38193aacf2ebad2c329dd68696513f9a9cb2d",
+      "cpp/pyproject.toml": "098469f0aeb45422ae941a4aad5092c00dd66aee213f24af367732aa91901065",
+      "cpp/source_hash.py": "1988c31b5ec5f145ca1c446effad6834fc9226495bdd3ce2d0f152121c3e69f6",
+      "requirements.lock.txt": "f7e79a623250e0012572eca0792eec29ada8af99e8dfc759537c7e067a9c92e5",
+      "scripts/run_research.py": "9cd83d1a5b15073a7775ca4e18afd59db99c0614b70bc75038e9da28b617f9bf"
+    },
+    "source_id": "1dbfdd358dd2aeb342994b1f27196aac1dc3153dbc4685c5a39b5073ca8c216f",
+    "python": "3.12.6",
+    "platform": "macOS-26.5.2-arm64-arm-64bit",
+    "packages": {
+      "numpy": "2.5.3",
+      "scipy": "1.18.1",
+      "pydantic": "2.13.5"
+    }
+  },
+  "source_snapshot_sha256": {
+    "backend/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "backend/app/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "backend/app/diffusion.py": "b21ce19795d77cd8fbc20814f89bca4762980637f330f7512d856e4564a80e34",
+    "backend/app/main.py": "7a43f78cc636eb0697f74f40542a2c3ce8836c34a9db13cf2f6695146c5ad4c3",
+    "backend/app/numerics/__init__.py": "1980e833e743c86c13a2464cf5b237fed9037c0aa1f0fb02210ac4bd2fba1875",
+    "backend/app/numerics/coefficients.py": "4ef02bdd39e7304665f4d49ce6755dafa85e8b5d86072212c00f0578b7cb917d",
+    "backend/app/numerics/native.py": "e1d66800549083ed39311553220277ecb6c2c505e161d9c387dea77ae9ecc6c8",
+    "backend/app/numerics/operators.py": "b745d7fa7442e89d65bc854604d49de8bff2c8eb0a5ce1edffecc24d33cb98ba",
+    "backend/app/numerics/solver.py": "6d5d48f5c6c22306a11391d3ea303c1f5969d3276889a1e3e5a03eac05eb1225",
+    "backend/app/numerics/validation.py": "9ea116d24193e9b088651cb00015b191246ec9ec8873678eebb71cf835b784bb",
+    "backend/app/observations.py": "a5527b156a34b7d2404ac7cab1388b7875c5692f9c860397e60c8d3b71f0189e",
+    "backend/app/research/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "backend/app/research/decision.py": "319fda2af0117a5d9dc33a027eb5236e8bed173e10ff62c42454dae6dfacad7e",
+    "backend/app/research/dynamic_routing.py": "1cc9e7966163a36437e2efd6b7853db18c94657db9e9e45bfae5d27b3a7f72a8",
+    "backend/app/research/experiments.py": "51e2392c604c4d8793953ef7fd0b21f44b025d2ee34f19e33179a6300630d1e9",
+    "backend/app/research/problems.py": "8941ca3119214edd030d6b5361a00fe1a3ad059a6b43d5a464d9536bf03685bd",
+    "backend/app/research/travel.py": "5bacae6ad7e33224b66845615cec082c583a9cfac082c319ed961aebef4e1436",
+    "backend/app/routing.py": "89e08103651629bf71e6b140b85f1295c1980dfdafeda6e968336f7f653c667d",
+    "backend/app/temporal_observations.py": "8fd9ea9b0009065558714fe3b31bce15da44de396286a6347bb130527af4c153",
+    "backend/app/validation.py": "57fa231241bbbe707964f96fa684cdd9ad337cad1c4c6a444acb201cabc1f228",
+    "requirements.lock.txt": "f7e79a623250e0012572eca0792eec29ada8af99e8dfc759537c7e067a9c92e5",
+    "scripts/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "scripts/run_variable_diffusion_experiments.py": "48c4c2a2bb285ff8f14cd07c6b2ac98f0c775d0f25b4ade1d1106b0469484868"
+  }
+}

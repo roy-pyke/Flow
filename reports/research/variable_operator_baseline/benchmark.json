@@ -1,0 +1,193 @@
+{
+  "schema_version": 1,
+  "scope": "spatial operator only; no PDE, LU, routing, HTTP or UI timing",
+  "grid": {
+    "bounds": [
+      0.0,
+      0.0,
+      4.0,
+      3.0
+    ],
+    "nx": 256,
+    "ny": 160,
+    "dx_m": 0.015625,
+    "dy_m": 0.01875,
+    "location": "cell_centres",
+    "axis_order": "frame,y,x",
+    "y_direction": "south_to_north"
+  },
+  "boundary": "periodic",
+  "seed": 73,
+  "repeats": 21,
+  "coefficient": {
+    "type": "cell_centred_field",
+    "coefficient_sha256": "467c7f8618e8a6202e3496c1dee62035e09b7a712da698a032559cd050064ac4",
+    "min": 0.05000073916723947,
+    "max": 0.19999624810616648,
+    "shape": [
+      160,
+      256
+    ],
+    "unit": "m2/s",
+    "interpretation": "cell_material",
+    "face_policy": "harmonic_two_point_transmissibility",
+    "boundary": "periodic",
+    "max_outgoing_rate": 2648.5450691270908,
+    "resident_bytes": 1310720,
+    "matrix_free_temporary_bytes": 654080,
+    "memory_accounting": "resident: coefficient and face/outgoing arrays; matrix-free temporary: result plus largest face-flux buffer; excludes caller input conversion, validation, Python/NumPy overhead and allocator workspace; not process RSS"
+  },
+  "csc_bytes": 2621444,
+  "csc_nnz": 204800,
+  "setup_ms": {
+    "prepare": [
+      1.841084,
+      0.724333,
+      0.563375,
+      0.55,
+      0.556875,
+      0.697667,
+      0.565042,
+      0.605625,
+      1.181,
+      0.584666,
+      0.522792,
+      1.2655,
+      0.723208,
+      0.673875,
+      0.623875,
+      0.726042,
+      0.583167,
+      0.620625,
+      0.52025,
+      0.665167,
+      0.556583
+    ],
+    "assemble_from_prepared": [
+      2.971292,
+      2.669208,
+      2.355042,
+      2.3865,
+      2.729666,
+      2.590708,
+      2.304125,
+      2.270709,
+      2.519,
+      2.253291,
+      2.475833,
+      2.958417,
+      2.304666,
+      2.660166,
+      2.316125,
+      2.727375,
+      2.34575,
+      2.157792,
+      2.84625,
+      2.609958,
+      2.296459
+    ]
+  },
+  "warm_apply_ms": {
+    "prepared_matrix_free": [
+      0.115042,
+      0.102666,
+      0.111417,
+      0.100834,
+      0.100583,
+      0.107542,
+      0.103583,
+      0.107375,
+      0.099291,
+      0.111208,
+      0.458959,
+      0.169792,
+      0.14425,
+      0.166708,
+      0.175083,
+      0.166583,
+      0.15275,
+      0.156083,
+      0.153375,
+      0.158792,
+      0.153333
+    ],
+    "csc_matvec": [
+      0.130958,
+      0.101792,
+      0.117083,
+      0.110417,
+      0.119333,
+      0.112959,
+      0.113833,
+      0.113041,
+      0.109208,
+      0.111958,
+      0.108917,
+      0.101417,
+      0.104792,
+      0.101125,
+      0.100959,
+      0.107083,
+      0.105292,
+      0.100792,
+      0.102292,
+      0.1015,
+      0.10075
+    ]
+  },
+  "median_setup_ms": {
+    "prepare": 0.620625,
+    "assemble_from_prepared": 2.475833
+  },
+  "median_warm_apply_ms": {
+    "prepared_matrix_free": 0.14425,
+    "csc_matvec": 0.107083
+  },
+  "max_absolute_difference": 3.637978807091713e-12,
+  "reference_max_abs": 10576.6399315467,
+  "tracked_allocation": {
+    "prepared_matrix_free": {
+      "peak_bytes": 786184,
+      "retained_result_and_tracer_bytes": 327928,
+      "output_bytes": 327680
+    },
+    "csc_matvec": {
+      "peak_bytes": 327923,
+      "retained_result_and_tracer_bytes": 327827,
+      "output_bytes": 327680
+    }
+  },
+  "allocation_scope": "tracemalloc-observed heap for one warm call including result; not process RSS or all native allocator/workspace memory",
+  "comparison_scope": "prepared diffusion_rate includes its input validation; scipy CSC @ is its ordinary production call; no speedup assumed",
+  "environment": {
+    "python": "3.12.6",
+    "platform": "macOS-26.5.2-arm64-arm-64bit",
+    "numpy": "2.5.3",
+    "scipy": "1.18.1"
+  },
+  "source_sha256": {
+    "backend/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "backend/app/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "backend/app/diffusion.py": "b21ce19795d77cd8fbc20814f89bca4762980637f330f7512d856e4564a80e34",
+    "backend/app/main.py": "7a43f78cc636eb0697f74f40542a2c3ce8836c34a9db13cf2f6695146c5ad4c3",
+    "backend/app/numerics/__init__.py": "1980e833e743c86c13a2464cf5b237fed9037c0aa1f0fb02210ac4bd2fba1875",
+    "backend/app/numerics/coefficients.py": "4ef02bdd39e7304665f4d49ce6755dafa85e8b5d86072212c00f0578b7cb917d",
+    "backend/app/numerics/native.py": "e1d66800549083ed39311553220277ecb6c2c505e161d9c387dea77ae9ecc6c8",
+    "backend/app/numerics/operators.py": "b745d7fa7442e89d65bc854604d49de8bff2c8eb0a5ce1edffecc24d33cb98ba",
+    "backend/app/numerics/solver.py": "6d5d48f5c6c22306a11391d3ea303c1f5969d3276889a1e3e5a03eac05eb1225",
+    "backend/app/numerics/validation.py": "9ea116d24193e9b088651cb00015b191246ec9ec8873678eebb71cf835b784bb",
+    "backend/app/observations.py": "a5527b156a34b7d2404ac7cab1388b7875c5692f9c860397e60c8d3b71f0189e",
+    "backend/app/research/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "backend/app/research/decision.py": "319fda2af0117a5d9dc33a027eb5236e8bed173e10ff62c42454dae6dfacad7e",
+    "backend/app/research/dynamic_routing.py": "1cc9e7966163a36437e2efd6b7853db18c94657db9e9e45bfae5d27b3a7f72a8",
+    "backend/app/research/experiments.py": "51e2392c604c4d8793953ef7fd0b21f44b025d2ee34f19e33179a6300630d1e9",
+    "backend/app/research/problems.py": "8941ca3119214edd030d6b5361a00fe1a3ad059a6b43d5a464d9536bf03685bd",
+    "backend/app/research/travel.py": "5bacae6ad7e33224b66845615cec082c583a9cfac082c319ed961aebef4e1436",
+    "backend/app/routing.py": "89e08103651629bf71e6b140b85f1295c1980dfdafeda6e968336f7f653c667d",
+    "backend/app/temporal_observations.py": "8fd9ea9b0009065558714fe3b31bce15da44de396286a6347bb130527af4c153",
+    "backend/app/validation.py": "57fa231241bbbe707964f96fa684cdd9ad337cad1c4c6a444acb201cabc1f228",
+    "scripts/benchmark_diffusion_operator.py": "8b50ae866cbe1e56e332305e5386a4bbcdd8816e0d7d3d45dbd5de7109212639",
+    "scripts/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "requirements.lock.txt": "f7e79a623250e0012572eca0792eec29ada8af99e8dfc759537c7e067a9c92e5"
+  }
+}

@@ -1,0 +1,101 @@
+{
+  "schema_version": 1,
+  "artifacts": {
+    "benchmark.json": {
+      "sha256": "75b56207aad3591fd5c1ad859240eb58558ace43aeaca05f4d5dc6e13b9134b3",
+      "size_bytes": 6177
+    },
+    "measurement_source/backend/__init__.py": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0
+    },
+    "measurement_source/backend/app/__init__.py": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0
+    },
+    "measurement_source/backend/app/diffusion.py": {
+      "sha256": "b21ce19795d77cd8fbc20814f89bca4762980637f330f7512d856e4564a80e34",
+      "size_bytes": 10632
+    },
+    "measurement_source/backend/app/main.py": {
+      "sha256": "7a43f78cc636eb0697f74f40542a2c3ce8836c34a9db13cf2f6695146c5ad4c3",
+      "size_bytes": 21835
+    },
+    "measurement_source/backend/app/numerics/__init__.py": {
+      "sha256": "1980e833e743c86c13a2464cf5b237fed9037c0aa1f0fb02210ac4bd2fba1875",
+      "size_bytes": 657
+    },
+    "measurement_source/backend/app/numerics/coefficients.py": {
+      "sha256": "4ef02bdd39e7304665f4d49ce6755dafa85e8b5d86072212c00f0578b7cb917d",
+      "size_bytes": 8893
+    },
+    "measurement_source/backend/app/numerics/native.py": {
+      "sha256": "e1d66800549083ed39311553220277ecb6c2c505e161d9c387dea77ae9ecc6c8",
+      "size_bytes": 2927
+    },
+    "measurement_source/backend/app/numerics/operators.py": {
+      "sha256": "b745d7fa7442e89d65bc854604d49de8bff2c8eb0a5ce1edffecc24d33cb98ba",
+      "size_bytes": 8300
+    },
+    "measurement_source/backend/app/numerics/solver.py": {
+      "sha256": "6d5d48f5c6c22306a11391d3ea303c1f5969d3276889a1e3e5a03eac05eb1225",
+      "size_bytes": 20535
+    },
+    "measurement_source/backend/app/numerics/validation.py": {
+      "sha256": "9ea116d24193e9b088651cb00015b191246ec9ec8873678eebb71cf835b784bb",
+      "size_bytes": 13558
+    },
+    "measurement_source/backend/app/observations.py": {
+      "sha256": "a5527b156a34b7d2404ac7cab1388b7875c5692f9c860397e60c8d3b71f0189e",
+      "size_bytes": 17410
+    },
+    "measurement_source/backend/app/research/__init__.py": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0
+    },
+    "measurement_source/backend/app/research/decision.py": {
+      "sha256": "319fda2af0117a5d9dc33a027eb5236e8bed173e10ff62c42454dae6dfacad7e",
+      "size_bytes": 15511
+    },
+    "measurement_source/backend/app/research/dynamic_routing.py": {
+      "sha256": "1cc9e7966163a36437e2efd6b7853db18c94657db9e9e45bfae5d27b3a7f72a8",
+      "size_bytes": 14962
+    },
+    "measurement_source/backend/app/research/experiments.py": {
+      "sha256": "51e2392c604c4d8793953ef7fd0b21f44b025d2ee34f19e33179a6300630d1e9",
+      "size_bytes": 13700
+    },
+    "measurement_source/backend/app/research/problems.py": {
+      "sha256": "8941ca3119214edd030d6b5361a00fe1a3ad059a6b43d5a464d9536bf03685bd",
+      "size_bytes": 21177
+    },
+    "measurement_source/backend/app/research/travel.py": {
+      "sha256": "5bacae6ad7e33224b66845615cec082c583a9cfac082c319ed961aebef4e1436",
+      "size_bytes": 10662
+    },
+    "measurement_source/backend/app/routing.py": {
+      "sha256": "89e08103651629bf71e6b140b85f1295c1980dfdafeda6e968336f7f653c667d",
+      "size_bytes": 13743
+    },
+    "measurement_source/backend/app/temporal_observations.py": {
+      "sha256": "8fd9ea9b0009065558714fe3b31bce15da44de396286a6347bb130527af4c153",
+      "size_bytes": 14761
+    },
+    "measurement_source/backend/app/validation.py": {
+      "sha256": "57fa231241bbbe707964f96fa684cdd9ad337cad1c4c6a444acb201cabc1f228",
+      "size_bytes": 5083
+    },
+    "measurement_source/requirements.lock.txt": {
+      "sha256": "f7e79a623250e0012572eca0792eec29ada8af99e8dfc759537c7e067a9c92e5",
+      "size_bytes": 918
+    },
+    "measurement_source/scripts/__init__.py": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0
+    },
+    "measurement_source/scripts/benchmark_diffusion_operator.py": {
+      "sha256": "8b50ae866cbe1e56e332305e5386a4bbcdd8816e0d7d3d45dbd5de7109212639",
+      "size_bytes": 6454
+    }
+  }
+}
