@@ -1,6 +1,6 @@
-# Research extension: first executable milestone
+# Research workflows: spatial and temporal decisions
 
-This directory extends Flow V2 on `codex/research-v3`. The current milestone provides a reproducible static-field experiment: define a PDE problem, compute a field, integrate directed road polylines, compare complete small-graph candidate sets, and evaluate the selected route against independent references. Concentration is synthetic and relative. Dynamic travel, variable coefficients, higher-order transport, iterative implicit solvers, adjoints, adaptive error control and input uncertainty remain future work.
+This directory extends Flow V2 on `codex/research-v3`. It provides reproducible static and time-aware experiments: define a PDE problem, compute saved fields, integrate complete journeys, compare paths and evaluate results against independent references. Concentration is synthetic and relative. Time-expanded search returns the optimum of its declared finite graph. General continuous-time optimization, variable coefficients, higher-order transport, iterative implicit solvers, adjoints, adaptive error control and input uncertainty remain future work.
 
 ## Run and replay a PDE experiment
 
@@ -27,7 +27,29 @@ The default trapezoid rule matches the existing sampling policy. `gauss2_grid` s
 
 `apply_batch` supports frame batches and explicit chunks. Linear operator calls accept signed values for algebraic checks; routing requires finite nonnegative fields. `RoadNetwork.edge_exposures` caches operators up to eight entries / 64 MiB of CSR storage, with a separate eight-entry / 32 MiB sample-array cache. These are retention budgets, not peak-construction budgets. Oversized operators can be applied without being cached. Network geometry is immutable during a network instance's lifetime; construct a new instance after changing geometry.
 
-`build_path_trajectory` constructs position and arrival time from an ordered edge sequence, speed and departure time. Repeated edges are preserved. It requires geometry joins to agree exactly, because inventing short uncharged connectors would alter the trajectory. This is trajectory construction only: temporal field integration and waiting costs are not implemented yet. The map still snaps clicks to graph nodes within 250 m and omits those off-network connectors. Saved route sweeps now retain node/edge sequences and typed edge keys, in addition to the dataset identity and costs.
+`build_path_trajectory` constructs position and arrival time from an ordered edge sequence, speed and departure time. Repeated edges are preserved. Its optional `waits_s` has one wait before each edge occurrence plus a final wait. Stationary waits contribute local concentration integrated over elapsed time. Geometry joins must agree exactly, because inventing short uncharged connectors would alter the trajectory. Each edge finishes at `edge_start + edge.length_m/speed`, matching the search clock even at strict horizon boundaries. The map still snaps clicks to graph nodes within 250 m and omits those off-network connectors. Saved route sweeps retain node/edge sequences and typed edge keys, in addition to the dataset identity and costs.
+
+## Time-aware observations and finite graph search
+
+```bash
+.venv/bin/python -m scripts.run_temporal_experiments --config configs/research/temporal_study.json --output reports/research/my-temporal-study
+.venv/bin/python -m scripts.run_temporal_experiments --verify reports/research/my-temporal-study
+.venv/bin/python -m scripts.run_temporal_experiments --replot reports/research/my-temporal-study
+```
+
+Outputs must be new. Replot reads saved data and writes a separate sibling PNG, leaving the sealed bundle unchanged. A bundle contains full arrays, configuration, graph, CSV, figure, report and source snapshot. Verification checks artifact hashes, configuration identity, candidate identities and raw-array schema. Hashes establish integrity, not authenticity or scientific truth. Replay from `source_snapshot/` with `PYTHONDONTWRITEBYTECODE=1 /path/to/Flow-Research/.venv/bin/python -m scripts.run_temporal_experiments --config ../config.json --output /absolute/new/directory`; disabling bytecode writes preserves the sealed archive. The protocol preflights aggregate stored arrays across all cases, not just one case. This budget does not bound peak process memory.
+
+`sample_time_series(grid, times, frames, positions, query_times, boundary)` uses bilinear space and linear physical-time interpolation. Nonuniform frame times are supported; all queries and the entire journey must be covered by the saved frames. No last-frame freezing or temporal extrapolation is performed. Spatial walls and periodic seams use the same rules as the static observer.
+
+`build_trajectory_observer(grid, times, trajectory, ...)` returns a sparse row acting on flattened `(frame,y,x)` values. Its weights are nonnegative and sum to journey duration, including waits. `gauss2_split` splits at trajectory bends, spatial reconstruction knots and frame times. The integrand is at most cubic within each piece, so two-point Gauss integrates the declared reconstruction to roundoff. It does not remove PDE discretization or output-frame interpolation error. `trapezoid` retains mandatory splits and accepts independent `spatial_step_m` and `time_step_s` controls. Its sample budget is checked before allocating evaluation arrays and the sparse operator.
+
+`TimeDependentExposure` in `backend.app.research.travel` connects nonnegative owned field arrays to edge and waiting integrals. It enforces exact geometry-to-node joins and a bounded scalar cache. `trajectory_from_schedule` reconstructs a whole journey from explicit actions, rejecting gaps or uncharged connectors; the study independently re-evaluates this trajectory to check action accounting.
+
+`solve_time_expanded` in `backend.app.research.dynamic_routing` keeps a label for each **node and time**. The lattice has origin zero; an off-lattice departure is an explicit source state. A nonterminal edge travels for its actual duration and rounds arrival upward to the next lattice time; the extra wait is recorded and charged time plus exposure. Arrival at the destination terminates at its actual time. Optional voluntary waits advance one time state. The finite horizon admits cycles without infinite search; node/time state and transition budgets reject exhaustion without claiming a partial optimum. Deterministic ties preserve typed parallel-edge identities.
+
+The returned optimum applies only to that rounded finite graph, its supplied costs and declared waiting policy. Constant travel-time FIFO does not justify keeping only one lowest-cost label per spatial node when exposure changes with time. A saved counterexample gives cost **4** using node/time states versus **102** when the necessary later arrival is discarded. Time-grid refinement is descriptive: different rounding/waiting schedules are different discrete problems, so generic monotonicity or continuous-time error bounds are not promised.
+
+The [temporal report](../reports/research/temporal_baseline/REPORT.md) includes stationary-equivalent, slowly evolving and freezing-failure cases using the production CN diffusion solver. Every path is evaluated over its full journey under an independent continuous analytical solution. In the rapid-change case, frozen-field selection has reference objective regret **2.645896 s**; moving-field selection has zero regret over the two no-wait candidates. Separate studies isolate quadrature and saved-frame interpolation error, with nonuniform frames, repeated edges and waits. Translating-wave, periodic-boundary and intentional-wait behavior are also checked by tests. This remains synthetic model evidence.
 
 ## Decision counterexamples and references
 
@@ -66,7 +88,7 @@ This new publication path produces research network tables and source provenance
 
 ## Recorded milestone evidence
 
-On the local macOS environment, all **217 tests** passed with native execution required; frontend build and lint passed. The rebuilt Mission network retains 9,611 nodes and 28,498 directed edges. The cosine archive replay had zero raw-frame difference, and replay from the decision study's archived source reproduced all 35 saved arrays exactly in this environment. These are local results, not a new Linux CI claim.
+The current temporal milestone passes **318 tests** with native execution required. Frontend build and lint passed in the first milestone; no frontend files changed in this one. The rebuilt Mission network retains 9,611 nodes and 28,498 directed edges. The cosine archive replay had zero raw-frame difference, and replay from the static decision study's archived source reproduced all 35 saved arrays exactly in its recorded environment. The temporal study adds 15 raw arrays, reproduced exactly from its archived source in the same local environment. These are local results, not a new Linux CI claim.
 
 The [five-case decision report](../reports/research/decision_baseline/REPORT.zh-CN.md) includes a nodal field error of about 0.000275 that nevertheless selects the wrong near-critical route, with reference objective regret of 0.059576 seconds. Another case has error 0.072629 and still selects a reference-optimal route. The deliberate construction and references are part of the saved report.
 
@@ -86,4 +108,4 @@ npm --prefix frontend run build
 npm --prefix frontend run lint
 ```
 
-The committed `reports/numerics/` and top-level original route reports are historical V2 evidence. They have not been regenerated for every source change in this branch. New evidence lives under `reports/research/`. This milestone establishes the static research workflow; it does not close the complete Research roadmap or establish calibrated real-world pollution decisions.
+The committed `reports/numerics/` and top-level original route reports are historical V2 evidence. They have not been regenerated for every source change in this branch. Each `reports/research/` bundle retains its original code and measurement provenance. The current implementation adds static and temporal research workflows; it does not close the complete Research roadmap or establish calibrated real-world pollution decisions. These temporal controls are CLI/Python interfaces; the map UI remains a frozen-field experiment.

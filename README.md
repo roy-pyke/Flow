@@ -6,7 +6,7 @@ Flow connects a PDE solver to a real street network and asks two questions: **ho
 
 The bundled study area is a **4 × 4 km rectangle around San Francisco's Mission District**. Roads come from OpenStreetMap; concentration and wind are synthetic. This is a mathematical experiment, with no measured pollution or traffic observations.
 
-This independent research checkout extends Flow V2. Its first executable milestone adds versioned PDE configurations and replayable array archives, boundary-aware sparse road observations, atomic network publication, and five analytical route-decision counterexamples. See [the research guide](docs/research.md) for current capabilities, commands, assumptions and remaining work. The original UI remains available; the richer research configuration currently runs through Python and the CLI. Historical V2 results below retain their original scope.
+This independent research checkout extends Flow V2. It adds versioned PDE configurations and replayable array archives, boundary-aware sparse road observations, atomic network publication, and analytical route-decision counterexamples. Time-aware research now integrates complete journeys across nonuniform output frames, including waits and repeated edges, and provides a finite time-expanded graph reference with explicitly charged rounding waits. See [the research guide](docs/research.md) for commands, assumptions and remaining work. The richer research configuration currently runs through Python and the CLI; the map interface keeps its frozen-field controls. Historical V2 results below retain their original scope.
 
 ## What is implemented
 
@@ -115,7 +115,7 @@ w_e     = ℓ_e / v + λ D_e(t*)
 
 Bilinear interpolation and trapezoidal integration preserve polyline vertices and sample at no more than half a cell spacing. A reusable sparse observation matrix now applies the same integral to repeated fields; a separate grid-split Gauss rule provides a reference for that reconstruction. Periodic seams wrap consistently with the field boundary. Custom heap-based Dijkstra and A* preserve directed parallel-edge identities. A* uses straight-line walking time as an admissible lower bound when exposure is nonnegative; NetworkX provides independent optimal-cost checks.
 
-Routes use a **frozen field**, not a PDE that advances with a moving traveler. The numerical sensitivity experiment re-evaluates each candidate path under a common refined field and compares its cost with that reference optimum. A changed path shape alone is not evidence of an incorrect decision.
+The map/API route comparison uses a **frozen field**. The numerical sensitivity experiment re-evaluates each candidate path under a common refined field and compares its cost with that reference optimum. A changed path shape alone is not evidence of an incorrect decision. The separate [temporal research study](reports/research/temporal_baseline/REPORT.md) evaluates complete moving journeys and demonstrates when freezing the field changes the preferred route.
 
 ## The original route experiment
 
@@ -155,6 +155,7 @@ flowchart LR
 | `cpp/` | C++17 stencil/full time loop, strict pybind11 bindings, CMake build and provenance |
 | `backend/app/routing.py` | Full-polyline exposure, directed multigraph, Dijkstra and A* |
 | `backend/app/observations.py` | Sparse edge observations, quadrature and independent path trajectories |
+| `backend/app/temporal_observations.py` | Strict time coverage, space-time interpolation and sparse trajectory integrals |
 | `backend/app/research/` | Problem schema, full-array archives, replay and conditional decision bounds |
 | `configs/research/` | Reproducible Cartesian PDE and decision-study configurations |
 | `docs/research.md` | Research workflow, semantics and current limits |
