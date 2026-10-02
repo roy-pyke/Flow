@@ -24,6 +24,8 @@ dist-ssr/
 
 # Local experiments and browser inspection intermediates
 /data/experiments/
+/data/datasets/
+/data/sources/
 /output/
 .playwright-cli/
 .env

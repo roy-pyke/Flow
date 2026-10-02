@@ -1,5 +1,9 @@
 * text=auto
 *.csv text eol=lf
+
+# Research bundles are byte-hashed archives; checkout must preserve every byte.
+reports/research/** -text
+reports/research/**/*.csv whitespace=trailing-space,space-before-tab,cr-at-eol
 *.png binary
 *.webm binary
 *.gz binary

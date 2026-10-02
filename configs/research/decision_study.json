@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "title": "Manufactured diffusion error and static route decisions",
+  "domain_bounds_m": [0.0, 0.0, 1000.0, 1000.0],
+  "kappa_m2_s": 20.0,
+  "speed_mps": 1.4,
+  "mean_concentration": 1.0,
+  "mode_amplitude": 0.95,
+  "mode_y": 1,
+  "corridors": {"upper_fraction": 0.8, "lower_fraction": 0.35},
+  "method": "backward_euler",
+  "tie_tolerance_s": 1e-9,
+  "cases": [
+    {"id": "large_error_same_route", "nx": 8, "ny": 8, "snapshot_s": 3000.0, "dt_s": 3000.0, "lambda_policy": "fixed", "lambda_weight": 0.2},
+    {"id": "small_error_wrong_route", "nx": 32, "ny": 32, "snapshot_s": 1000.0, "dt_s": 10.0, "lambda_policy": "threshold_midpoint"},
+    {"id": "reference_tie", "nx": 8, "ny": 8, "snapshot_s": 1000.0, "dt_s": 100.0, "lambda_policy": "reference_tie"},
+    {"id": "reference_near_tie", "nx": 8, "ny": 8, "snapshot_s": 1000.0, "dt_s": 100.0, "lambda_policy": "reference_near_tie", "relative_offset": 1e-8},
+    {"id": "positive_regret", "nx": 8, "ny": 8, "snapshot_s": 3000.0, "dt_s": 3000.0, "lambda_policy": "threshold_midpoint"}
+  ]
+}

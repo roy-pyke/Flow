@@ -1,0 +1,303 @@
+{
+  "schema_version": 1,
+  "protocol": {
+    "network": "/Users/ruiwang/Desktop/Library/project/Flow-Research/data/demo/network.json",
+    "network_sha256": "5d684aea94e9b61840e812bba1e804ad43817895329c7c935a036efe0a4d3ce6",
+    "grid": {
+      "bounds": [
+        549537.4753338977,
+        4177337.113915941,
+        553537.4753338977,
+        4181337.113915941
+      ],
+      "nx": 160,
+      "ny": 160,
+      "dx_m": 25.0,
+      "dy_m": 25.0,
+      "location": "cell_centres",
+      "axis_order": "frame,y,x",
+      "y_direction": "south_to_north"
+    },
+    "directed_edges": 28498,
+    "repeats": 7,
+    "warmups": 2,
+    "output": "all edge exposures for every input field",
+    "speed_mps": 1.4,
+    "timed_scope": "matched repeated observations, including input validation and output allocation; excludes PDE, graph load, H/sampling construction and HTTP",
+    "baseline": "frozen V2 direct zero-flux bilinear interpolation and NumPy bincount, cached points, Python loop over fields",
+    "sign_policy": "known nonnegative generated fields; spatial operators are compared without routing sign checks",
+    "setup_note": "cold observation costs start from a parsed graph and prepared fields; sum separately measured setup and median apply, not an independently repeated cold-start benchmark",
+    "observer_sampling_note": "reused previously constructed samples",
+    "amortization_note": "incremental cold setup divided by median per-call savings, clamped to zero; estimate from one setup measurement, not a guaranteed crossover",
+    "thread_policy": "single Python process, no explicit concurrent workers; CSR uses the installed SciPy implementation"
+  },
+  "network_load_ms": 462.06470900006025,
+  "field_generation_ms": 5.130042000018875,
+  "generated_batch_size": 32,
+  "sampling_setup_ms": 5.891708000035578,
+  "sampling_retained_for_H_build": true,
+  "sampling_array_bytes": 6014144,
+  "sampling_cache_limit_bytes": 33554432,
+  "observer_build_wall_ms": 71.87383399968894,
+  "csr_cold_setup_ms": 77.76554199972452,
+  "incremental_cold_setup_vs_sampling_ms": 71.87383399968894,
+  "legacy_vs_current_interpolation_max_absolute_difference": 0.0,
+  "observer": {
+    "schema_version": 1,
+    "geometry_sha256": "ef539c9180e61eaba52d6c8809a7c5eb461e2d98e24a6b6d129df9ad6b9ec2b4",
+    "grid": {
+      "bounds": [
+        549537.4753338977,
+        4177337.113915941,
+        553537.4753338977,
+        4181337.113915941
+      ],
+      "nx": 160,
+      "ny": 160,
+      "dx_m": 25.0,
+      "dy_m": 25.0,
+      "location": "cell_centres",
+      "axis_order": "frame,y,x",
+      "y_direction": "south_to_north"
+    },
+    "boundary": "zero_flux",
+    "speed_mps": 1.4,
+    "quadrature": "trapezoid",
+    "sample_spacing_m": 12.5,
+    "reconstruction": "cell_centred_piecewise_bilinear_v1",
+    "operator_sha256": "718096038b814d801ed0c5ca6b0379f46c3a0eff5b4ed418b46876c1f06356bf",
+    "field_order": "C:y,x",
+    "shape": [
+      28498,
+      25600
+    ],
+    "nnz": 217604,
+    "csr_bytes": 2725244,
+    "sample_count": 187942,
+    "build_ms": 71.34329100017567,
+    "outside_domain": "reject_except_coordinate_roundoff",
+    "wall_sampling": "constant_extension",
+    "interpretation": "integral_of_reconstruction_not_exact_PDE_or_physical_exposure"
+  },
+  "cases": [
+    {
+      "batch": 1,
+      "reference_ms": [
+        5.4835830001138675,
+        4.934708000291721,
+        5.20929200001774,
+        5.4906250002204615,
+        4.927708000195707,
+        5.019290999825898,
+        5.7314999999107386
+      ],
+      "csr_ms": [
+        0.24779200020930148,
+        0.22208400014278595,
+        0.2536669999244623,
+        0.2002080000238493,
+        0.2395420001448656,
+        0.20429200003491133,
+        0.8395840000048338
+      ],
+      "reference_median_ms": 5.20929200001774,
+      "csr_median_ms": 0.2395420001448656,
+      "speed_ratio": 21.74688362319495,
+      "max_absolute_difference": 1.7053025658242404e-13,
+      "input_bytes": 204800,
+      "output_bytes": 227984,
+      "reference_setup_plus_apply_ms": 11.101000000053318,
+      "csr_setup_plus_apply_ms": 78.00508399986938,
+      "amortization_calls_estimate": 14.462263494446896
+    },
+    {
+      "batch": 8,
+      "reference_ms": [
+        38.78720799957591,
+        41.00558299978729,
+        40.303708000010374,
+        43.01625000016429,
+        41.93579200000386,
+        40.198667000368005,
+        45.934958000088955
+      ],
+      "csr_ms": [
+        1.202542000100948,
+        1.3302920001478924,
+        1.1444589999882737,
+        1.1027080004168965,
+        1.0922080000455026,
+        0.9565840000504977,
+        1.0169170000153827
+      ],
+      "reference_median_ms": 41.00558299978729,
+      "csr_median_ms": 1.1027080004168965,
+      "speed_ratio": 37.18625690961204,
+      "max_absolute_difference": 2.2737367544323206e-13,
+      "input_bytes": 1638400,
+      "output_bytes": 1823872,
+      "reference_setup_plus_apply_ms": 46.89729099982287,
+      "csr_setup_plus_apply_ms": 78.86825000014142,
+      "amortization_calls_estimate": 1.8012194359635239
+    },
+    {
+      "batch": 32,
+      "reference_ms": [
+        166.24841600014406,
+        153.3201669999471,
+        162.38679200023398,
+        176.00083299976177,
+        164.43020799988517,
+        168.7703339998734,
+        158.31845899992913
+      ],
+      "csr_ms": [
+        4.1919999998754065,
+        4.1201670001100865,
+        4.492250000112108,
+        4.468791999897803,
+        3.3953750003092864,
+        3.531000000293716,
+        3.594667000015761
+      ],
+      "reference_median_ms": 164.43020799988517,
+      "csr_median_ms": 4.1201670001100865,
+      "speed_ratio": 39.9086270035879,
+      "max_absolute_difference": 3.410605131648481e-13,
+      "input_bytes": 6553600,
+      "output_bytes": 7295488,
+      "reference_setup_plus_apply_ms": 170.32191599992075,
+      "csr_setup_plus_apply_ms": 81.8857089998346,
+      "amortization_calls_estimate": 0.4483426836612797
+    }
+  ],
+  "quadrature_convergence": [
+    {
+      "spacing_m": 0.2,
+      "integral": 1.1591279049569396,
+      "absolute_error": 0.0011744489324603258
+    },
+    {
+      "spacing_m": 0.1,
+      "integral": 1.15832129213336,
+      "absolute_error": 0.00036783610888080354
+    },
+    {
+      "spacing_m": 0.05,
+      "integral": 1.1580454150516997,
+      "absolute_error": 9.195902722036742e-05
+    },
+    {
+      "spacing_m": 0.025,
+      "integral": 1.1579777574212307,
+      "absolute_error": 2.430139675135834e-05
+    },
+    {
+      "spacing_m": 0.0125,
+      "integral": 1.1579596975934459,
+      "absolute_error": 6.241568966558475e-06
+    }
+  ],
+  "reconstruction_convergence": [
+    {
+      "n": 8,
+      "integral": 1.178269723893095,
+      "absolute_error": 0.00412885594846113
+    },
+    {
+      "n": 16,
+      "integral": 1.17514892914141,
+      "absolute_error": 0.001008061196775989
+    },
+    {
+      "n": 32,
+      "integral": 1.1743941544433192,
+      "absolute_error": 0.00025328649868527897
+    },
+    {
+      "n": 64,
+      "integral": 1.1742045669566543,
+      "absolute_error": 6.369901202041284e-05
+    }
+  ],
+  "quadrature_reference": {
+    "field": "1+x*y",
+    "grid_n": 16,
+    "speed_mps": 1,
+    "polyline": [
+      [
+        0.2,
+        0.2
+      ],
+      [
+        0.55,
+        0.75
+      ],
+      [
+        0.8,
+        0.7
+      ]
+    ],
+    "analytic_integral": 1.1579534560244793,
+    "gauss2_grid_integral": 1.1579534560244795,
+    "gauss_absolute_error": 2.220446049250313e-16
+  },
+  "reconstruction_reference": {
+    "field": "1+x*x+y*y",
+    "speed_mps": 1,
+    "polyline": [
+      [
+        0.2,
+        0.2
+      ],
+      [
+        0.8,
+        0.7
+      ]
+    ],
+    "analytic_integral": 1.174140867944634,
+    "projection": "cell-centre point samples",
+    "quadrature": "gauss2_grid"
+  },
+  "provenance": {
+    "created_utc": "2026-10-02T05:26:12.901670+00:00",
+    "git_commit": "9ffd5fdbafaf4d3b8c231719f8c09ffe8fb2c3bd",
+    "git_dirty": true,
+    "source_sha256": {
+      "backend/app/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "backend/app/diffusion.py": "b21ce19795d77cd8fbc20814f89bca4762980637f330f7512d856e4564a80e34",
+      "backend/app/main.py": "7a43f78cc636eb0697f74f40542a2c3ce8836c34a9db13cf2f6695146c5ad4c3",
+      "backend/app/numerics/__init__.py": "40904ef0278f5358ad01366413a39a8fc088b64334b1072bbb28414bdde16cd6",
+      "backend/app/numerics/native.py": "e1d66800549083ed39311553220277ecb6c2c505e161d9c387dea77ae9ecc6c8",
+      "backend/app/numerics/operators.py": "90ded50f71390c91b014d49f2eb0925f55e2d241c012c98b994f03251a9a5ab7",
+      "backend/app/numerics/solver.py": "6641bfb15f16692e52fb9deda4f4923d8f90a482dcd7ffda43cc830a6f741ded",
+      "backend/app/numerics/validation.py": "9ea116d24193e9b088651cb00015b191246ec9ec8873678eebb71cf835b784bb",
+      "backend/app/observations.py": "c3c2895cc71275110d930a4392945cb1919a1060c475d67f92b4bf8c2fc97bb2",
+      "backend/app/research/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "backend/app/research/decision.py": "319fda2af0117a5d9dc33a027eb5236e8bed173e10ff62c42454dae6dfacad7e",
+      "backend/app/research/experiments.py": "5b5dc3927e468c43855c9afbbc6026cc594772f09f8e061eaa7151977bc1c428",
+      "backend/app/research/problems.py": "44702e6966ce1e32f9fd00abadbbc87018b491e5105362e10fbd19c665d7f953",
+      "backend/app/routing.py": "89e08103651629bf71e6b140b85f1295c1980dfdafeda6e968336f7f653c667d",
+      "backend/app/validation.py": "57fa231241bbbe707964f96fa684cdd9ad337cad1c4c6a444acb201cabc1f228",
+      "cpp/src/bindings.cpp": "22c3b5a93a0ffb639fb9743705b69628d84ae5a0914026d2d1738fc0e86cb1ef",
+      "cpp/src/build_info.h.in": "b20aaf4b0d30757a4cddb645f4272113cfc7f359ba443c4763a85a9553d8be0d",
+      "cpp/src/diffusion.cpp": "709662ac3a5a04cedf4fc260771216120cc18fff5a83a1e0c026d45f0af7dda0",
+      "cpp/src/diffusion.h": "3fa5682faff6b5431ad6723f03d8626653d17f825cc439d0947b8b797508bd50",
+      "cpp/CMakeLists.txt": "e5df4b5acd7fcce866fc2461e1d38193aacf2ebad2c329dd68696513f9a9cb2d",
+      "cpp/pyproject.toml": "098469f0aeb45422ae941a4aad5092c00dd66aee213f24af367732aa91901065",
+      "cpp/source_hash.py": "1988c31b5ec5f145ca1c446effad6834fc9226495bdd3ce2d0f152121c3e69f6",
+      "requirements.lock.txt": "f7e79a623250e0012572eca0792eec29ada8af99e8dfc759537c7e067a9c92e5",
+      "scripts/run_research.py": "9cd83d1a5b15073a7775ca4e18afd59db99c0614b70bc75038e9da28b617f9bf"
+    },
+    "source_id": "bc9e6b2fe7e6786755b5277883696c4126d5dd5d70e3a31a1d511e76a3085838",
+    "python": "3.12.6",
+    "platform": "macOS-26.5.2-arm64-arm-64bit",
+    "packages": {
+      "numpy": "2.5.3",
+      "scipy": "1.18.1",
+      "pydantic": "2.13.5"
+    }
+  },
+  "benchmark_script_sha256": "cf6d2d8f02e7d355e6e3f59af750818ea449b47701fa7872ff9df4aab67052e9",
+  "limits": "Local spatial observation benchmark only. No PDE, dynamic routing or whole-application speedup claimed. Reconstruction study uses point samples, not FV cell averages."
+}

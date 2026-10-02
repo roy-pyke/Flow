@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "problem": {
+    "bounds": [0, 0, 2, 1.5],
+    "model": "diffusion",
+    "kappa": 0.07,
+    "boundary": "zero_flux",
+    "initial": {"kind": "cosine", "modes": [1, 1], "amplitude": 0.5, "background": 1}
+  },
+  "numerical": {
+    "nx": 40,
+    "ny": 32,
+    "output_times_s": [0, 0.125, 0.25, 0.5],
+    "method": "crank_nicolson",
+    "backend": "scipy",
+    "dt": 0.0078125,
+    "initialization": "cell_average"
+  }
+}

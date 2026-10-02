@@ -1,10 +1,12 @@
-# Flow
+# Flow Research
 
 **An offline scientific-computing laboratory: diffusion, conservative transport, numerical methods, and walking-route decisions.**
 
 Flow connects a PDE solver to a real street network and asks two questions: **how accurately and efficiently can we compute a concentration field, and when do numerical errors change the route selected from that field?** The application makes methods, assumptions, diagnostics, and reproducible experiments inspectable.
 
 The bundled study area is a **4 × 4 km rectangle around San Francisco's Mission District**. Roads come from OpenStreetMap; concentration and wind are synthetic. This is a mathematical experiment, with no measured pollution or traffic observations.
+
+This independent research checkout extends Flow V2. Its first executable milestone adds versioned PDE configurations and replayable array archives, boundary-aware sparse road observations, atomic network publication, and five analytical route-decision counterexamples. See [the research guide](docs/research.md) for current capabilities, commands, assumptions and remaining work. The original UI remains available; the richer research configuration currently runs through Python and the CLI. Historical V2 results below retain their original scope.
 
 ## What is implemented
 
@@ -23,8 +25,7 @@ A method and its implementation are separate choices: calling SciPy's compiled s
 Use **Python 3.12**, **Node.js 22.12+**, and npm on macOS or Linux. The bundled dataset includes source snapshots, the processed network, and map assets; no geographic-data download or API key is needed for the example.
 
 ```bash
-git clone https://github.com/roy-pyke/Flow.git
-cd Flow
+cd /path/to/Flow-Research
 ./setup.sh
 ./start.sh
 ```
@@ -112,7 +113,7 @@ w_e     = ℓ_e / v + λ D_e(t*)
 
 `ℓ_e` is the complete polyline length, `v = 1.4 m/s`, and λ ≥ 0 is a dimensionless exposure preference. `D_e` is relative concentration integrated over walking time, reported in **relative seconds**. λ = 0 recovers the shortest route.
 
-Bilinear interpolation and trapezoidal integration preserve polyline vertices and sample at no more than half a cell spacing. Custom heap-based Dijkstra and A* preserve directed parallel-edge identities. A* uses straight-line walking time as an admissible lower bound when exposure is nonnegative; NetworkX provides independent optimal-cost checks.
+Bilinear interpolation and trapezoidal integration preserve polyline vertices and sample at no more than half a cell spacing. A reusable sparse observation matrix now applies the same integral to repeated fields; a separate grid-split Gauss rule provides a reference for that reconstruction. Periodic seams wrap consistently with the field boundary. Custom heap-based Dijkstra and A* preserve directed parallel-edge identities. A* uses straight-line walking time as an admissible lower bound when exposure is nonnegative; NetworkX provides independent optimal-cost checks.
 
 Routes use a **frozen field**, not a PDE that advances with a moving traveler. The numerical sensitivity experiment re-evaluates each candidate path under a common refined field and compares its cost with that reference optimum. A changed path shape alone is not evidence of an incorrect decision.
 
@@ -153,6 +154,10 @@ flowchart LR
 | `backend/app/numerics/` | Sparse operators, method dispatch, time stepping, diagnostics, native wrapper and numerical validation |
 | `cpp/` | C++17 stencil/full time loop, strict pybind11 bindings, CMake build and provenance |
 | `backend/app/routing.py` | Full-polyline exposure, directed multigraph, Dijkstra and A* |
+| `backend/app/observations.py` | Sparse edge observations, quadrature and independent path trajectories |
+| `backend/app/research/` | Problem schema, full-array archives, replay and conditional decision bounds |
+| `configs/research/` | Reproducible Cartesian PDE and decision-study configurations |
+| `docs/research.md` | Research workflow, semantics and current limits |
 | `backend/app/main.py` | Validated API, bounded caches, persistence and local assets |
 | `frontend/src/` | Map laboratory, method/reference controls, diagnostics and evidence figures |
 | `configs/region.json` | Geographic center, metric domain, CRS and walking policy |
@@ -173,17 +178,14 @@ Every edge preserves its `(u, v, key)` identity and full oriented geometry. Leng
 
 Compressed original Overpass responses and the downloaded OSMnx graph are included with source metadata and hashes. GeoParquet node and edge tables retain spatial information; `data/demo/network.duckdb` holds materialized copies for SQL analysis. [The data README](data/demo/README.md) explains every dataset and its attribution.
 
-To rebuild from the saved snapshot after setup:
+To publish a separate research network from the saved snapshot after setup:
 
 ```bash
-.venv/bin/python scripts/prepare_region.py
-.venv/bin/python scripts/fetch_osm.py
-.venv/bin/python scripts/prepare_network.py
-.venv/bin/python scripts/prepare_basemap.py
-.venv/bin/python scripts/report_data_quality.py
+.venv/bin/python scripts/prepare_region.py --output output/region-preview.json
+.venv/bin/python scripts/prepare_network.py --source-dir data/demo --output-dir data/datasets/mission-rebuilt
 ```
 
-`fetch_osm` reuses the existing snapshot. Add `--refresh` only when deliberately downloading a new OSM version; that requires internet access and can change routes and reports. Data-quality generation uses DuckDB Spatial to audit geometry validity, lengths, connectivity, duplicate IDs, and endpoints. For example, with `data/demo/network.duckdb` open:
+The generator validates region, CRS, hashes and both geometry endpoints before publishing a complete immutable generation. It leaves `data/demo` unchanged. Resolve the generation with `scripts.dataset_io.resolve_dataset_dir`; see [the research guide](docs/research.md) for source refresh and publication semantics. This path does not yet generate a new PMTiles or DuckDB report bundle, and the UI continues to use the bundled demo. The historical demo quality report uses DuckDB Spatial to audit geometry validity, lengths, connectivity, duplicate IDs, and endpoints. For example, with `data/demo/network.duckdb` open:
 
 ```sql
 LOAD spatial;

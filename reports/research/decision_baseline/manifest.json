@@ -1,0 +1,112 @@
+{
+  "schema_version": 1,
+  "config_sha256": "d382c03f4cc7e10bbdfe97728ef524156a7061eeda4eca1d952b3108b7798281",
+  "created_at_utc": "2026-10-02T05:26:38.032041+00:00",
+  "files": {
+    "REPORT.zh-CN.md": {
+      "sha256": "d54abf8c2948a301ebf07d99e0324d65004b57325135ab3d91b3c6d107c15a67",
+      "bytes": 2884
+    },
+    "config.json": {
+      "sha256": "1b89e1b0fb6f9490a693831cc9768299a907749732efe749cd31ecfca520df6b",
+      "bytes": 1324
+    },
+    "decision_evidence.png": {
+      "sha256": "5af011bbdb224a174219059c35ed73eb46613ce2f3103faf007f5b1e3af441e2",
+      "bytes": 109132
+    },
+    "network.json": {
+      "sha256": "5b357eaaaed41d20994532d0f4816c64ec837e4eaf24434cacee1ce4b350043d",
+      "bytes": 1833
+    },
+    "paths.csv": {
+      "sha256": "7bdbf19eb20f6d91ed7fb663ca954ffe12a699a95eae93744e2ab1e7dfbd23a7",
+      "bytes": 3528
+    },
+    "raw_fields.npz": {
+      "sha256": "4c6b2f2c2b7f5afa792085221e38ad9c5dfaedc8c3c82ea09f79c5d2cfdd3b56",
+      "bytes": 13552
+    },
+    "report.json": {
+      "sha256": "f45c35afd1576be3088b12996a204ebb3e34cde7d2412b30e1774d4eef6191bf",
+      "bytes": 60666
+    },
+    "source_snapshot/backend/__init__.py": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "source_snapshot/backend/app/__init__.py": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "source_snapshot/backend/app/diffusion.py": {
+      "sha256": "b21ce19795d77cd8fbc20814f89bca4762980637f330f7512d856e4564a80e34",
+      "bytes": 10632
+    },
+    "source_snapshot/backend/app/main.py": {
+      "sha256": "7a43f78cc636eb0697f74f40542a2c3ce8836c34a9db13cf2f6695146c5ad4c3",
+      "bytes": 21835
+    },
+    "source_snapshot/backend/app/numerics/__init__.py": {
+      "sha256": "40904ef0278f5358ad01366413a39a8fc088b64334b1072bbb28414bdde16cd6",
+      "bytes": 529
+    },
+    "source_snapshot/backend/app/numerics/native.py": {
+      "sha256": "e1d66800549083ed39311553220277ecb6c2c505e161d9c387dea77ae9ecc6c8",
+      "bytes": 2927
+    },
+    "source_snapshot/backend/app/numerics/operators.py": {
+      "sha256": "90ded50f71390c91b014d49f2eb0925f55e2d241c012c98b994f03251a9a5ab7",
+      "bytes": 5350
+    },
+    "source_snapshot/backend/app/numerics/solver.py": {
+      "sha256": "6641bfb15f16692e52fb9deda4f4923d8f90a482dcd7ffda43cc830a6f741ded",
+      "bytes": 18343
+    },
+    "source_snapshot/backend/app/numerics/validation.py": {
+      "sha256": "9ea116d24193e9b088651cb00015b191246ec9ec8873678eebb71cf835b784bb",
+      "bytes": 13558
+    },
+    "source_snapshot/backend/app/observations.py": {
+      "sha256": "c3c2895cc71275110d930a4392945cb1919a1060c475d67f92b4bf8c2fc97bb2",
+      "bytes": 12779
+    },
+    "source_snapshot/backend/app/research/__init__.py": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "source_snapshot/backend/app/research/decision.py": {
+      "sha256": "319fda2af0117a5d9dc33a027eb5236e8bed173e10ff62c42454dae6dfacad7e",
+      "bytes": 15511
+    },
+    "source_snapshot/backend/app/research/experiments.py": {
+      "sha256": "5b5dc3927e468c43855c9afbbc6026cc594772f09f8e061eaa7151977bc1c428",
+      "bytes": 9752
+    },
+    "source_snapshot/backend/app/research/problems.py": {
+      "sha256": "44702e6966ce1e32f9fd00abadbbc87018b491e5105362e10fbd19c665d7f953",
+      "bytes": 12151
+    },
+    "source_snapshot/backend/app/routing.py": {
+      "sha256": "89e08103651629bf71e6b140b85f1295c1980dfdafeda6e968336f7f653c667d",
+      "bytes": 13743
+    },
+    "source_snapshot/backend/app/validation.py": {
+      "sha256": "57fa231241bbbe707964f96fa684cdd9ad337cad1c4c6a444acb201cabc1f228",
+      "bytes": 5083
+    },
+    "source_snapshot/requirements.lock.txt": {
+      "sha256": "f7e79a623250e0012572eca0792eec29ada8af99e8dfc759537c7e067a9c92e5",
+      "bytes": 918
+    },
+    "source_snapshot/scripts/__init__.py": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "source_snapshot/scripts/run_decision_experiments.py": {
+      "sha256": "60d26917e8a4f90db4681d33bfdcbf37de213b1114a92d93df7522d175722afa",
+      "bytes": 27470
+    }
+  },
+  "manifest_scope": "All saved artifacts except this manifest; hashes verify integrity, not scientific truth."
+}

@@ -1,0 +1,2013 @@
+{
+  "schema_version": 1,
+  "title": "Manufactured diffusion error and static route decisions",
+  "created_at_utc": "2026-10-02T05:26:38.032041+00:00",
+  "config_sha256": "d382c03f4cc7e10bbdfe97728ef524156a7061eeda4eca1d952b3108b7798281",
+  "model": {
+    "pde": "c_t = kappa * Laplacian(c)",
+    "boundary": "homogeneous_Neumann_zero_flux",
+    "initial": "mean + amplitude*cos(mode_y*pi*(y-ymin)/Ly)",
+    "exact": "mean + amplitude*exp(-kappa*(mode_y*pi/Ly)^2*t)*cos(mode_y*pi*(y-ymin)/Ly)",
+    "concentration_units": "dimensionless_synthetic",
+    "distance_units": "metres",
+    "time_units": "seconds",
+    "objective": "J(P)=travel_time_s(P)+lambda*integral_P c(snapshot,x) ds/speed",
+    "decision_type": "static_frozen_field_at_snapshot; no waiting, time-varying exposure or dose model",
+    "feasible_set": "the two simple directed corridor paths on the saved common graph"
+  },
+  "reference_hierarchy": {
+    "continuous": "closed-form cosine diffusion and analytic polyline integrals",
+    "semidiscrete": "exact discrete cosine eigenmode exp(-4*kappa/dy^2*sin(k*dy/2)^2*t)",
+    "time_reference": "exact semidiscrete evolution, independent of time stepping",
+    "spatial_refinement_reference": "not needed for this manufactured mode; no general fine-grid reference implementation is claimed",
+    "arithmetic": "float64 evaluation; analytic expressions are exact mathematically, not interval-enclosed machine computations"
+  },
+  "bound_derivation": [
+    "Positive bilinear reconstruction implies nodal-error amplification at most one.",
+    "For this y-only cosine and reflecting constant extension, interpolation error <= dy^2*sup|c_yy|/8, including half cells at the walls.",
+    "Positive trapezoid weights sum to edge travel time, so reconstruction contribution <= edge_time*(nodal_linf+interpolation_bound).",
+    "Smooth analytic-field quadrature remainder on each straight segment <= (length/speed)*(segment_step^2/12)*sup|d2c/ds2|.",
+    "Add these edge exposure bounds, multiply by lambda, and apply finite-set or nonnegative lower-graph inequalities."
+  ],
+  "limitations": [
+    "Manufactured synthetic field and local Cartesian graph; not observed air quality or health guidance.",
+    "Near-critical lambda is deliberately constructed using both solutions; this is a counterexample suite, not an unbiased failure-rate estimate.",
+    "Full nodal error is available only because the manufactured reference is known; this is not an operational estimator for unknown solutions.",
+    "No interval arithmetic, model/input uncertainty, dynamic routing, adjoint estimator or general large-graph candidate coverage is certified.",
+    "Per-case timings are diagnostic single runs, not a controlled comparative benchmark."
+  ],
+  "oracle": {
+    "scope": "all_simple_directed_paths_in_this_finite_graph",
+    "complete": true,
+    "start": "s",
+    "end": "t",
+    "graph_hash": "be28c39f6d51624ec681fb3d5206f0424ef6e66157169721454a056148ca0eda",
+    "candidate_hash": "9b94053750020ac2ab3756411ed3a4dec644afedffb53c75a532d6871bff50a4",
+    "count": 2,
+    "paths": [
+      {
+        "edge_indices": [
+          0,
+          1,
+          2
+        ],
+        "edge_identities": [
+          [
+            "s",
+            "u0",
+            0
+          ],
+          [
+            "u0",
+            "u1",
+            0
+          ],
+          [
+            "u1",
+            "t",
+            0
+          ]
+        ]
+      },
+      {
+        "edge_indices": [
+          3,
+          4,
+          5
+        ],
+        "edge_identities": [
+          [
+            "s",
+            "l0",
+            0
+          ],
+          [
+            "l0",
+            "l1",
+            0
+          ],
+          [
+            "l1",
+            "t",
+            0
+          ]
+        ]
+      }
+    ]
+  },
+  "cases": [
+    {
+      "id": "large_error_same_route",
+      "grid": {
+        "bounds": [
+          0.0,
+          0.0,
+          1000.0,
+          1000.0
+        ],
+        "nx": 8,
+        "ny": 8,
+        "dx_m": 125.0,
+        "dy_m": 125.0,
+        "location": "cell_centres",
+        "axis_order": "frame,y,x",
+        "y_direction": "south_to_north"
+      },
+      "snapshot_s": 3000.0,
+      "method": "backward_euler",
+      "dt_s": 3000.0,
+      "lambda_weight": 0.2,
+      "lambda_protocol": {
+        "policy": "fixed",
+        "reference_switch_lambda": 0.7402110754348098,
+        "numerical_switch_lambda": 0.6046358238587662,
+        "declared_construction": "All listed cases are reported. Threshold midpoint deliberately targets the disagreement interval; no frequency or held-out validation claim."
+      },
+      "reference_minimizers": [
+        1
+      ],
+      "selected": 1,
+      "approximate_minimizers": [
+        1
+      ],
+      "selected_is_reference_optimal_within_tolerance": true,
+      "reference_cost_gap_s": 156.38717118168438,
+      "reference_regret_s": 0.0,
+      "reference_relative_regret": 0.0,
+      "reference_tie_tolerance_s": 1e-09,
+      "field_error": {
+        "nodal_linf": 0.07262940363140413,
+        "nodal_rms": 0.05236288191456735,
+        "temporal_vs_exact_semidiscrete_linf": 0.0687126954725874,
+        "semidiscrete_vs_continuous_nodal_linf": 0.0039167081588167285,
+        "exact_field_interpolation_sup_bound": 0.010129185063421586,
+        "reconstructed_numerical_vs_continuous_sup_bound": 0.08275858869482572
+      },
+      "paths": [
+        {
+          "index": 0,
+          "edge_indices": [
+            0,
+            1,
+            2
+          ],
+          "edge_identities": [
+            [
+              "s",
+              "u0",
+              0
+            ],
+            [
+              "u0",
+              "u1",
+              0
+            ],
+            [
+              "u1",
+              "t",
+              0
+            ]
+          ],
+          "travel_time_s": 1000.0000000000001,
+          "reference_exposure": 658.5830208168614,
+          "approximate_exposure": 613.8386303675372,
+          "reference_cost_s": 1131.7166041633725,
+          "approximate_cost_s": 1122.7677260735077,
+          "objective_error_bound_s": 16.68507569545728
+        },
+        {
+          "index": 1,
+          "edge_indices": [
+            3,
+            4,
+            5
+          ],
+          "edge_identities": [
+            [
+              "s",
+              "l0",
+              0
+            ],
+            [
+              "l0",
+              "l1",
+              0
+            ],
+            [
+              "l1",
+              "t",
+              0
+            ]
+          ],
+          "travel_time_s": 785.7142857142857,
+          "reference_exposure": 948.0757363370125,
+          "approximate_exposure": 968.2432253816896,
+          "reference_cost_s": 975.3294329816881,
+          "approximate_cost_s": 979.3629307906236,
+          "objective_error_bound_s": 13.051225926619686
+        }
+      ],
+      "edge_error_bounds": {
+        "numerical_exposure": [
+          158.90236439536739,
+          296.03390157680246,
+          158.90236439536736,
+          121.7672457516417,
+          724.7087338784063,
+          121.76724575164167
+        ],
+        "exact_exposure": [
+          165.03751693504043,
+          328.50798694678053,
+          165.03751693504043,
+          120.16454604787336,
+          707.7466442412657,
+          120.16454604787336
+        ],
+        "absolute_observed_error": [
+          6.135152539673044,
+          32.47408536997807,
+          6.135152539673072,
+          1.6026997037683373,
+          16.962089637140593,
+          1.6026997037683088
+        ],
+        "analytic_quadrature_bound": [
+          0.33339489123033333,
+          0.0,
+          0.33339489123033333,
+          0.11576211501053242,
+          0.0,
+          0.11576211501053242
+        ],
+        "combined_exposure_bound": [
+          18.067378182978704,
+          47.290622111328986,
+          18.067378182978704,
+          8.982753760884718,
+          47.290622111328986,
+          8.982753760884718
+        ]
+      },
+      "candidate_certificate": {
+        "scope": "this_finite_candidate_set_only",
+        "bound_status": "conditional_on_all_supplied_bounds",
+        "evidence": "analytic_manufactured",
+        "selected": 1,
+        "candidate_count": 2,
+        "all_candidate_bounds_supplied": true,
+        "search_gap": 0.0,
+        "observed_approximate_search_gap": 0.0,
+        "uniform_epsilon": 16.68507569545728,
+        "two_epsilon_plus_eta": 33.37015139091456,
+        "lower": [
+          1106.0826503780504,
+          966.3117048640039
+        ],
+        "upper": [
+          1139.452801768965,
+          992.4141567172434
+        ],
+        "interval_regret_bound": 26.102451853239472,
+        "strict_interval_separation": true,
+        "assumptions": [
+          "Every supplied bound covers the same reference functional.",
+          "Candidates and model inputs are identical between approximate and reference costs.",
+          "Floating-point comparisons use the reported arithmetic tolerance; interval arithmetic is not implemented."
+        ],
+        "arithmetic_tolerance": 1e-10
+      },
+      "static_graph_certificate": {
+        "scope": "all_static_directed_walks_in_this_graph_with_nonnegative_costs",
+        "bound_status": "conditional_on_all_edge_intervals",
+        "evidence": "analytic_manufactured",
+        "nonnegative_cost_prior": true,
+        "tightened_edge_lower": [
+          242.45271152819205,
+          621.1772273216661,
+          242.45271152819203,
+          129.69975554100856,
+          706.912193781987,
+          129.69975554100853
+        ],
+        "selected_upper": 992.4141567172434,
+        "lower_graph_optimum": 966.311704864004,
+        "regret_bound": 26.10245185323936,
+        "lower_graph_path": [
+          3,
+          4,
+          5
+        ],
+        "lower_graph_edge_identities": [
+          [
+            "s",
+            "l0",
+            0
+          ],
+          [
+            "l0",
+            "l1",
+            0
+          ],
+          [
+            "l1",
+            "t",
+            0
+          ]
+        ]
+      },
+      "observer": {
+        "schema_version": 1,
+        "geometry_sha256": "c852a76cbe116ce44cfac88f1cb211e48f37b44802de58a718ba71e5c9aed9c4",
+        "grid": {
+          "bounds": [
+            0.0,
+            0.0,
+            1000.0,
+            1000.0
+          ],
+          "nx": 8,
+          "ny": 8,
+          "dx_m": 125.0,
+          "dy_m": 125.0,
+          "location": "cell_centres",
+          "axis_order": "frame,y,x",
+          "y_direction": "south_to_north"
+        },
+        "boundary": "zero_flux",
+        "speed_mps": 1.4,
+        "quadrature": "trapezoid",
+        "sample_spacing_m": 62.5,
+        "reconstruction": "cell_centred_piecewise_bilinear_v1",
+        "operator_sha256": "6ef97fdd40772aacbfacef387bf7aa3b31d4ebdba7fbec91c3290bc963110953",
+        "edge_ids": [
+          [
+            "s",
+            "u0",
+            0
+          ],
+          [
+            "u0",
+            "u1",
+            0
+          ],
+          [
+            "u1",
+            "t",
+            0
+          ],
+          [
+            "s",
+            "l0",
+            0
+          ],
+          [
+            "l0",
+            "l1",
+            0
+          ],
+          [
+            "l1",
+            "t",
+            0
+          ]
+        ],
+        "field_order": "C:y,x",
+        "shape": [
+          6,
+          64
+        ],
+        "nnz": 60,
+        "csr_bytes": 748,
+        "sample_count": 48,
+        "build_ms": 0.22400000034394907,
+        "outside_domain": "reject_except_coordinate_roundoff",
+        "wall_sampling": "constant_extension",
+        "interpretation": "integral_of_reconstruction_not_exact_PDE_or_physical_exposure"
+      },
+      "solver_diagnostics": {
+        "schema_version": 2,
+        "solve_ms": 1.2582089998431911,
+        "internal_steps": 1,
+        "dt_max_s": 3000.0,
+        "requested_dt_s": 3000.0,
+        "actual_dt_min_s": 3000.0,
+        "actual_dt_max_s": 3000.0,
+        "actual_dt_histogram": {
+          "3000.0": 1
+        },
+        "cfl_limit_s": null,
+        "method": "backward_euler",
+        "backend": "scipy",
+        "requested_backend": "scipy",
+        "boundary": "zero_flux",
+        "velocity": [
+          0.0,
+          0.0
+        ],
+        "startup": "none",
+        "timestep_policy": "requested_with_exact_output_alignment",
+        "linear_solver": "scipy.sparse.linalg.splu",
+        "linear_residual_max": 1.6528826952479848e-15,
+        "linear_residual_normalization": "norm(Ax-b)/max(norm(b),1)",
+        "initial_mass": 1000000.0,
+        "final_mass": 1000000.0000000009,
+        "mass_scale": 1000000.0,
+        "mass_scale_definition": "max(abs(M0), integral(abs(c0)), 1)",
+        "relative_mass_drift": 9.313225746154785e-16,
+        "mass_balance_error": 9.313225746154785e-10,
+        "max_mass_balance_error": 9.313225746154785e-10,
+        "relative_mass_balance_error": 9.313225746154785e-16,
+        "cumulative_outward_flux": 0.0,
+        "initial_energy": 451250.0,
+        "final_energy": 179711.16795191538,
+        "energy_max_increase": 0.0,
+        "min_concentration": 0.06825398361693114,
+        "max_concentration": 1.9317460163830689,
+        "mass_history": [
+          1000000.0000000009
+        ],
+        "energy_history": [
+          179711.16795191538
+        ],
+        "min_history": [
+          0.4120011583460497
+        ],
+        "max_history": [
+          1.5879988416539519
+        ],
+        "cumulative_outflow_history": [
+          0.0
+        ],
+        "mass_balance_history": [
+          9.313225746154785e-10
+        ],
+        "diagnostic_scope": "initial_and_output_frames",
+        "output_times_s": [
+          3000.0
+        ],
+        "factorization_count": 1,
+        "factorization_cache_hits": 0,
+        "factorization_cache_entries": 1,
+        "factorization_cache_bytes": 14124,
+        "factorization_cache": {
+          "entries": 1,
+          "bytes": 14124,
+          "max_entries": 8,
+          "max_bytes": 268435456,
+          "memory_accounting": "CSC system and SuperLU L/U arrays; excludes allocator/workspace overhead"
+        },
+        "output_bytes": 512,
+        "timings_ms": {
+          "matrix": 0.9861250000540167,
+          "factorization": 0.139207999836799,
+          "advance": 0.060959000165894395,
+          "conversion": 0.02524999990782817,
+          "output": 0.012833999790018424,
+          "total": 1.2582089998431911
+        },
+        "dtype": "float64"
+      },
+      "input_and_output_fields_unmodified": true,
+      "total_case_ms": 1.802666000003228
+    },
+    {
+      "id": "small_error_wrong_route",
+      "grid": {
+        "bounds": [
+          0.0,
+          0.0,
+          1000.0,
+          1000.0
+        ],
+        "nx": 32,
+        "ny": 32,
+        "dx_m": 31.25,
+        "dy_m": 31.25,
+        "location": "cell_centres",
+        "axis_order": "frame,y,x",
+        "y_direction": "south_to_north"
+      },
+      "snapshot_s": 1000.0,
+      "method": "backward_euler",
+      "dt_s": 10.0,
+      "lambda_weight": 0.40188211187882716,
+      "lambda_protocol": {
+        "policy": "threshold_midpoint",
+        "reference_switch_lambda": 0.4017704117950683,
+        "numerical_switch_lambda": 0.401993811962586,
+        "declared_construction": "All listed cases are reported. Threshold midpoint deliberately targets the disagreement interval; no frequency or held-out validation claim."
+      },
+      "reference_minimizers": [
+        0
+      ],
+      "selected": 1,
+      "approximate_minimizers": [
+        1
+      ],
+      "selected_is_reference_optimal_within_tolerance": false,
+      "reference_cost_gap_s": 0.05957564701452611,
+      "reference_regret_s": 0.05957564701452611,
+      "reference_relative_regret": 4.97186869003382e-05,
+      "reference_tie_tolerance_s": 1e-09,
+      "field_error": {
+        "nodal_linf": 0.00027479471373492714,
+        "nodal_rms": 0.00019454354172506423,
+        "temporal_vs_exact_semidiscrete_linf": 0.00015133733770889002,
+        "semidiscrete_vs_continuous_nodal_linf": 0.00012345737602603712,
+        "exact_field_interpolation_sup_bound": 0.0009395223426287768,
+        "reconstructed_numerical_vs_continuous_sup_bound": 0.001214317056363704
+      },
+      "paths": [
+        {
+          "index": 0,
+          "edge_indices": [
+            0,
+            1,
+            2
+          ],
+          "edge_identities": [
+            [
+              "s",
+              "u0",
+              0
+            ],
+            [
+              "u0",
+              "u1",
+              0
+            ],
+            [
+              "u1",
+              "t",
+              0
+            ]
+          ],
+          "travel_time_s": 1000.0000000000001,
+          "reference_exposure": 493.31540006512057,
+          "approximate_exposure": 493.44810166483484,
+          "reference_cost_s": 1198.2546348005194,
+          "approximate_cost_s": 1198.3079651996622,
+          "objective_error_bound_s": 0.5128676723100045
+        },
+        {
+          "index": 1,
+          "edge_indices": [
+            3,
+            4,
+            5
+          ],
+          "edge_identities": [
+            [
+              "s",
+              "l0",
+              0
+            ],
+            [
+              "l0",
+              "l1",
+              0
+            ],
+            [
+              "l1",
+              "t",
+              0
+            ]
+          ],
+          "travel_time_s": 785.7142857142857,
+          "reference_exposure": 1026.6690468115503,
+          "approximate_exposure": 1026.5053475949246,
+          "reference_cost_s": 1198.314210447534,
+          "approximate_cost_s": 1198.2484226606434,
+          "objective_error_bound_s": 0.3958659227555526
+        }
+      ],
+      "edge_error_bounds": {
+        "numerical_exposure": [
+          141.24854063284639,
+          210.95102039914184,
+          141.24854063284664,
+          126.45534237611639,
+          773.594662842692,
+          126.45534237611623
+        ],
+        "exact_exposure": [
+          141.19824443625774,
+          210.91891119260507,
+          141.19824443625774,
+          126.46787504062092,
+          773.7332967303084,
+          126.46787504062092
+        ],
+        "absolute_observed_error": [
+          0.050296196588647035,
+          0.03210920653677363,
+          0.05029619658890283,
+          0.012532664504533386,
+          0.13863388761649276,
+          0.012532664504689706
+        ],
+        "analytic_quadrature_bound": [
+          0.030923706820238598,
+          0.0,
+          0.030923706820238598,
+          0.015461853410119299,
+          0.0,
+          0.015461853410119299
+        ],
+        "combined_exposure_bound": [
+          0.2911345046124609,
+          0.6938954607792595,
+          0.2911345046124609,
+          0.14556725230623044,
+          0.6938954607792595,
+          0.14556725230623044
+        ]
+      },
+      "candidate_certificate": {
+        "scope": "this_finite_candidate_set_only",
+        "bound_status": "conditional_on_all_supplied_bounds",
+        "evidence": "analytic_manufactured",
+        "selected": 1,
+        "candidate_count": 2,
+        "all_candidate_bounds_supplied": true,
+        "search_gap": 0.0,
+        "observed_approximate_search_gap": 0.0,
+        "uniform_epsilon": 0.5128676723100045,
+        "two_epsilon_plus_eta": 1.025735344620009,
+        "lower": [
+          1197.7950975273523,
+          1197.8525567378879
+        ],
+        "upper": [
+          1198.8208328719722,
+          1198.644288583399
+        ],
+        "interval_regret_bound": 0.8491910560467204,
+        "strict_interval_separation": false,
+        "assumptions": [
+          "Every supplied bound covers the same reference functional.",
+          "Candidates and model inputs are identical between approximate and reference costs.",
+          "Floating-point comparisons use the reported arithmetic tolerance; interval arithmetic is not implemented."
+        ],
+        "arithmetic_tolerance": 1e-10
+      },
+      "static_graph_certificate": {
+        "scope": "all_static_directed_walks_in_this_graph_with_nonnegative_costs",
+        "bound_status": "conditional_on_all_edge_intervals",
+        "evidence": "analytic_manufactured",
+        "nonnegative_cost_prior": true,
+        "tightened_edge_lower": [
+          270.93397434549047,
+          655.927148836371,
+          270.9339743454906,
+          157.90449632055373,
+          882.0435640967806,
+          157.90449632055368
+        ],
+        "selected_upper": 1198.644288583399,
+        "lower_graph_optimum": 1197.795097527352,
+        "regret_bound": 0.8491910560469478,
+        "lower_graph_path": [
+          0,
+          1,
+          2
+        ],
+        "lower_graph_edge_identities": [
+          [
+            "s",
+            "u0",
+            0
+          ],
+          [
+            "u0",
+            "u1",
+            0
+          ],
+          [
+            "u1",
+            "t",
+            0
+          ]
+        ]
+      },
+      "observer": {
+        "schema_version": 1,
+        "geometry_sha256": "c852a76cbe116ce44cfac88f1cb211e48f37b44802de58a718ba71e5c9aed9c4",
+        "grid": {
+          "bounds": [
+            0.0,
+            0.0,
+            1000.0,
+            1000.0
+          ],
+          "nx": 32,
+          "ny": 32,
+          "dx_m": 31.25,
+          "dy_m": 31.25,
+          "location": "cell_centres",
+          "axis_order": "frame,y,x",
+          "y_direction": "south_to_north"
+        },
+        "boundary": "zero_flux",
+        "speed_mps": 1.4,
+        "quadrature": "trapezoid",
+        "sample_spacing_m": 15.625,
+        "reconstruction": "cell_centred_piecewise_bilinear_v1",
+        "operator_sha256": "bce5b53b12e5c5d512663773ac2eb51492f716ba020819b9420168aa03deaa9f",
+        "edge_ids": [
+          [
+            "s",
+            "u0",
+            0
+          ],
+          [
+            "u0",
+            "u1",
+            0
+          ],
+          [
+            "u1",
+            "t",
+            0
+          ],
+          [
+            "s",
+            "l0",
+            0
+          ],
+          [
+            "l0",
+            "l1",
+            0
+          ],
+          [
+            "l1",
+            "t",
+            0
+          ]
+        ],
+        "field_order": "C:y,x",
+        "shape": [
+          6,
+          1024
+        ],
+        "nnz": 188,
+        "csr_bytes": 2284,
+        "sample_count": 170,
+        "build_ms": 0.22141599993119598,
+        "outside_domain": "reject_except_coordinate_roundoff",
+        "wall_sampling": "constant_extension",
+        "interpretation": "integral_of_reconstruction_not_exact_PDE_or_physical_exposure"
+      },
+      "solver_diagnostics": {
+        "schema_version": 2,
+        "solve_ms": 5.643291000069439,
+        "internal_steps": 100,
+        "dt_max_s": 10.0,
+        "requested_dt_s": 10.0,
+        "actual_dt_min_s": 10.0,
+        "actual_dt_max_s": 10.0,
+        "actual_dt_histogram": {
+          "10.0": 100
+        },
+        "cfl_limit_s": null,
+        "method": "backward_euler",
+        "backend": "scipy",
+        "requested_backend": "scipy",
+        "boundary": "zero_flux",
+        "velocity": [
+          0.0,
+          0.0
+        ],
+        "startup": "none",
+        "timestep_policy": "requested_with_exact_output_alignment",
+        "linear_solver": "scipy.sparse.linalg.splu",
+        "linear_residual_max": 3.885761766041933e-16,
+        "linear_residual_normalization": "norm(Ax-b)/max(norm(b),1)",
+        "initial_mass": 1000000.0,
+        "final_mass": 1000000.0000000071,
+        "mass_scale": 1000000.0,
+        "mass_scale_definition": "max(abs(M0), integral(abs(c0)), 1)",
+        "relative_mass_drift": 7.1013346314430235e-15,
+        "mass_balance_error": 7.101334631443024e-09,
+        "max_mass_balance_error": 7.101334631443024e-09,
+        "relative_mass_balance_error": 7.1013346314430235e-15,
+        "cumulative_outward_flux": 0.0,
+        "initial_energy": 451250.0,
+        "final_energy": 304278.3230156042,
+        "energy_max_increase": 0.0,
+        "min_concentration": 0.051144316605086226,
+        "max_concentration": 1.9488556833949138,
+        "mass_history": [
+          1000000.0000000071
+        ],
+        "energy_history": [
+          304278.3230156042
+        ],
+        "min_history": [
+          0.22083925744545316
+        ],
+        "max_history": [
+          1.7791607425545632
+        ],
+        "cumulative_outflow_history": [
+          0.0
+        ],
+        "mass_balance_history": [
+          7.101334631443024e-09
+        ],
+        "diagnostic_scope": "initial_and_output_frames",
+        "output_times_s": [
+          1000.0
+        ],
+        "factorization_count": 1,
+        "factorization_cache_hits": 99,
+        "factorization_cache_entries": 1,
+        "factorization_cache_bytes": 520212,
+        "factorization_cache": {
+          "entries": 1,
+          "bytes": 520212,
+          "max_entries": 8,
+          "max_bytes": 268435456,
+          "memory_accounting": "CSC system and SuperLU L/U arrays; excludes allocator/workspace overhead"
+        },
+        "output_bytes": 8192,
+        "timings_ms": {
+          "matrix": 0.3912920001312159,
+          "factorization": 1.10495799981436,
+          "advance": 4.040745004658675,
+          "conversion": 0.016375000086554792,
+          "output": 0.022040999738237588,
+          "total": 5.643291000069439
+        },
+        "dtype": "float64"
+      },
+      "input_and_output_fields_unmodified": true,
+      "total_case_ms": 6.141916000160563
+    },
+    {
+      "id": "reference_tie",
+      "grid": {
+        "bounds": [
+          0.0,
+          0.0,
+          1000.0,
+          1000.0
+        ],
+        "nx": 8,
+        "ny": 8,
+        "dx_m": 125.0,
+        "dy_m": 125.0,
+        "location": "cell_centres",
+        "axis_order": "frame,y,x",
+        "y_direction": "south_to_north"
+      },
+      "snapshot_s": 1000.0,
+      "method": "backward_euler",
+      "dt_s": 100.0,
+      "lambda_weight": 0.4017704117950683,
+      "lambda_protocol": {
+        "policy": "reference_tie",
+        "reference_switch_lambda": 0.4017704117950683,
+        "numerical_switch_lambda": 0.40530655628418993,
+        "declared_construction": "All listed cases are reported. Threshold midpoint deliberately targets the disagreement interval; no frequency or held-out validation claim."
+      },
+      "reference_minimizers": [
+        0,
+        1
+      ],
+      "selected": 1,
+      "approximate_minimizers": [
+        1
+      ],
+      "selected_is_reference_optimal_within_tolerance": true,
+      "reference_cost_gap_s": 0.0,
+      "reference_regret_s": 0.0,
+      "reference_relative_regret": 0.0,
+      "reference_tie_tolerance_s": 1e-09,
+      "field_error": {
+        "nodal_linf": 0.0033712288123153578,
+        "nodal_rms": 0.0024305205244712995,
+        "temporal_vs_exact_semidiscrete_linf": 0.0014385681815601015,
+        "semidiscrete_vs_continuous_nodal_linf": 0.0019326606307552563,
+        "exact_field_interpolation_sup_bound": 0.01503235748206043,
+        "reconstructed_numerical_vs_continuous_sup_bound": 0.018403586294375787
+      },
+      "paths": [
+        {
+          "index": 0,
+          "edge_indices": [
+            0,
+            1,
+            2
+          ],
+          "edge_identities": [
+            [
+              "s",
+              "u0",
+              0
+            ],
+            [
+              "u0",
+              "u1",
+              0
+            ],
+            [
+              "u1",
+              "t",
+              0
+            ]
+          ],
+          "travel_time_s": 1000.0000000000001,
+          "reference_exposure": 493.31540006512057,
+          "approximate_exposure": 495.4854904071914,
+          "reference_cost_s": 1198.1995314290125,
+          "approximate_cost_s": 1199.0714095193787,
+          "objective_error_bound_s": 7.791591817546147
+        },
+        {
+          "index": 1,
+          "edge_indices": [
+            3,
+            4,
+            5
+          ],
+          "edge_identities": [
+            [
+              "s",
+              "l0",
+              0
+            ],
+            [
+              "l0",
+              "l1",
+              0
+            ],
+            [
+              "l1",
+              "t",
+              0
+            ]
+          ],
+          "travel_time_s": 785.7142857142857,
+          "reference_exposure": 1026.6690468115503,
+          "approximate_exposure": 1024.1858308365802,
+          "reference_cost_s": 1198.1995314290125,
+          "approximate_cost_s": 1197.2018487241726,
+          "objective_error_bound_s": 5.947631353559542
+        }
+      ],
+      "edge_error_bounds": {
+        "numerical_exposure": [
+          141.92813062547017,
+          211.62922915625094,
+          141.9281306254703,
+          126.24941939189264,
+          771.6869920527948,
+          126.24941939189276
+        ],
+        "exact_exposure": [
+          141.19824443625774,
+          210.91891119260507,
+          141.19824443625774,
+          126.46787504062092,
+          773.7332967303084,
+          126.46787504062092
+        ],
+        "absolute_observed_error": [
+          0.7298861892124364,
+          0.7103179636458776,
+          0.7298861892125501,
+          0.2184556487282805,
+          2.0463046775136036,
+          0.2184556487281668
+        ],
+        "analytic_quadrature_bound": [
+          0.49477930912381757,
+          0.0,
+          0.49477930912381757,
+          0.1717983712235478,
+          0.0,
+          0.1717983712235478
+        ],
+        "combined_exposure_bound": [
+          4.438404943632915,
+          10.516335025357593,
+          4.438404943632915,
+          2.1436111884780966,
+          10.516335025357593,
+          2.1436111884780966
+        ]
+      },
+      "candidate_certificate": {
+        "scope": "this_finite_candidate_set_only",
+        "bound_status": "conditional_on_all_supplied_bounds",
+        "evidence": "analytic_manufactured",
+        "selected": 1,
+        "candidate_count": 2,
+        "all_candidate_bounds_supplied": true,
+        "search_gap": 0.0,
+        "observed_approximate_search_gap": 0.0,
+        "uniform_epsilon": 7.791591817546147,
+        "two_epsilon_plus_eta": 15.583183635092293,
+        "lower": [
+          1191.2798177018326,
+          1191.254217370613
+        ],
+        "upper": [
+          1206.8630013369248,
+          1203.149480077732
+        ],
+        "interval_regret_bound": 11.895262707118945,
+        "strict_interval_separation": false,
+        "assumptions": [
+          "Every supplied bound covers the same reference functional.",
+          "Candidates and model inputs are identical between approximate and reference costs.",
+          "Floating-point comparisons use the reported arithmetic tolerance; interval arithmetic is not implemented."
+        ],
+        "arithmetic_tolerance": 1e-10
+      },
+      "static_graph_certificate": {
+        "scope": "all_static_directed_walks_in_this_graph_with_nonnegative_costs",
+        "bound_status": "conditional_on_all_edge_intervals",
+        "evidence": "analytic_manufactured",
+        "nonnegative_cost_prior": true,
+        "tightened_edge_lower": [
+          269.525017990497,
+          652.2297817208384,
+          269.5250179904971,
+          157.00489881090277,
+          877.2444197488076,
+          157.00489881090283
+        ],
+        "selected_upper": 1203.1494800777323,
+        "lower_graph_optimum": 1191.2542173706133,
+        "regret_bound": 11.895262707118945,
+        "lower_graph_path": [
+          3,
+          4,
+          5
+        ],
+        "lower_graph_edge_identities": [
+          [
+            "s",
+            "l0",
+            0
+          ],
+          [
+            "l0",
+            "l1",
+            0
+          ],
+          [
+            "l1",
+            "t",
+            0
+          ]
+        ]
+      },
+      "observer": {
+        "schema_version": 1,
+        "geometry_sha256": "c852a76cbe116ce44cfac88f1cb211e48f37b44802de58a718ba71e5c9aed9c4",
+        "grid": {
+          "bounds": [
+            0.0,
+            0.0,
+            1000.0,
+            1000.0
+          ],
+          "nx": 8,
+          "ny": 8,
+          "dx_m": 125.0,
+          "dy_m": 125.0,
+          "location": "cell_centres",
+          "axis_order": "frame,y,x",
+          "y_direction": "south_to_north"
+        },
+        "boundary": "zero_flux",
+        "speed_mps": 1.4,
+        "quadrature": "trapezoid",
+        "sample_spacing_m": 62.5,
+        "reconstruction": "cell_centred_piecewise_bilinear_v1",
+        "operator_sha256": "6ef97fdd40772aacbfacef387bf7aa3b31d4ebdba7fbec91c3290bc963110953",
+        "edge_ids": [
+          [
+            "s",
+            "u0",
+            0
+          ],
+          [
+            "u0",
+            "u1",
+            0
+          ],
+          [
+            "u1",
+            "t",
+            0
+          ],
+          [
+            "s",
+            "l0",
+            0
+          ],
+          [
+            "l0",
+            "l1",
+            0
+          ],
+          [
+            "l1",
+            "t",
+            0
+          ]
+        ],
+        "field_order": "C:y,x",
+        "shape": [
+          6,
+          64
+        ],
+        "nnz": 60,
+        "csr_bytes": 748,
+        "sample_count": 48,
+        "build_ms": 0.12791699964509462,
+        "outside_domain": "reject_except_coordinate_roundoff",
+        "wall_sampling": "constant_extension",
+        "interpretation": "integral_of_reconstruction_not_exact_PDE_or_physical_exposure"
+      },
+      "solver_diagnostics": {
+        "schema_version": 2,
+        "solve_ms": 0.5665419998877042,
+        "internal_steps": 10,
+        "dt_max_s": 100.0,
+        "requested_dt_s": 100.0,
+        "actual_dt_min_s": 100.0,
+        "actual_dt_max_s": 100.0,
+        "actual_dt_histogram": {
+          "100.0": 10
+        },
+        "cfl_limit_s": null,
+        "method": "backward_euler",
+        "backend": "scipy",
+        "requested_backend": "scipy",
+        "boundary": "zero_flux",
+        "velocity": [
+          0.0,
+          0.0
+        ],
+        "startup": "none",
+        "timestep_policy": "requested_with_exact_output_alignment",
+        "linear_solver": "scipy.sparse.linalg.splu",
+        "linear_residual_max": 3.1325161724663037e-16,
+        "linear_residual_normalization": "norm(Ax-b)/max(norm(b),1)",
+        "initial_mass": 1000000.0,
+        "final_mass": 999999.9999999998,
+        "mass_scale": 1000000.0,
+        "mass_scale_definition": "max(abs(M0), integral(abs(c0)), 1)",
+        "relative_mass_drift": 2.328306436538696e-16,
+        "mass_balance_error": -2.3283064365386963e-10,
+        "max_mass_balance_error": 2.3283064365386963e-10,
+        "relative_mass_balance_error": 2.328306436538696e-16,
+        "cumulative_outward_flux": 0.0,
+        "initial_energy": 451250.0,
+        "final_energy": 306750.1163124905,
+        "energy_max_increase": 0.0,
+        "min_concentration": 0.06825398361693114,
+        "max_concentration": 1.9317460163830689,
+        "mass_history": [
+          999999.9999999998
+        ],
+        "energy_history": [
+          306750.1163124905
+        ],
+        "min_history": [
+          0.23178761376227627
+        ],
+        "max_history": [
+          1.7682123862377235
+        ],
+        "cumulative_outflow_history": [
+          0.0
+        ],
+        "mass_balance_history": [
+          -2.3283064365386963e-10
+        ],
+        "diagnostic_scope": "initial_and_output_frames",
+        "output_times_s": [
+          1000.0
+        ],
+        "factorization_count": 1,
+        "factorization_cache_hits": 9,
+        "factorization_cache_entries": 1,
+        "factorization_cache_bytes": 14124,
+        "factorization_cache": {
+          "entries": 1,
+          "bytes": 14124,
+          "max_entries": 8,
+          "max_bytes": 268435456,
+          "memory_accounting": "CSC system and SuperLU L/U arrays; excludes allocator/workspace overhead"
+        },
+        "output_bytes": 512,
+        "timings_ms": {
+          "matrix": 0.3271670002504834,
+          "factorization": 0.09370799989483203,
+          "advance": 0.10929100062639918,
+          "conversion": 0.013416999991022749,
+          "output": 0.007374999768217094,
+          "total": 0.5665419998877042
+        },
+        "dtype": "float64"
+      },
+      "input_and_output_fields_unmodified": true,
+      "total_case_ms": 0.9201670000038575
+    },
+    {
+      "id": "reference_near_tie",
+      "grid": {
+        "bounds": [
+          0.0,
+          0.0,
+          1000.0,
+          1000.0
+        ],
+        "nx": 8,
+        "ny": 8,
+        "dx_m": 125.0,
+        "dy_m": 125.0,
+        "location": "cell_centres",
+        "axis_order": "frame,y,x",
+        "y_direction": "south_to_north"
+      },
+      "snapshot_s": 1000.0,
+      "method": "backward_euler",
+      "dt_s": 100.0,
+      "lambda_weight": 0.4017704158127724,
+      "lambda_protocol": {
+        "policy": "reference_near_tie",
+        "reference_switch_lambda": 0.4017704117950683,
+        "numerical_switch_lambda": 0.40530655628418993,
+        "declared_construction": "All listed cases are reported. Threshold midpoint deliberately targets the disagreement interval; no frequency or held-out validation claim."
+      },
+      "reference_minimizers": [
+        0
+      ],
+      "selected": 1,
+      "approximate_minimizers": [
+        1
+      ],
+      "selected_is_reference_optimal_within_tolerance": false,
+      "reference_cost_gap_s": 2.14285728361574e-06,
+      "reference_regret_s": 2.14285728361574e-06,
+      "reference_relative_regret": 1.7883976949277403e-09,
+      "reference_tie_tolerance_s": 1e-09,
+      "field_error": {
+        "nodal_linf": 0.0033712288123153578,
+        "nodal_rms": 0.0024305205244712995,
+        "temporal_vs_exact_semidiscrete_linf": 0.0014385681815601015,
+        "semidiscrete_vs_continuous_nodal_linf": 0.0019326606307552563,
+        "exact_field_interpolation_sup_bound": 0.01503235748206043,
+        "reconstructed_numerical_vs_continuous_sup_bound": 0.018403586294375787
+      },
+      "paths": [
+        {
+          "index": 0,
+          "edge_indices": [
+            0,
+            1,
+            2
+          ],
+          "edge_identities": [
+            [
+              "s",
+              "u0",
+              0
+            ],
+            [
+              "u0",
+              "u1",
+              0
+            ],
+            [
+              "u1",
+              "t",
+              0
+            ]
+          ],
+          "travel_time_s": 1000.0000000000001,
+          "reference_exposure": 493.31540006512057,
+          "approximate_exposure": 495.4854904071914,
+          "reference_cost_s": 1198.1995334110077,
+          "approximate_cost_s": 1199.0714115100927,
+          "objective_error_bound_s": 7.791591895462065
+        },
+        {
+          "index": 1,
+          "edge_indices": [
+            3,
+            4,
+            5
+          ],
+          "edge_identities": [
+            [
+              "s",
+              "l0",
+              0
+            ],
+            [
+              "l0",
+              "l1",
+              0
+            ],
+            [
+              "l1",
+              "t",
+              0
+            ]
+          ],
+          "travel_time_s": 785.7142857142857,
+          "reference_exposure": 1026.6690468115503,
+          "approximate_exposure": 1024.1858308365802,
+          "reference_cost_s": 1198.199535553865,
+          "approximate_cost_s": 1197.2018528390481,
+          "objective_error_bound_s": 5.947631413035855
+        }
+      ],
+      "edge_error_bounds": {
+        "numerical_exposure": [
+          141.92813062547017,
+          211.62922915625094,
+          141.9281306254703,
+          126.24941939189264,
+          771.6869920527948,
+          126.24941939189276
+        ],
+        "exact_exposure": [
+          141.19824443625774,
+          210.91891119260507,
+          141.19824443625774,
+          126.46787504062092,
+          773.7332967303084,
+          126.46787504062092
+        ],
+        "absolute_observed_error": [
+          0.7298861892124364,
+          0.7103179636458776,
+          0.7298861892125501,
+          0.2184556487282805,
+          2.0463046775136036,
+          0.2184556487281668
+        ],
+        "analytic_quadrature_bound": [
+          0.49477930912381757,
+          0.0,
+          0.49477930912381757,
+          0.1717983712235478,
+          0.0,
+          0.1717983712235478
+        ],
+        "combined_exposure_bound": [
+          4.438404943632915,
+          10.516335025357593,
+          4.438404943632915,
+          2.1436111884780966,
+          10.516335025357593,
+          2.1436111884780966
+        ]
+      },
+      "candidate_certificate": {
+        "scope": "this_finite_candidate_set_only",
+        "bound_status": "conditional_on_all_supplied_bounds",
+        "evidence": "analytic_manufactured",
+        "selected": 1,
+        "candidate_count": 2,
+        "all_candidate_bounds_supplied": true,
+        "search_gap": 0.0,
+        "observed_approximate_search_gap": 0.0,
+        "uniform_epsilon": 7.791591895462065,
+        "two_epsilon_plus_eta": 15.58318379092413,
+        "lower": [
+          1191.2798196146307,
+          1191.2542214260122
+        ],
+        "upper": [
+          1206.8630034055548,
+          1203.149484252084
+        ],
+        "interval_regret_bound": 11.895262826071757,
+        "strict_interval_separation": false,
+        "assumptions": [
+          "Every supplied bound covers the same reference functional.",
+          "Candidates and model inputs are identical between approximate and reference costs.",
+          "Floating-point comparisons use the reported arithmetic tolerance; interval arithmetic is not implemented."
+        ],
+        "arithmetic_tolerance": 1e-10
+      },
+      "static_graph_certificate": {
+        "scope": "all_static_directed_walks_in_this_graph_with_nonnegative_costs",
+        "bound_status": "conditional_on_all_edge_intervals",
+        "evidence": "analytic_manufactured",
+        "nonnegative_cost_prior": true,
+        "tightened_edge_lower": [
+          269.52501854289005,
+          652.2297825288506,
+          269.5250185428901,
+          157.00489930952318,
+          877.244422806966,
+          157.00489930952324
+        ],
+        "selected_upper": 1203.1494842520842,
+        "lower_graph_optimum": 1191.2542214260125,
+        "regret_bound": 11.895262826071757,
+        "lower_graph_path": [
+          3,
+          4,
+          5
+        ],
+        "lower_graph_edge_identities": [
+          [
+            "s",
+            "l0",
+            0
+          ],
+          [
+            "l0",
+            "l1",
+            0
+          ],
+          [
+            "l1",
+            "t",
+            0
+          ]
+        ]
+      },
+      "observer": {
+        "schema_version": 1,
+        "geometry_sha256": "c852a76cbe116ce44cfac88f1cb211e48f37b44802de58a718ba71e5c9aed9c4",
+        "grid": {
+          "bounds": [
+            0.0,
+            0.0,
+            1000.0,
+            1000.0
+          ],
+          "nx": 8,
+          "ny": 8,
+          "dx_m": 125.0,
+          "dy_m": 125.0,
+          "location": "cell_centres",
+          "axis_order": "frame,y,x",
+          "y_direction": "south_to_north"
+        },
+        "boundary": "zero_flux",
+        "speed_mps": 1.4,
+        "quadrature": "trapezoid",
+        "sample_spacing_m": 62.5,
+        "reconstruction": "cell_centred_piecewise_bilinear_v1",
+        "operator_sha256": "6ef97fdd40772aacbfacef387bf7aa3b31d4ebdba7fbec91c3290bc963110953",
+        "edge_ids": [
+          [
+            "s",
+            "u0",
+            0
+          ],
+          [
+            "u0",
+            "u1",
+            0
+          ],
+          [
+            "u1",
+            "t",
+            0
+          ],
+          [
+            "s",
+            "l0",
+            0
+          ],
+          [
+            "l0",
+            "l1",
+            0
+          ],
+          [
+            "l1",
+            "t",
+            0
+          ]
+        ],
+        "field_order": "C:y,x",
+        "shape": [
+          6,
+          64
+        ],
+        "nnz": 60,
+        "csr_bytes": 748,
+        "sample_count": 48,
+        "build_ms": 0.11599999970712815,
+        "outside_domain": "reject_except_coordinate_roundoff",
+        "wall_sampling": "constant_extension",
+        "interpretation": "integral_of_reconstruction_not_exact_PDE_or_physical_exposure"
+      },
+      "solver_diagnostics": {
+        "schema_version": 2,
+        "solve_ms": 0.4950419997840072,
+        "internal_steps": 10,
+        "dt_max_s": 100.0,
+        "requested_dt_s": 100.0,
+        "actual_dt_min_s": 100.0,
+        "actual_dt_max_s": 100.0,
+        "actual_dt_histogram": {
+          "100.0": 10
+        },
+        "cfl_limit_s": null,
+        "method": "backward_euler",
+        "backend": "scipy",
+        "requested_backend": "scipy",
+        "boundary": "zero_flux",
+        "velocity": [
+          0.0,
+          0.0
+        ],
+        "startup": "none",
+        "timestep_policy": "requested_with_exact_output_alignment",
+        "linear_solver": "scipy.sparse.linalg.splu",
+        "linear_residual_max": 3.1325161724663037e-16,
+        "linear_residual_normalization": "norm(Ax-b)/max(norm(b),1)",
+        "initial_mass": 1000000.0,
+        "final_mass": 999999.9999999998,
+        "mass_scale": 1000000.0,
+        "mass_scale_definition": "max(abs(M0), integral(abs(c0)), 1)",
+        "relative_mass_drift": 2.328306436538696e-16,
+        "mass_balance_error": -2.3283064365386963e-10,
+        "max_mass_balance_error": 2.3283064365386963e-10,
+        "relative_mass_balance_error": 2.328306436538696e-16,
+        "cumulative_outward_flux": 0.0,
+        "initial_energy": 451250.0,
+        "final_energy": 306750.1163124905,
+        "energy_max_increase": 0.0,
+        "min_concentration": 0.06825398361693114,
+        "max_concentration": 1.9317460163830689,
+        "mass_history": [
+          999999.9999999998
+        ],
+        "energy_history": [
+          306750.1163124905
+        ],
+        "min_history": [
+          0.23178761376227627
+        ],
+        "max_history": [
+          1.7682123862377235
+        ],
+        "cumulative_outflow_history": [
+          0.0
+        ],
+        "mass_balance_history": [
+          -2.3283064365386963e-10
+        ],
+        "diagnostic_scope": "initial_and_output_frames",
+        "output_times_s": [
+          1000.0
+        ],
+        "factorization_count": 1,
+        "factorization_cache_hits": 9,
+        "factorization_cache_entries": 1,
+        "factorization_cache_bytes": 14124,
+        "factorization_cache": {
+          "entries": 1,
+          "bytes": 14124,
+          "max_entries": 8,
+          "max_bytes": 268435456,
+          "memory_accounting": "CSC system and SuperLU L/U arrays; excludes allocator/workspace overhead"
+        },
+        "output_bytes": 512,
+        "timings_ms": {
+          "matrix": 0.28400000019246363,
+          "factorization": 0.07379199996648822,
+          "advance": 0.10574999987511546,
+          "conversion": 0.01104199964174768,
+          "output": 0.00704200010659406,
+          "total": 0.4950419997840072
+        },
+        "dtype": "float64"
+      },
+      "input_and_output_fields_unmodified": true,
+      "total_case_ms": 0.8082499998636195
+    },
+    {
+      "id": "positive_regret",
+      "grid": {
+        "bounds": [
+          0.0,
+          0.0,
+          1000.0,
+          1000.0
+        ],
+        "nx": 8,
+        "ny": 8,
+        "dx_m": 125.0,
+        "dy_m": 125.0,
+        "location": "cell_centres",
+        "axis_order": "frame,y,x",
+        "y_direction": "south_to_north"
+      },
+      "snapshot_s": 3000.0,
+      "method": "backward_euler",
+      "dt_s": 3000.0,
+      "lambda_weight": 0.672423449646788,
+      "lambda_protocol": {
+        "policy": "threshold_midpoint",
+        "reference_switch_lambda": 0.7402110754348098,
+        "numerical_switch_lambda": 0.6046358238587662,
+        "declared_construction": "All listed cases are reported. Threshold midpoint deliberately targets the disagreement interval; no frequency or held-out validation claim."
+      },
+      "reference_minimizers": [
+        1
+      ],
+      "selected": 0,
+      "approximate_minimizers": [
+        0
+      ],
+      "selected_is_reference_optimal_within_tolerance": false,
+      "reference_cost_gap_s": 19.624023868038194,
+      "reference_regret_s": 19.624023868038194,
+      "reference_relative_regret": 0.01378844270527266,
+      "reference_tie_tolerance_s": 1e-09,
+      "field_error": {
+        "nodal_linf": 0.07262940363140413,
+        "nodal_rms": 0.05236288191456735,
+        "temporal_vs_exact_semidiscrete_linf": 0.0687126954725874,
+        "semidiscrete_vs_continuous_nodal_linf": 0.0039167081588167285,
+        "exact_field_interpolation_sup_bound": 0.010129185063421586,
+        "reconstructed_numerical_vs_continuous_sup_bound": 0.08275858869482572
+      },
+      "paths": [
+        {
+          "index": 0,
+          "edge_indices": [
+            0,
+            1,
+            2
+          ],
+          "edge_identities": [
+            [
+              "s",
+              "u0",
+              0
+            ],
+            [
+              "u0",
+              "u1",
+              0
+            ],
+            [
+              "u1",
+              "t",
+              0
+            ]
+          ],
+          "travel_time_s": 1000.0000000000001,
+          "reference_exposure": 658.5830208168614,
+          "approximate_exposure": 613.8386303675372,
+          "reference_cost_s": 1442.8466667364764,
+          "approximate_cost_s": 1412.759489358199,
+          "objective_error_bound_s": 56.09718078378582
+        },
+        {
+          "index": 1,
+          "edge_indices": [
+            3,
+            4,
+            5
+          ],
+          "edge_identities": [
+            [
+              "s",
+              "l0",
+              0
+            ],
+            [
+              "l0",
+              "l1",
+              0
+            ],
+            [
+              "l1",
+              "t",
+              0
+            ]
+          ],
+          "travel_time_s": 785.7142857142857,
+          "reference_exposure": 948.0757363370125,
+          "approximate_exposure": 968.2432253816896,
+          "reference_cost_s": 1423.2226428684382,
+          "approximate_cost_s": 1436.783735422574,
+          "objective_error_bound_s": 43.87975179848603
+        }
+      ],
+      "edge_error_bounds": {
+        "numerical_exposure": [
+          158.90236439536739,
+          296.03390157680246,
+          158.90236439536736,
+          121.7672457516417,
+          724.7087338784063,
+          121.76724575164167
+        ],
+        "exact_exposure": [
+          165.03751693504043,
+          328.50798694678053,
+          165.03751693504043,
+          120.16454604787336,
+          707.7466442412657,
+          120.16454604787336
+        ],
+        "absolute_observed_error": [
+          6.135152539673044,
+          32.47408536997807,
+          6.135152539673072,
+          1.6026997037683373,
+          16.962089637140593,
+          1.6026997037683088
+        ],
+        "analytic_quadrature_bound": [
+          0.33339489123033333,
+          0.0,
+          0.33339489123033333,
+          0.11576211501053242,
+          0.0,
+          0.11576211501053242
+        ],
+        "combined_exposure_bound": [
+          18.067378182978704,
+          47.290622111328986,
+          18.067378182978704,
+          8.982753760884718,
+          47.290622111328986,
+          8.982753760884718
+        ]
+      },
+      "candidate_certificate": {
+        "scope": "this_finite_candidate_set_only",
+        "bound_status": "conditional_on_all_supplied_bounds",
+        "evidence": "analytic_manufactured",
+        "selected": 0,
+        "candidate_count": 2,
+        "all_candidate_bounds_supplied": true,
+        "search_gap": 0.0,
+        "observed_approximate_search_gap": 0.0,
+        "uniform_epsilon": 56.09718078378582,
+        "two_epsilon_plus_eta": 112.19436156757163,
+        "lower": [
+          1356.6623085744131,
+          1392.903983624088
+        ],
+        "upper": [
+          1468.856670141985,
+          1480.66348722106
+        ],
+        "interval_regret_bound": 112.19436156757183,
+        "strict_interval_separation": false,
+        "assumptions": [
+          "Every supplied bound covers the same reference functional.",
+          "Candidates and model inputs are identical between approximate and reference costs.",
+          "Floating-point comparisons use the reported arithmetic tolerance; interval arithmetic is not implemented."
+        ],
+        "arithmetic_tolerance": 1e-10
+      },
+      "static_graph_certificate": {
+        "scope": "all_static_directed_walks_in_this_graph_with_nonnegative_costs",
+        "bound_status": "conditional_on_all_edge_intervals",
+        "evidence": "analytic_manufactured",
+        "nonnegative_cost_prior": true,
+        "tightened_edge_lower": [
+          308.9864615456065,
+          738.6893854832001,
+          308.9864615456065,
+          182.9817943139425,
+          1026.940394996203,
+          182.9817943139425
+        ],
+        "selected_upper": 1468.8566701419845,
+        "lower_graph_optimum": 1356.6623085744131,
+        "regret_bound": 112.19436156757138,
+        "lower_graph_path": [
+          0,
+          1,
+          2
+        ],
+        "lower_graph_edge_identities": [
+          [
+            "s",
+            "u0",
+            0
+          ],
+          [
+            "u0",
+            "u1",
+            0
+          ],
+          [
+            "u1",
+            "t",
+            0
+          ]
+        ]
+      },
+      "observer": {
+        "schema_version": 1,
+        "geometry_sha256": "c852a76cbe116ce44cfac88f1cb211e48f37b44802de58a718ba71e5c9aed9c4",
+        "grid": {
+          "bounds": [
+            0.0,
+            0.0,
+            1000.0,
+            1000.0
+          ],
+          "nx": 8,
+          "ny": 8,
+          "dx_m": 125.0,
+          "dy_m": 125.0,
+          "location": "cell_centres",
+          "axis_order": "frame,y,x",
+          "y_direction": "south_to_north"
+        },
+        "boundary": "zero_flux",
+        "speed_mps": 1.4,
+        "quadrature": "trapezoid",
+        "sample_spacing_m": 62.5,
+        "reconstruction": "cell_centred_piecewise_bilinear_v1",
+        "operator_sha256": "6ef97fdd40772aacbfacef387bf7aa3b31d4ebdba7fbec91c3290bc963110953",
+        "edge_ids": [
+          [
+            "s",
+            "u0",
+            0
+          ],
+          [
+            "u0",
+            "u1",
+            0
+          ],
+          [
+            "u1",
+            "t",
+            0
+          ],
+          [
+            "s",
+            "l0",
+            0
+          ],
+          [
+            "l0",
+            "l1",
+            0
+          ],
+          [
+            "l1",
+            "t",
+            0
+          ]
+        ],
+        "field_order": "C:y,x",
+        "shape": [
+          6,
+          64
+        ],
+        "nnz": 60,
+        "csr_bytes": 748,
+        "sample_count": 48,
+        "build_ms": 0.11162500004502363,
+        "outside_domain": "reject_except_coordinate_roundoff",
+        "wall_sampling": "constant_extension",
+        "interpretation": "integral_of_reconstruction_not_exact_PDE_or_physical_exposure"
+      },
+      "solver_diagnostics": {
+        "schema_version": 2,
+        "solve_ms": 0.40050000006885966,
+        "internal_steps": 1,
+        "dt_max_s": 3000.0,
+        "requested_dt_s": 3000.0,
+        "actual_dt_min_s": 3000.0,
+        "actual_dt_max_s": 3000.0,
+        "actual_dt_histogram": {
+          "3000.0": 1
+        },
+        "cfl_limit_s": null,
+        "method": "backward_euler",
+        "backend": "scipy",
+        "requested_backend": "scipy",
+        "boundary": "zero_flux",
+        "velocity": [
+          0.0,
+          0.0
+        ],
+        "startup": "none",
+        "timestep_policy": "requested_with_exact_output_alignment",
+        "linear_solver": "scipy.sparse.linalg.splu",
+        "linear_residual_max": 1.6528826952479848e-15,
+        "linear_residual_normalization": "norm(Ax-b)/max(norm(b),1)",
+        "initial_mass": 1000000.0,
+        "final_mass": 1000000.0000000009,
+        "mass_scale": 1000000.0,
+        "mass_scale_definition": "max(abs(M0), integral(abs(c0)), 1)",
+        "relative_mass_drift": 9.313225746154785e-16,
+        "mass_balance_error": 9.313225746154785e-10,
+        "max_mass_balance_error": 9.313225746154785e-10,
+        "relative_mass_balance_error": 9.313225746154785e-16,
+        "cumulative_outward_flux": 0.0,
+        "initial_energy": 451250.0,
+        "final_energy": 179711.16795191538,
+        "energy_max_increase": 0.0,
+        "min_concentration": 0.06825398361693114,
+        "max_concentration": 1.9317460163830689,
+        "mass_history": [
+          1000000.0000000009
+        ],
+        "energy_history": [
+          179711.16795191538
+        ],
+        "min_history": [
+          0.4120011583460497
+        ],
+        "max_history": [
+          1.5879988416539519
+        ],
+        "cumulative_outflow_history": [
+          0.0
+        ],
+        "mass_balance_history": [
+          9.313225746154785e-10
+        ],
+        "diagnostic_scope": "initial_and_output_frames",
+        "output_times_s": [
+          3000.0
+        ],
+        "factorization_count": 1,
+        "factorization_cache_hits": 0,
+        "factorization_cache_entries": 1,
+        "factorization_cache_bytes": 14124,
+        "factorization_cache": {
+          "entries": 1,
+          "bytes": 14124,
+          "max_entries": 8,
+          "max_bytes": 268435456,
+          "memory_accounting": "CSC system and SuperLU L/U arrays; excludes allocator/workspace overhead"
+        },
+        "output_bytes": 512,
+        "timings_ms": {
+          "matrix": 0.27629200030787615,
+          "factorization": 0.0658339999972668,
+          "advance": 0.02949899999293848,
+          "conversion": 0.011457999789854512,
+          "output": 0.006750000011379598,
+          "total": 0.40050000006885966
+        },
+        "dtype": "float64"
+      },
+      "input_and_output_fields_unmodified": true,
+      "total_case_ms": 0.7074590002957848
+    }
+  ],
+  "elapsed_s": 0.010610792000079527,
+  "runtime": {
+    "python": "3.12.6",
+    "numpy": "2.5.3",
+    "scipy": "1.18.1",
+    "platform": "macOS-26.5.2-arm64-arm-64bit",
+    "machine": "arm64",
+    "git_revision": "9ffd5fdbafaf4d3b8c231719f8c09ffe8fb2c3bd",
+    "git_dirty": true,
+    "source_sha256": {
+      "backend/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "backend/app/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "backend/app/diffusion.py": "b21ce19795d77cd8fbc20814f89bca4762980637f330f7512d856e4564a80e34",
+      "backend/app/main.py": "7a43f78cc636eb0697f74f40542a2c3ce8836c34a9db13cf2f6695146c5ad4c3",
+      "backend/app/numerics/__init__.py": "40904ef0278f5358ad01366413a39a8fc088b64334b1072bbb28414bdde16cd6",
+      "backend/app/numerics/native.py": "e1d66800549083ed39311553220277ecb6c2c505e161d9c387dea77ae9ecc6c8",
+      "backend/app/numerics/operators.py": "90ded50f71390c91b014d49f2eb0925f55e2d241c012c98b994f03251a9a5ab7",
+      "backend/app/numerics/solver.py": "6641bfb15f16692e52fb9deda4f4923d8f90a482dcd7ffda43cc830a6f741ded",
+      "backend/app/numerics/validation.py": "9ea116d24193e9b088651cb00015b191246ec9ec8873678eebb71cf835b784bb",
+      "backend/app/observations.py": "c3c2895cc71275110d930a4392945cb1919a1060c475d67f92b4bf8c2fc97bb2",
+      "backend/app/research/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "backend/app/research/decision.py": "319fda2af0117a5d9dc33a027eb5236e8bed173e10ff62c42454dae6dfacad7e",
+      "backend/app/research/experiments.py": "5b5dc3927e468c43855c9afbbc6026cc594772f09f8e061eaa7151977bc1c428",
+      "backend/app/research/problems.py": "44702e6966ce1e32f9fd00abadbbc87018b491e5105362e10fbd19c665d7f953",
+      "backend/app/routing.py": "89e08103651629bf71e6b140b85f1295c1980dfdafeda6e968336f7f653c667d",
+      "backend/app/validation.py": "57fa231241bbbe707964f96fa684cdd9ad337cad1c4c6a444acb201cabc1f228",
+      "scripts/run_decision_experiments.py": "60d26917e8a4f90db4681d33bfdcbf37de213b1114a92d93df7522d175722afa",
+      "scripts/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "requirements.lock.txt": "f7e79a623250e0012572eca0792eec29ada8af99e8dfc759537c7e067a9c92e5"
+    },
+    "thread_environment": {
+      "OMP_NUM_THREADS": null,
+      "OPENBLAS_NUM_THREADS": null,
+      "MKL_NUM_THREADS": null,
+      "VECLIB_MAXIMUM_THREADS": null
+    }
+  }
+}
