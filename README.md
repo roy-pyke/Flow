@@ -6,7 +6,7 @@ Flow connects a PDE solver to a real street network and asks two questions: **ho
 
 The bundled study area is a **4 × 4 km rectangle around San Francisco's Mission District**. Roads come from OpenStreetMap; concentration and wind are synthetic. This is a mathematical experiment, with no measured pollution or traffic observations.
 
-This independent research checkout extends Flow V2. It adds versioned PDE configurations and replayable array archives, boundary-aware sparse road observations, atomic network publication, and analytical route-decision counterexamples. Time-aware research integrates complete journeys across nonuniform output frames, including waits and repeated edges, and provides a finite time-expanded graph reference with explicitly charged rounding waits. [Variable diffusion](docs/variable_diffusion.md) adds positive material fields, conservative harmonic face fluxes, coefficient-aware caching, and independent interface/spatial/temporal verification. See [the research guide](docs/research.md) for commands, assumptions and remaining work. The richer research configuration currently runs through Python and the CLI; the map interface keeps its frozen-field controls. Historical V2 results below retain their original scope.
+This independent research checkout extends Flow V2. It adds versioned PDE configurations and replayable array archives, boundary-aware sparse road observations, atomic network publication, and analytical route-decision counterexamples. Time-aware research integrates complete journeys across nonuniform output frames, including waits and repeated edges, and provides a finite time-expanded graph reference with explicitly charged rounding waits. [Variable diffusion](docs/variable_diffusion.md) adds positive material fields, conservative harmonic face fluxes, coefficient-aware caching, and independent interface/spatial/temporal verification. [Prescribed transport](docs/prescribed_transport.md) adds time-dependent face winds, cell sources, incoming boundary concentrations and a complete mass ledger. See [the research guide](docs/research.md) for commands, assumptions and remaining work. The richer research configuration currently runs through Python and the CLI; the map interface keeps its frozen-field controls. Historical V2 results below retain their original scope.
 
 The complete Chinese [implementation milestone records](docs/milestones/README.md) document each delivered batch and its file-level design.
 
@@ -15,6 +15,7 @@ The complete Chinese [implementation milestone records](docs/milestones/README.m
 - **Five time integrators:** Forward Euler (FE), Backward Euler (BE), Crank–Nicolson (CN), explicit upwind advection–diffusion, and first-order IMEX Euler.
 - **Two implementations of diffusion FE:** the original vectorized NumPy stencil and a project-written C++17 kernel whose complete time loop runs natively.
 - **Variable material diffusion:** positive cell fields, aligned layers and portable NPZ inputs; NumPy FE and SciPy BE/CN for closed or periodic domains, with harmonic interface fluxes and separate space/time references.
+- **Prescribed forcing:** immutable face winds and cell sources, piecewise-linear schedules, nonzero open inflow, method-consistent source quadrature and separate injected/incoming/outgoing mass.
 - **Numerical evidence:** separate time/space convergence, matrix structure, mass and energy diagnostics, CN positivity counterexamples, Rannacher startup, transport and open-boundary balance.
 - **Performance experiments:** matched NumPy/C++ workloads with raw repetitions and process memory, plus method-level error–time comparisons and cold/warm factorization costs.
 - **Field-to-route experiments:** numerical field and edge-exposure errors, and selected routes re-evaluated under a common reference field.
@@ -68,7 +69,7 @@ Endpoints snap to the nearest graph node within 250 m; different connected compo
 
 ## Equations and discretization
 
-The relative concentration obeys
+The original interactive model, retained for the map controls, uses
 
 ```text
 ∂c/∂t + ∇·(u c) = κ∇²c
@@ -92,6 +93,11 @@ BE/CN/IMEX solve sparse linear systems using SciPy `splu`; they do not form a ma
 For FE, the automatic diffusion step is `0.9 / [2κ(dx⁻² + dy⁻²)]`. The explicit transport bound is `dt[|ux|/dx + |uy|/dy + 2κ(dx⁻² + dy⁻²)] ≤ 0.9`; IMEX retains `dt[|ux|/dx + |uy|/dy] ≤ 0.9`. Requested unstable steps are rejected. Automatic implicit steps are a convenience, not an accuracy guarantee. CN can be linearly stable while producing oscillations and negative concentration at large steps; startup does not promise unconditional positivity.
 
 ### Boundary conditions and diagnostics
+
+The rules below describe the original unforced controls. The research
+[prescribed-input interface](docs/prescribed_transport.md) additionally allows
+closed internal wind, incoming concentrations and cell sources, with separate
+injected/incoming/outgoing mass and method-specific source quadrature.
 
 - **Zero flux:** closed pure-diffusion walls. Constants and total mass are conserved up to floating-point/solve error.
 - **Periodic:** opposite faces connect for analytic verification. This is not a realistic city boundary.

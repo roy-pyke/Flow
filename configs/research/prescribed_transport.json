@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "problem": {
+    "bounds": [0, 0, 2, 1],
+    "model": "advection_diffusion",
+    "kappa": 0.01,
+    "velocity": [0, 0],
+    "boundary": "open",
+    "initial": {"kind": "constant", "value": 0.2},
+    "forcing": {
+      "kind": "analytic",
+      "generator_version": 1,
+      "times_s": [0, 0.25, 0.5],
+      "wind": {"kind": "uniform", "value": [0.5, 0]},
+      "wind_scale": [1, 0, -1],
+      "source": {"kind": "gaussian", "center": [1, 0.5], "sigma_m": 0.15, "amplitude": 0.1},
+      "source_scale": [0, 1, 0],
+      "inflow": {"left": 1, "right": 0.5, "bottom": 0, "top": 0}
+    }
+  },
+  "numerical": {
+    "nx": 24,
+    "ny": 12,
+    "output_times_s": [0, 0.125, 0.25, 0.375, 0.5],
+    "method": "imex_euler",
+    "backend": "numpy_scipy",
+    "dt": 0.01,
+    "initialization": "cell_average"
+  }
+}

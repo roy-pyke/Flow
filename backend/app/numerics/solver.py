@@ -101,8 +101,11 @@ def resolve_backend(method: str, backend: str, boundary: str = "zero_flux", *,
 
 
 def timestep_limit(grid: Grid, kappa: float | np.ndarray | DiffusionCoefficients, method: str,
-                   velocity: tuple[float, float], boundary: str = "zero_flux") -> float:
+                   velocity: tuple[float, float], boundary: str = "zero_flux", *, forcing=None) -> float:
     """FE row-rate monotonicity bound; scalar diffusion keeps its legacy bound."""
+    if forcing is not None:
+        from .forced_solver import prescribed_timestep_limit
+        return prescribed_timestep_limit(grid, kappa, method, velocity, boundary, forcing)
     if not np.isscalar(kappa):
         coefficient = prepare_diffusivity(grid, kappa, boundary)
         if method not in {"explicit_euler", "backward_euler", "crank_nicolson"} or any(velocity):
@@ -126,13 +129,18 @@ def solve(grid: Grid, initial: np.ndarray, kappa: float | np.ndarray | Diffusion
           output_times_s: Sequence[float], *, method: str = "explicit_euler",
           backend: str = "numpy", dt: float | None = None,
           boundary: str = "zero_flux", velocity: tuple[float, float] = (0.0, 0.0),
-          startup: str = "none") -> tuple[np.ndarray, dict]:
+          startup: str = "none", forcing=None) -> tuple[np.ndarray, dict]:
     """Integrate without clipping or renormalization; land on requested times.
 
     Rannacher replaces the first actual CN macro step by two BE half steps.
     Diagnostics of mass, energy and extrema are sampled at output times (plus
     the initial state); linear residuals are checked at every implicit solve.
     """
+    if forcing is not None:
+        from .forced_solver import solve_prescribed
+        return solve_prescribed(grid, initial, kappa, output_times_s, method=method,
+                                backend=backend, dt=dt, boundary=boundary,
+                                velocity=velocity, startup=startup, forcing=forcing)
     total_begin = perf_counter()
     conversion_begin = perf_counter()
     if not np.isfinite([grid.dx, grid.dy]).all() or min(grid.dx, grid.dy) <= 0:

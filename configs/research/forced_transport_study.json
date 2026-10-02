@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "periodic": {
+    "length_x_m": 1.0,
+    "length_y_m": 0.25,
+    "nx_values": [
+      16,
+      32,
+      64,
+      128
+    ],
+    "ny": 4,
+    "mean": 1.0,
+    "wind_amplitude_m_s": 0.25,
+    "duration_s": 0.8,
+    "dt_s": 0.0005,
+    "temporal_nx": 16,
+    "step_counts": [
+      32,
+      64,
+      128,
+      256
+    ]
+  },
+  "source": {
+    "length_x_m": 1.0,
+    "length_y_m": 1.0,
+    "nx": 12,
+    "ny": 4,
+    "diffusivity": 0.03,
+    "mean": 1.0,
+    "amplitude": 0.2,
+    "source_mean": 0.7,
+    "source_mean_slope": 0.3,
+    "source_mode": 0.3,
+    "source_mode_slope": 0.2,
+    "duration_s": 0.8,
+    "step_counts": [
+      16,
+      32,
+      64,
+      128
+    ]
+  },
+  "open": {
+    "length_x_m": 1.0,
+    "length_y_m": 0.5,
+    "nx": 16,
+    "ny": 4,
+    "diffusivity": 0.02,
+    "mean": 1.0,
+    "concentration_slope": 0.3,
+    "inlet_velocity_m_s": 0.6,
+    "divergence_s_inv": 0.4,
+    "duration_s": 0.8,
+    "step_counts": [
+      32,
+      64,
+      128
+    ]
+  },
+  "budget": {
+    "max_array_bytes": 134217728,
+    "max_cell_updates": 100000000,
+    "max_reference_scaled_rate": 10000.0
+  }
+}

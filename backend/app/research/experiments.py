@@ -22,9 +22,10 @@ import zipfile
 import numpy as np
 
 from ..numerics import solve
-from .problems import (ArrayDiffusivity, ArrayInitial, ExperimentSpec, check_budget,
+from .problems import (ArrayDiffusivity, ArrayForcing, ArrayInitial, ExperimentSpec, check_budget,
                        check_output_budget, content_id, diffusivity_field, initial_field,
-                       inspect_npz_array, load_spec)
+                       inspect_npz_array, load_spec, check_forcing_budget, forcing_array_payload,
+                       forcing_fields, forcing_shapes, imported_forcing_arrays)
 
 ROOT = Path(__file__).resolve().parents[3]
 
@@ -64,6 +65,65 @@ def _diffusivity_record(values: np.ndarray) -> dict:
             "values_sha256": hashlib.sha256(canonical.tobytes(order="C")).hexdigest()}
 
 
+def _forcing_record(arrays: dict[str, np.ndarray]) -> dict:
+    return {"schema_version": 1, "archive": "forcing.npz", "time_rule": "shared_knots_linear_no_extrapolation",
+            "velocity_interpretation": "global_positive_axis_normal_face_average_m/s",
+            "source_interpretation": "cell_average_relative_concentration/s",
+            "inflow_interpretation": "boundary_face_relative_concentration",
+            "arrays": {key: {"shape": list(value.shape), "dtype": "float64",
+                              "sha256": hashlib.sha256(np.asarray(value,dtype="<f8",order="C").tobytes(order="C")).hexdigest()}
+                       for key,value in sorted(arrays.items())},
+            "hash_byte_order": "little_endian"}
+
+
+def _verify_forcing(root: Path, spec: ExperimentSpec, result: dict, artifacts: dict) -> None:
+    if spec.problem.forcing is None:
+        if {"forcing.npz", "forcing_input.npz"} & set(artifacts) or "forcing" in result:
+            raise ValueError("Unconfigured reserved forcing artifacts or result record.")
+        return
+    check_forcing_budget(spec)
+    if "forcing.npz" not in artifacts:
+        raise ValueError("Prescribed fields require a manifest-listed forcing.npz archive.")
+    source = spec.problem.forcing
+    if isinstance(source, ArrayForcing):
+        if source.path != "forcing_input.npz" or source.path not in artifacts:
+            raise ValueError("Imported forcing requires manifest-listed forcing_input.npz.")
+        if artifacts[source.path]["sha256"] != source.sha256:
+            raise ValueError("Archived forcing input checksum differs from the configuration.")
+    elif "forcing_input.npz" in artifacts:
+        raise ValueError("Analytic forcing must not include a reserved imported forcing input.")
+    shapes = forcing_shapes(spec)
+    path = root / "forcing.npz"
+    with zipfile.ZipFile(path) as archive:
+        entries = archive.infolist()
+        if len(entries)!=len(shapes) or {entry.filename for entry in entries}!={key+".npy" for key in shapes}:
+            raise ValueError("Unexpected resolved forcing array inventory.")
+        if sum(entry.file_size for entry in entries)>spec.budget.max_forcing_bytes+1_000_000:
+            raise ValueError("Archived forcing arrays exceed their byte budget.")
+    for key,shape in shapes.items():
+        inspect_npz_array(path,key,shape,max_bytes=spec.budget.max_forcing_bytes,float64=True)
+    with np.load(path,allow_pickle=False) as saved:
+        arrays={key:saved[key] for key in shapes}
+    if not all(np.isfinite(value).all() for value in arrays.values()):
+        raise ValueError("Archived forcing arrays must be finite.")
+    if not np.array_equal(arrays["times_s"],source.times_s):
+        raise ValueError("Archived forcing knot times differ from the configuration.")
+    if result.get("forcing")!=_forcing_record(arrays):
+        raise ValueError("Archived forcing schema, array shapes or hashes disagree with the result.")
+    # Structural boundary/sign validation operates only on archived arrays;
+    # historical verification never regenerates analytic sampling formulas.
+    from ..numerics.forcing import PrescribedFields
+    fields=PrescribedFields(spec.grid(),arrays["times_s"],velocity_x=arrays["velocity_x"],
+        velocity_y=arrays["velocity_y"],source=arrays["source"],
+        inflow={side:arrays["inflow_"+side] for side in ("left","right","bottom","top")},boundary=spec.problem.boundary)
+    if spec.problem.model=="diffusion" and fields.has_velocity:
+        raise ValueError("Archived pure-diffusion forcing contains a velocity field.")
+    if isinstance(source,ArrayForcing):
+        imported=imported_forcing_arrays(spec,root)
+        if any(not np.array_equal(arrays[key],imported[key]) for key in arrays):
+            raise ValueError("Archived forcing values differ from the preserved imported input.")
+
+
 def verify_bundle(path: Path | str) -> dict:
     root = Path(path)
     manifest = json.loads((root / "manifest.json").read_text(encoding="utf-8"))
@@ -92,6 +152,7 @@ def verify_bundle(path: Path | str) -> dict:
     if result.get("identities") != spec.identities():
         raise ValueError("Bundle result/configuration identity mismatch.")
     check_output_budget(spec)
+    _verify_forcing(root,spec,result,artifacts)
     variable = not isinstance(spec.problem.kappa, float)
     if isinstance(spec.problem.initial, ArrayInitial):
         initial = spec.problem.initial
@@ -159,15 +220,17 @@ def run_experiment(spec: ExperimentSpec | dict, output: Path | str, *, base_dir:
     if output.exists():
         raise FileExistsError(f"Research bundle already exists: {output}")
     check_output_budget(spec)  # Before input reads, layered allocation or preparation.
+    check_forcing_budget(spec)
     from ..numerics.coefficients import DiffusionCoefficients, prepare_diffusivity
     n, p = spec.numerical, spec.problem
     coefficient = prepare_diffusivity(spec.grid(), diffusivity_field(spec, base_dir), p.boundary)
-    admission = check_budget(spec, kappa=coefficient)
+    driving = forcing_fields(spec,base_dir)
+    admission = check_budget(spec, kappa=coefficient,forcing=driving)
     initial = initial_field(spec, base_dir)
     start = perf_counter()
     frames, diagnostics = solve(spec.grid(), initial, coefficient, n.output_times_s,
                                method=n.method, backend=n.backend, dt=n.dt, boundary=p.boundary,
-                               velocity=p.velocity, startup=n.startup)
+                               velocity=p.velocity, startup=n.startup,forcing=driving)
     elapsed = (perf_counter()-start)*1000
     result = {"schema_version": 1, "identities": spec.identities(),
               "grid": spec.grid().to_dict(), "initialization": n.initialization,
@@ -177,6 +240,8 @@ def run_experiment(spec: ExperimentSpec | dict, output: Path | str, *, base_dir:
               "claims": "synthetic or imported numerical problem; no observational calibration implied"}
     if isinstance(coefficient, DiffusionCoefficients):
         result["diffusivity"] = _diffusivity_record(coefficient.values)
+    if driving is not None:
+        result["forcing"] = _forcing_record(forcing_array_payload(driving))
     output.parent.mkdir(parents=True, exist_ok=True)
     stage = Path(tempfile.mkdtemp(prefix=f".{output.name}-", dir=output.parent))
     try:
@@ -189,6 +254,9 @@ def run_experiment(spec: ExperimentSpec | dict, output: Path | str, *, base_dir:
             source = Path(base_dir) / p.kappa.path
             shutil.copyfile(source, stage / "kappa_input.npz")
             archived["problem"]["kappa"]["path"] = "kappa_input.npz"
+        if isinstance(p.forcing,ArrayForcing):
+            shutil.copyfile(Path(base_dir)/p.forcing.path,stage/"forcing_input.npz")
+            archived["problem"]["forcing"]["path"]="forcing_input.npz"
         _json(stage / "config.json", archived)
         _json(stage / "result.json", result)
         with (stage / "fields.npz").open("wb") as handle:
@@ -198,6 +266,10 @@ def run_experiment(spec: ExperimentSpec | dict, output: Path | str, *, base_dir:
             np.savez_compressed(handle, **arrays)
             handle.flush()
             os.fsync(handle.fileno())
+        if driving is not None:
+            with (stage/"forcing.npz").open("wb") as handle:
+                np.savez_compressed(handle,**forcing_array_payload(driving))
+                handle.flush();os.fsync(handle.fileno())
         artifacts = {f.name: {"sha256": hashlib.sha256(f.read_bytes()).hexdigest(), "size_bytes": f.stat().st_size}
                      for f in sorted(stage.iterdir())}
         _json(stage / "manifest.json", {"schema_version": 1, "status": "completed", "artifacts": artifacts})
@@ -216,7 +288,8 @@ def run_experiment(spec: ExperimentSpec | dict, output: Path | str, *, base_dir:
 def replay_bundle(path: Path | str, output: Path | str) -> dict:
     path = Path(path)
     verify_bundle(path)
-    result = run_experiment(load_spec(path / "config.json"), output, base_dir=path)
+    spec = load_spec(path / "config.json")
+    result = run_experiment(spec, output, base_dir=path)
     with np.load(path / "fields.npz", allow_pickle=False) as prior, np.load(Path(output) / "fields.npz", allow_pickle=False) as current:
         if set(prior.files) != set(current.files):
             raise ValueError("Replay array inventory differs from the original bundle.")
@@ -227,4 +300,11 @@ def replay_bundle(path: Path | str, output: Path | str) -> dict:
         comparison = {"linf": float(np.max(np.abs(difference))), "rms": float(np.sqrt(np.mean(difference**2))),
                       "arrays": array_comparison, "all_arrays_exact": all(v["exact"] for v in array_comparison.values()),
                       "comparison_scope": "all stored arrays; not a cross-platform bitwise guarantee"}
+    if spec.problem.forcing is not None:
+        with np.load(path/"forcing.npz",allow_pickle=False) as prior, np.load(Path(output)/"forcing.npz",allow_pickle=False) as current:
+            if set(prior.files)!=set(current.files):
+                raise ValueError("Replay forcing array inventory differs from the original bundle.")
+            comparison["forcing_arrays"]={key:{"exact":bool(np.array_equal(prior[key],current[key])),
+                "linf":float(np.max(np.abs(current[key]-prior[key])))} for key in sorted(prior.files)}
+            comparison["all_arrays_exact"] &= all(value["exact"] for value in comparison["forcing_arrays"].values())
     return {**result, "replay_comparison": comparison}

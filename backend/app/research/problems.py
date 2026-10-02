@@ -95,6 +95,94 @@ VariableDiffusivity = Annotated[LayeredDiffusivity | ArrayDiffusivity, Field(dis
 Diffusivity = Annotated[float, Field(ge=0)] | VariableDiffusivity
 
 
+class UniformWind(StrictSpec):
+    kind: Literal["uniform"] = "uniform"
+    value: tuple[float, float] = (0.0, 0.0)
+
+
+class ShearWind(StrictSpec):
+    kind: Literal["shear"] = "shear"
+    axis: Literal["x", "y"] = "x"
+    mean_speed_m_s: float = 0.0
+    gradient_s_inv: float = 0.0
+
+
+class RotationWind(StrictSpec):
+    kind: Literal["rotation"] = "rotation"
+    angular_rate_s_inv: float
+    center: tuple[float, float] | None = None
+
+
+class ConstantSource(StrictSpec):
+    kind: Literal["constant"] = "constant"
+    value: float = 0.0
+
+
+class GaussianSource(StrictSpec):
+    kind: Literal["gaussian"] = "gaussian"
+    center: tuple[float, float]
+    sigma_m: float = Field(gt=0)
+    amplitude: float = 1.0
+
+
+class InflowValues(StrictSpec):
+    left: float = Field(default=0.0, ge=0)
+    right: float = Field(default=0.0, ge=0)
+    bottom: float = Field(default=0.0, ge=0)
+    top: float = Field(default=0.0, ge=0)
+
+
+class ForcingContract(StrictSpec):
+    times_s: tuple[float, ...] = Field(min_length=2, max_length=4096)
+    temporal_interpolation: Literal["linear"] = "linear"
+    temporal_extrapolation: Literal["reject"] = "reject"
+    velocity_unit: Literal["m/s"] = "m/s"
+    source_unit: Literal["relative_concentration/s"] = "relative_concentration/s"
+    inflow_unit: Literal["relative_concentration"] = "relative_concentration"
+
+    @model_validator(mode="after")
+    def validate_clock(self):
+        if self.times_s[0] != 0 or any(b <= a or not np.isfinite(b-a) for a,b in zip(self.times_s,self.times_s[1:])):
+            raise ValueError("Forcing knots must start at zero and have strictly increasing finite intervals.")
+        return self
+
+
+class AnalyticForcing(ForcingContract):
+    kind: Literal["analytic"] = "analytic"
+    generator_version: Literal[1] = 1
+    wind: Annotated[UniformWind | ShearWind | RotationWind, Field(discriminator="kind")] = UniformWind()
+    wind_scale: tuple[float, ...] | None = None
+    source: Annotated[ConstantSource | GaussianSource, Field(discriminator="kind")] = ConstantSource()
+    source_scale: tuple[float, ...] | None = None
+    inflow: InflowValues = InflowValues()
+    inflow_scale: tuple[float, ...] | None = None
+
+    @model_validator(mode="after")
+    def validate_scales(self):
+        for name in ("wind_scale", "source_scale", "inflow_scale"):
+            values = getattr(self, name)
+            if values is not None and len(values) != len(self.times_s):
+                raise ValueError(f"{name} must have one value per forcing knot.")
+        if self.inflow_scale is not None and any(value < 0 for value in self.inflow_scale):
+            raise ValueError("Inflow multipliers must be nonnegative.")
+        return self
+
+
+class ArrayForcing(ForcingContract):
+    kind: Literal["npz"] = "npz"
+    path: str
+    sha256: str = Field(pattern=r"^[a-f0-9]{64}$")
+    bounds: tuple[float, float, float, float]
+    nx: int = Field(ge=2, le=4096)
+    ny: int = Field(ge=2, le=4096)
+    axis_order: Literal["time,y,x"] = "time,y,x"
+    y_direction: Literal["south_to_north"] = "south_to_north"
+    representation: Literal["face_velocity_cell_average_source_boundary_face_inflow"] = "face_velocity_cell_average_source_boundary_face_inflow"
+
+
+Forcing = Annotated[AnalyticForcing | ArrayForcing, Field(discriminator="kind")]
+
+
 def _layer_face(grid: Grid, data: LayeredDiffusivity) -> int:
     axis = 0 if data.axis == "x" else 1
     lower, upper = grid.bounds[axis], grid.bounds[axis + 2]
@@ -124,6 +212,7 @@ class ProblemSpec(StrictSpec):
     model: Literal["diffusion", "advection_diffusion"] = "diffusion"
     kappa: Diffusivity = 0.05
     velocity: tuple[float, float] = (0.0, 0.0)
+    forcing: Forcing | None = None
     boundary: Literal["zero_flux", "periodic", "open"] = "zero_flux"
     initial: Initial
     coordinate_system: Literal["cartesian_metres"] = "cartesian_metres"
@@ -135,10 +224,12 @@ class ProblemSpec(StrictSpec):
         Grid(self.bounds, 2, 2)
         if self.model == "diffusion" and (any(self.velocity) or self.boundary == "open"):
             raise ValueError("Diffusion uses zero velocity and zero_flux or periodic boundaries.")
-        if self.model == "advection_diffusion" and self.boundary == "zero_flux":
+        if self.model == "advection_diffusion" and self.boundary == "zero_flux" and self.forcing is None:
             raise ValueError("Transport uses periodic or open boundaries.")
         if not isinstance(self.kappa, float) and self.model != "diffusion":
             raise ValueError("Variable diffusivity supports pure diffusion only.")
+        if self.forcing is not None and any(self.velocity):
+            raise ValueError("Prescribed forcing owns the wind; legacy velocity must be zero.")
         if isinstance(self.initial, CosineInitial) and self.boundary == "periodic":
             if any(m % 2 for m in self.initial.modes):
                 raise ValueError("Periodic cosine initial data require even half-wave mode counts.")
@@ -166,6 +257,7 @@ class NumericalSpec(StrictSpec):
 class BudgetSpec(StrictSpec):
     max_output_bytes: int = Field(default=128 * 1024**2, ge=1024, le=1024**3)
     max_cell_updates: int = Field(default=500_000_000, ge=1, le=20_000_000_000)
+    max_forcing_bytes: int = Field(default=128 * 1024**2, ge=1024, le=1024**3)
 
 
 class ExperimentSpec(StrictSpec):
@@ -197,6 +289,13 @@ class ExperimentSpec(StrictSpec):
         elif isinstance(p.kappa, ArrayDiffusivity):
             if (p.kappa.bounds, p.kappa.nx, p.kappa.ny) != (p.bounds, n.nx, n.ny):
                 raise ValueError("Imported diffusivity grid and domain must exactly match; implicit resampling is forbidden.")
+        if p.forcing is not None:
+            if n.backend == "cpp":
+                raise ValueError("C++ does not support prescribed forcing.")
+            if p.forcing.times_s[-1] < n.output_times_s[-1]:
+                raise ValueError("Forcing knots must cover the complete solve interval from zero.")
+            if isinstance(p.forcing, ArrayForcing) and (p.forcing.bounds, p.forcing.nx, p.forcing.ny) != (p.bounds, n.nx, n.ny):
+                raise ValueError("Imported forcing grid and domain must exactly match; implicit resampling is forbidden.")
         return self
 
     def grid(self) -> Grid:
@@ -208,6 +307,10 @@ class ExperimentSpec(StrictSpec):
             result["initial"].pop("path")  # Content/geometry, not a machine-local filename.
         if isinstance(self.problem.kappa, ArrayDiffusivity):
             result["kappa"].pop("path")
+        if self.problem.forcing is None:
+            result.pop("forcing")  # Preserve every pre-forcing physical identity.
+        elif isinstance(self.problem.forcing, ArrayForcing):
+            result["forcing"].pop("path")
         return result
 
     def identities(self) -> dict:
@@ -306,6 +409,113 @@ def inspect_npz_array(path: Path | str, key: str, shape: tuple[int, ...], *,
                 raise ValueError("NPZ array header size disagrees with its payload or exceeds byte budget: " + key)
 
 
+def forcing_shapes(spec: ExperimentSpec) -> dict[str, tuple[int, ...]]:
+    if spec.problem.forcing is None:
+        return {}
+    nt, nx, ny = len(spec.problem.forcing.times_s), spec.numerical.nx, spec.numerical.ny
+    return {"times_s": (nt,), "velocity_x": (nt, ny, nx+1), "velocity_y": (nt, ny+1, nx),
+            "source": (nt, ny, nx), "inflow_left": (nt, ny), "inflow_right": (nt, ny),
+            "inflow_bottom": (nt, nx), "inflow_top": (nt, nx)}
+
+
+def check_forcing_budget(spec: ExperimentSpec) -> dict:
+    check_output_budget(spec)
+    size = sum(math.prod(shape)*8 for shape in forcing_shapes(spec).values())
+    if size > spec.budget.max_forcing_bytes:
+        raise ValueError("Resolved forcing arrays exceed the forcing byte budget.")
+    return {"forcing_bytes": size}
+
+
+def forcing_array_payload(forcing) -> dict[str, np.ndarray]:
+    return {"times_s": forcing.times_s, "velocity_x": forcing.velocity_x,
+            "velocity_y": forcing.velocity_y, "source": forcing.source,
+            **{"inflow_"+side: forcing.inflow[side] for side in ("left", "right", "bottom", "top")}}
+
+
+def imported_forcing_arrays(spec: ExperimentSpec, base_dir: Path | str = ".") -> dict[str, np.ndarray]:
+    """Read exact resolved NPZ values with shape admission before allocation."""
+    check_forcing_budget(spec)
+    data = spec.problem.forcing
+    if not isinstance(data, ArrayForcing):
+        raise ValueError("Imported forcing arrays require an NPZ forcing specification.")
+    path = Path(base_dir) / data.path
+    allowance = spec.budget.max_forcing_bytes + 1_000_000
+    if path.stat().st_size > allowance:
+        raise ValueError("Forcing input archive exceeds its byte budget.")
+    if hashlib.sha256(path.read_bytes()).hexdigest() != data.sha256:
+        raise ValueError("Forcing input archive SHA-256 mismatch.")
+    shapes = forcing_shapes(spec)
+    with zipfile.ZipFile(path) as archive:
+        entries = archive.infolist()
+        if (len(entries) != len(shapes) or {item.filename for item in entries} != {key+".npy" for key in shapes}):
+            raise ValueError("Forcing NPZ must contain exactly its eight declared arrays.")
+        if sum(item.file_size for item in entries) > allowance:
+            raise ValueError("Expanded forcing input exceeds its byte budget.")
+    for key, shape in shapes.items():
+        inspect_npz_array(path, key, shape, max_bytes=spec.budget.max_forcing_bytes)
+    with np.load(path, allow_pickle=False) as archive:
+        with np.errstate(over="ignore", invalid="ignore"):
+            arrays = {key: np.array(archive[key], dtype=np.float64, order="C", copy=True) for key in shapes}
+    if not all(np.isfinite(value).all() for value in arrays.values()):
+        raise ValueError("Forcing input values must remain finite in float64.")
+    if not np.array_equal(arrays["times_s"], data.times_s):
+        raise ValueError("Forcing input knot times differ from the physical configuration.")
+    return arrays
+
+
+def forcing_fields(spec: ExperimentSpec, base_dir: Path | str = "."):
+    """Resolve and freeze shared-knot face winds, cell sources and inflows."""
+    check_forcing_budget(spec)
+    data = spec.problem.forcing
+    if data is None:
+        return None
+    from ..numerics.forcing import PrescribedFields
+    grid = spec.grid()
+    if isinstance(data, ArrayForcing):
+        arrays = imported_forcing_arrays(spec, base_dir)
+    else:
+        nt = len(data.times_s)
+        ux = np.zeros((grid.ny, grid.nx+1))
+        uy = np.zeros((grid.ny+1, grid.nx))
+        wind = data.wind
+        with np.errstate(over="ignore", invalid="ignore"):
+            if isinstance(wind, UniformWind):
+                ux.fill(wind.value[0]); uy.fill(wind.value[1])
+            elif isinstance(wind, ShearWind):
+                if wind.axis == "x":
+                    ux[:] = (wind.mean_speed_m_s + wind.gradient_s_inv*(grid.y-(grid.bounds[1]+grid.bounds[3])/2))[:,None]
+                else:
+                    uy[:] = wind.mean_speed_m_s + wind.gradient_s_inv*(grid.x-(grid.bounds[0]+grid.bounds[2])/2)
+            else:
+                center = wind.center or ((grid.bounds[0]+grid.bounds[2])/2,(grid.bounds[1]+grid.bounds[3])/2)
+                ux[:] = (-wind.angular_rate_s_inv*(grid.y-center[1]))[:,None]
+                uy[:] = wind.angular_rate_s_inv*(grid.x-center[0])
+            source = data.source
+            if isinstance(source, ConstantSource):
+                density = np.full((grid.ny,grid.nx),source.value)
+            else:
+                def average(points, center, spacing):
+                    scale = np.sqrt(2.0)*source.sigma_m
+                    return source.sigma_m*np.sqrt(np.pi/2)/spacing*(
+                        erf((points+spacing/2-center)/scale)-erf((points-spacing/2-center)/scale))
+                density = source.amplitude * average(grid.y,source.center[1],grid.dy)[:,None] * average(grid.x,source.center[0],grid.dx)[None,:]
+            def scale(values):
+                return np.ones(nt) if values is None else np.asarray(values,dtype=float)
+            ws, ss, ins = scale(data.wind_scale), scale(data.source_scale), scale(data.inflow_scale)
+            arrays = {"times_s": np.asarray(data.times_s), "velocity_x": ws[:,None,None]*ux,
+                      "velocity_y": ws[:,None,None]*uy, "source": ss[:,None,None]*density,
+                      **{"inflow_"+side: np.broadcast_to((ins*getattr(data.inflow,side))[:,None],
+                          (nt,grid.ny if side in {"left","right"} else grid.nx)).copy()
+                         for side in ("left","right","bottom","top")}}
+    fields = PrescribedFields(grid,arrays["times_s"],velocity_x=arrays["velocity_x"],
+                              velocity_y=arrays["velocity_y"],source=arrays["source"],
+                              inflow={side:arrays["inflow_"+side] for side in ("left","right","bottom","top")},
+                              boundary=spec.problem.boundary)
+    if spec.problem.model == "diffusion" and fields.has_velocity:
+        raise ValueError("Pure diffusion forcing may contain volume sources but no velocity field.")
+    return fields
+
+
 def diffusivity_field(spec: ExperimentSpec, base_dir: Path | str = ".") -> float | np.ndarray:
     """Resolve positive cell material values, retaining the legacy scalar form."""
     check_output_budget(spec)
@@ -345,14 +555,16 @@ def diffusivity_field(spec: ExperimentSpec, base_dir: Path | str = ".") -> float
         return converted
 
 
-def check_budget(spec: ExperimentSpec, *, kappa=None, base_dir: Path | str = ".") -> dict:
+def check_budget(spec: ExperimentSpec, *, kappa=None, forcing=None, base_dir: Path | str = ".") -> dict:
     """Use the resolved face-based CFL; never estimate a field by a scalar guess."""
     output = check_output_budget(spec)
+    forcing_budget = check_forcing_budget(spec)
     from ..numerics.coefficients import prepare_diffusivity
     grid, n, p = spec.grid(), spec.numerical, spec.problem
     coefficient = diffusivity_field(spec, base_dir) if kappa is None else kappa
     coefficient = prepare_diffusivity(grid, coefficient, p.boundary)
-    limit = timestep_limit(grid, coefficient, n.method, p.velocity, boundary=p.boundary)
+    driving = forcing_fields(spec, base_dir) if forcing is None and p.forcing is not None else forcing
+    limit = timestep_limit(grid, coefficient, n.method, p.velocity, boundary=p.boundary, forcing=driving)
     if n.dt is not None:
         dt = n.dt
     elif np.isfinite(limit):
@@ -363,10 +575,12 @@ def check_budget(spec: ExperimentSpec, *, kappa=None, base_dir: Path | str = "."
         raise ValueError("Requested time step violates the research method's CFL bound.")
     # The budget is a conservative admission estimate, not an RSS or CPU cap.
     steps_budget = spec.budget.max_cell_updates // (grid.nx * grid.ny)
-    aligned_reserve = len(n.output_times_s) + (1 if n.startup == "rannacher" else 0)
+    knot_reserve = sum(0 < time < n.output_times_s[-1] for time in p.forcing.times_s) if p.forcing is not None else 0
+    aligned_reserve = len(n.output_times_s) + knot_reserve + (1 if n.startup == "rannacher" else 0)
     if n.output_times_s[-1] > max(0, steps_budget-aligned_reserve)*dt:
         raise ValueError("Estimated cell updates exceed the research work budget.")
-    return {**output, "estimated_steps_upper": int(np.ceil(n.output_times_s[-1]/dt))+aligned_reserve,
+    return {**output, **forcing_budget, "forcing_knot_step_reserve": knot_reserve,
+            "estimated_steps_upper": int(np.ceil(n.output_times_s[-1]/dt))+aligned_reserve,
             "admission_dt_s": float(dt), "cfl_limit_s": float(limit) if np.isfinite(limit) else None,
             "budget_kind": "preflight estimate; does not cap sparse-factor peak RSS or wall time"}
 
@@ -393,7 +607,7 @@ def capabilities() -> dict:
             "initial_conditions": ["constant", "gaussian", "cosine", "npz"],
             "initialization": ["cell_average", "point_sample"],
             "diffusivity_inputs": ["nonnegative scalar", "positive layered", "positive cell-material npz"],
-            "coefficient_scope": "positive scalar material fields for pure diffusion; transport retains constant kappa/velocity",
+            "coefficient_scope": "pure diffusion: nonnegative scalar or positive cell material diffusivity; transport: scalar kappa with legacy constant or prescribed face wind",
             "variable_diffusivity_combinations": [{"model": "diffusion", "method": method, "backend": backend,
                                                    "boundary": boundary, "startup": startup}
                 for method, supported in [("explicit_euler", ["numpy", "auto"]),
@@ -402,6 +616,25 @@ def capabilities() -> dict:
                 for backend in supported for boundary in ["zero_flux", "periodic"]
                 for startup in (["none", "rannacher"] if method == "crank_nicolson" else ["none"])],
             "variable_auto_backend": "explicit_euler uses numpy; backward_euler/crank_nicolson use scipy",
+            "prescribed_forcing": {"schema_version": 1, "inputs": ["analytic_v1", "complete_npz"],
+                "wind": ["uniform_with_knot_reversal", "linear_shear_face_averages", "linear_rotation_face_averages"],
+                "source": ["constant", "gaussian_cell_average_with_knot_scale", "signed_finite_npz"],
+                "temporal_rule": "shared knots, linear interpolation, no extrapolation",
+                "source_only_methods": ["explicit_euler", "backward_euler", "crank_nicolson"],
+                "transport_methods": ["advection_explicit", "imex_euler"],
+                "supported_combinations": [
+                    {"model": "diffusion", "scope": "source_only", "diffusivity": "scalar_or_positive_cell_material",
+                     "method": method, "backend": backend, "boundary": boundary, "startup": startup}
+                    for method,supported in [("explicit_euler",["numpy","auto"]),
+                        ("backward_euler",["scipy","auto"]),("crank_nicolson",["scipy","auto"])]
+                    for backend in supported for boundary in ["zero_flux","periodic"]
+                    for startup in (["none","rannacher"] if method=="crank_nicolson" else ["none"])] + [
+                    {"model": "advection_diffusion", "scope": "wind_source_inflow", "diffusivity": "scalar",
+                     "method": method, "backend": backend, "boundary": boundary, "startup": "none"}
+                    for method,supported in [("advection_explicit",["numpy","auto"]),("imex_euler",["numpy_scipy","auto"])]
+                    for backend in supported for boundary in ["zero_flux","periodic","open"]],
+                "native_supported": False,
+                "boundary_rule": "zero_flux requires zero normal boundary wind; periodic seams must match; inflow only open"},
             "native_scope": "constant scalar explicit_euler, zero_flux only",
             "combination_validation": "ExperimentSpec + solver validate model, boundary, startup, backend and CFL",
             "physical_units": {"length": "m", "time": "s", "concentration": "relative"}}
